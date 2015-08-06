@@ -1,2 +1,2 @@
-# pg-profileservice
-Palle's gavebod profile web service
+# dbc-profileservice
+DBC profile web service
