@@ -20,4 +20,4 @@ npm-debug.log
 
 
 # Loopback-specific
-server/datasources.json
+datasources.json
