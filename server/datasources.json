@@ -7,8 +7,8 @@
     "host": "127.0.0.1",
     "port": 5432,
     "database": "profile",
-    "username": "your-postgres-username",
-    "password": "your-postgres-password",
+    "username": "change-this",
+    "password": "change-this",
     "name": "psqlDs",
     "connector": "postgresql"
   },
@@ -18,7 +18,7 @@
     "transports": [
       {
         "type": "smtp",
-        "host": "your.smtp.host",
+        "host": "change-this",
         "secure": false,
         "port": 25,
         "tls": {

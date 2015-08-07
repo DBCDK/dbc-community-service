@@ -3,24 +3,33 @@
   "version": "1.0.0",
   "main": "server/server.js",
   "scripts": {
-    "pretest": "jshint ."
+    "lint": "eslint ./",
+    "test": "mocha --compilers js:babel/register test"
   },
   "dependencies": {
     "babel": "^5.8.20",
     "compression": "^1.0.3",
     "cors": "^2.5.2",
     "errorhandler": "^1.1.1",
+    "lodash": "^3.9.3",
     "loopback": "^2.14.0",
     "loopback-boot": "^2.6.5",
     "loopback-connector-postgresql": "^2.3.0",
     "loopback-datasource-juggler": "^2.19.0",
-    "serve-favicon": "^2.0.1"
+    "serve-favicon": "^2.0.1",
+    "supertest": "^1.0.1"
   },
   "optionalDependencies": {
     "loopback-explorer": "^1.1.0"
   },
   "devDependencies": {
-    "jshint": "^2.5.6"
+    "babel-eslint": "^4.0.5",
+    "chai": "^3.2.0",
+    "eslint": "^1.0.0",
+    "eslint-loader": "^0.14.2",
+    "mocha": "^2.2.4",
+    "mocha-jenkins-reporter": "^0.1.9",
+    "wallaby-webpack": "0.0.5"
   },
   "repository": {
     "type": "",
