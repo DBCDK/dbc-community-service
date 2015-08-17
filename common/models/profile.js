@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 import util from 'util';
 import crypto from 'crypto';
@@ -24,7 +24,6 @@ module.exports = function (Profile) {
       let token = ctx.instance.verificationToken;
       let uid = ctx.instance.id;
       let redirectUrl = '/login';
-      //let confirmUrl = util.format('http://127.0.0.1:3000/api/Profiles/confirm?uid=%s&token=%s&redirect=%s', uid, token, redirectUrl);
       let confirmUrl = util.format('http://127.0.0.1:8080/confirm?uid=%s&token=%s&redirect=%s', uid, token, redirectUrl);
       let emailTemplate = '<p>Klik på linket for at bekræfte din nye brugerprofil:</p><a href=%s></a>';
 
@@ -33,8 +32,8 @@ module.exports = function (Profile) {
         to: profileInstance.email,
         from: 'ux-matias@dbc.dk',
         subject: 'Bekræft ny brugerprofil',
-        html: util.format(emailTemplate, confirmUrl, confirmUrl),
-      }, function (err, mail) {
+        html: util.format(emailTemplate, confirmUrl, confirmUrl)
+      }, function (err) {
         if (err) {
           throw err;
         }
