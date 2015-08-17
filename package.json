@@ -4,6 +4,7 @@
   "main": "server/server.js",
   "scripts": {
     "lint": "eslint ./",
+    "start": "node .",
     "test": "mocha --compilers js:babel/register test"
   },
   "dependencies": {
