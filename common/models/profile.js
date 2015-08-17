@@ -1,3 +1,5 @@
+'use strict'
+
 import util from 'util';
 import crypto from 'crypto';
 
@@ -7,14 +9,10 @@ module.exports = function (Profile) {
     if (ctx.isNewInstance) {
       // create verification token
       crypto.randomBytes(64, (err, buf) => {
-        crypto.randomBytes(64, (err, buf) => {
-          ctx.instance.verificationToken = buf && buf.toString('hex');
-        });
-        next();
+        ctx.instance.verificationToken = buf && buf.toString('hex');
       });
-    } else {
-      next();
     }
+    next();
   });
 
   Profile.observe('after save', function (ctx, next) {
