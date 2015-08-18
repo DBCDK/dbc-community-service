@@ -18,13 +18,12 @@ switch (environment) {
     profileServiceHost = 'some-production-url';
     break;
   case 'development':
-    profileServiceHost = 'http://uxscrum-i01.dbc.dk';
-    pgHost = 'http://uxscrum-i01.dbc.dk';
+    profileServiceHost = 'uxscrum-i01.dbc.dk';
+    pgHost = 'uxscrum-i01.dbc.dk';
     break;
   default:
     break;
 }
-
 
 module.exports.serviceUrl = profileServiceHost + ':' + profileServicePort;
 
