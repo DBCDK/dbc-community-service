@@ -5,7 +5,7 @@ module.exports = function mountLoopBackExplorer(server) {
   try {
     explorer = require('loopback-explorer');
   }
-  catch(error) {
+  catch(err) {
     // Print the message only when the app was started via `server.listen()`.
     // Do not print any message when the project is used as a component.
     server.once('started', function(baseUrl) { // eslint-disable-line no-unused-vars
