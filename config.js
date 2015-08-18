@@ -12,6 +12,7 @@ let pgHost = '127.0.0.1';
 let pgPort = '8080';
 
 const environment = process.env.NODE_ENV; // eslint-disable-line no-process-env
+console.log('DEPLOY-ENVIRONMENT:', environment); // eslint-disable-line no-console
 
 switch (environment) {
   case 'production':
