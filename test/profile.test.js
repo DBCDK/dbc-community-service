@@ -4,7 +4,7 @@
  * @file Write a short description here.
  */
 
-import {expect, assert} from 'chai';
+import {assert} from 'chai';
 import request from 'supertest';
 import app from '../server/server';
 
@@ -20,13 +20,12 @@ describe('Testing Profile REST API', () => {
     done();
   });
 
-  it('should be accessible', () => {
+  it('should be accessible', (done) => {
     request(url)
       .get('/')
       .send({})
       .end(function(err, result) {
         if (err) {
-          console.log(err);
           throw err;
         }
         assert.equal(result.status, 200);
