@@ -15,7 +15,7 @@ switch (process.env.NODE_ENV) {
   case 'production':
         profileServiceHost = 'some-production-url';
         break;
-  case 'develop':
+  case 'development':
         profileServiceHost = 'http://uxscrum-i01.dbc.dk';
         break;
   default:
