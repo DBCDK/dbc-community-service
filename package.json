@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server/server.js",
   "scripts": {
-    "lint": "eslint ./",
+    "lint": "eslint ./common ./client ./server ./test",
     "start": "node .",
     "test": "mocha --compilers js:babel/register test"
   },
