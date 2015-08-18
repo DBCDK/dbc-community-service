@@ -4,6 +4,7 @@
   "main": "server/server.js",
   "scripts": {
     "lint": "eslint ./common ./client ./server ./test",
+    "lint:checkstyle": "eslint ./common ./client ./server ./test -o report.xml -f checkstyle",
     "start": "node .",
     "test": "mocha --compilers js:babel/register test"
   },
