@@ -13,7 +13,7 @@ app.start();
 
 describe('Testing Profile REST API', () => {
 
-  let url = 'localhost:3000';
+  let url = '127.0.0.1:3000';
 
   before(function(done) {
     // In our tests we use the test db
