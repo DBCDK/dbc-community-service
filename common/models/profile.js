@@ -2,6 +2,7 @@
 
 import util from 'util';
 import crypto from 'crypto';
+import config from '../../config';
 
 module.exports = function (Profile) {
 
@@ -19,12 +20,13 @@ module.exports = function (Profile) {
     // was a new profile created?
     if (ctx.isNewInstance) {
       // create confirmation email content
+      let baseUrl = config.pgUrl;
       let Email = Profile.app.models.Email;
       let profileInstance = ctx.instance;
       let token = ctx.instance.verificationToken;
       let uid = ctx.instance.id;
       let redirectUrl = '/login';
-      let confirmUrl = util.format('http://127.0.0.1:8080/confirm?uid=%s&token=%s&redirect=%s', uid, token, redirectUrl);
+      let confirmUrl = util.format('http://%s/confirm?uid=%s&token=%s&redirect=%s', baseUrl, uid, token, redirectUrl);
       let emailTemplate = '<p>Klik på linket for at bekræfte din nye brugerprofil:</p><a href=%s></a>';
 
       // send email
