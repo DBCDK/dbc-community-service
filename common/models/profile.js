@@ -5,11 +5,6 @@ import crypto from 'crypto';
 import config from '../../config';
 import winston from 'winston';
 
-// setup logging
-winston.add(winston.transports.File, {
-  filename: 'profileservice.log'
-});
-winston.remove(winston.transports.Console);
 
 module.exports = function (Profile) {
 
