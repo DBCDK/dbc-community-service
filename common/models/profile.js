@@ -6,7 +6,9 @@ import config from '../../config';
 import winston from 'winston';
 
 // setup logging
-winston.add(winston.transports.File, { filename: 'profileservice.log' });
+winston.add(winston.transports.File, {
+  filename: 'profileservice.log'
+});
 winston.remove(winston.transports.Console);
 
 module.exports = function (Profile) {
@@ -48,7 +50,8 @@ module.exports = function (Profile) {
         }
         winston.info('verification email was sent');
       });
-    } else {
+    }
+    else {
       winston.info('did not create new profile');
     }
     next();
