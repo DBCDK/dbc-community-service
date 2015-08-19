@@ -4,7 +4,6 @@
  * @file configurations that depend on deploy environment
  */
 
-
 let profileServiceHost = '127.0.0.1';
 let profileServicePort = '3000';
 

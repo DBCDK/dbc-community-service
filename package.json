@@ -19,7 +19,8 @@
     "loopback-connector-postgresql": "^2.3.0",
     "loopback-datasource-juggler": "^2.19.0",
     "serve-favicon": "^2.0.1",
-    "supertest": "^1.0.1"
+    "supertest": "^1.0.1",
+    "winston": "^1.0.1"
   },
   "optionalDependencies": {
     "loopback-explorer": "^1.1.0"
@@ -37,5 +38,6 @@
     "type": "",
     "url": ""
   },
-  "description": "profileservice"
+  "description": "profileservice",
+  "license": "GNU Affero GPL v3"
 }

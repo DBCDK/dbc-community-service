@@ -3,6 +3,13 @@
 import util from 'util';
 import crypto from 'crypto';
 import config from '../../config';
+import winston from 'winston';
+
+// setup logging
+winston.add(winston.transports.File, {
+  filename: 'profileservice.log'
+});
+winston.remove(winston.transports.Console);
 
 module.exports = function (Profile) {
 
@@ -12,6 +19,7 @@ module.exports = function (Profile) {
       crypto.randomBytes(64, (err, buf) => {
         ctx.instance.verificationToken = buf && buf.toString('hex');
       });
+      winston.info('created verification token');
     }
     next();
   });
@@ -19,6 +27,7 @@ module.exports = function (Profile) {
   Profile.observe('after save', function (ctx, next) {
     // was a new profile created?
     if (ctx.isNewInstance) {
+      winston.info('created new profile');
       // create confirmation email content
       let baseUrl = config.pgUrl;
       let Email = Profile.app.models.Email;
@@ -39,7 +48,11 @@ module.exports = function (Profile) {
         if (err) {
           throw err;
         }
+        winston.info('verification email was sent');
       });
+    }
+    else {
+      winston.info('did not create new profile');
     }
     next();
   });
