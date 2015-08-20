@@ -14,7 +14,8 @@ const environment = process.env.NODE_ENV; // eslint-disable-line no-process-env
 
 switch (environment) {
   case 'production':
-    profileServiceHost = 'some-production-url';
+    profileServiceHost = 'uxscrum-i01.dbc.dk';
+    pgHost = 'pg.demo.dbc.dk';
     break;
   case 'development':
     profileServiceHost = 'uxscrum-i01.dbc.dk';
