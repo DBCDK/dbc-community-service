@@ -51,5 +51,4 @@ module.exports = function (Profile) {
     }
     next();
   });
-
 };
