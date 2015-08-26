@@ -39,5 +39,9 @@
   "Email": {
     "dataSource": "emailDs",
     "public": true
+  },
+  "Like": {
+    "dataSource": "psqlDs",
+    "public": true
   }
 }
