@@ -16,6 +16,11 @@
       "type": "hasMany",
       "model": "Like",
       "foreignKey": ""
+    },
+    "dislikes": {
+      "type": "hasMany",
+      "model": "Dislike",
+      "foreignKey": ""
     }
   },
   "acls": [

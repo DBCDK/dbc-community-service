@@ -43,5 +43,9 @@
   "Like": {
     "dataSource": "psqlDs",
     "public": true
+  },
+  "Dislike": {
+    "dataSource": "psqlDs",
+    "public": true
   }
 }
