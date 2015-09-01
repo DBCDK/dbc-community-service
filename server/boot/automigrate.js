@@ -13,7 +13,6 @@ module.exports = function automigrate() {
     if (err) {
       throw err;
     }
-
     console.log('Automigration - tables dropped and recreated'); // eslint-disable-line no-console
   });
 
