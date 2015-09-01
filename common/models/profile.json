@@ -8,6 +8,11 @@
   "properties": {
     "imageUrl": {
       "type": "string"
+    },
+    "favorite_libraries": {
+      "type": [
+        "string"
+      ]
     }
   },
   "validations": [],
@@ -38,5 +43,5 @@
       "permission": "ALLOW"
     }
   ],
-  "methods": []
+  "methods": {}
 }
