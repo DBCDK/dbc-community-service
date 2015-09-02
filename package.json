@@ -16,6 +16,7 @@
     "lodash": "^3.9.3",
     "loopback": "^2.14.0",
     "loopback-boot": "^2.6.5",
+    "loopback-component-storage": "^1.5.1",
     "loopback-connector-postgresql": "^2.3.0",
     "loopback-datasource-juggler": "^2.19.0",
     "serve-favicon": "^2.0.1",
