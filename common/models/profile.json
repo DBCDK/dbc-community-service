@@ -9,6 +9,11 @@
     "imageUrl": {
       "type": "string",
       "length": 10485760
+    },
+    "favorite_libraries": {
+      "type": [
+        "string"
+      ]
     }
   },
   "validations": [],
@@ -39,5 +44,5 @@
       "permission": "ALLOW"
     }
   ],
-  "methods": []
+  "methods": {}
 }
