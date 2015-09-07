@@ -10,7 +10,7 @@
       "type": "string",
       "length": 10485760
     },
-    "favorite_libraries": {
+    "favoriteLibraries": {
       "type": [
         "string"
       ]
