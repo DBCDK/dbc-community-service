@@ -16,9 +16,6 @@ module.exports = function (Profile) {
       });
       winston.info('created verification token');
     }
-    else {
-      winston.info('before save', ctx);
-    }
     next();
   });
 
@@ -34,7 +31,7 @@ module.exports = function (Profile) {
       let uid = ctx.instance.id;
       let redirectUrl = '/login';
       let confirmUrl = util.format('http://%s/confirm?uid=%s&token=%s&redirect=%s', baseUrl, uid, token, redirectUrl);
-      let emailTemplate = '<p>Klik på linket for at bekræfte din nye brugerprofil:</p><a href=%s></a>';
+      let emailTemplate = '<p>Klik på linket for at bekræfte din nye brugerprofil:</p><a href=%s> Klik her!</a>';
 
       // send email
       Email.send({
@@ -48,9 +45,6 @@ module.exports = function (Profile) {
         }
         winston.info('verification email was sent');
       });
-    }
-    else {
-      winston.info('did not create new profile', ctx);
     }
     next();
   });
