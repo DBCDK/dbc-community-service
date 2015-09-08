@@ -16,9 +16,6 @@ module.exports = function (Profile) {
       });
       winston.info('created verification token');
     }
-    else {
-      winston.info('before save', ctx);
-    }
     next();
   });
 
@@ -48,9 +45,6 @@ module.exports = function (Profile) {
         }
         winston.info('verification email was sent');
       });
-    }
-    else {
-      winston.info('did not create new profile', ctx);
     }
     next();
   });
