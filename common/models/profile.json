@@ -12,7 +12,7 @@
     },
     "favoriteLibraries": {
       "type": [
-        "string"
+        "object"
       ]
     }
   },
