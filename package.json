@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "babel": "^5.8.20",
+    "body-parser": "^1.13.3",
     "compression": "^1.0.3",
     "cors": "^2.5.2",
     "errorhandler": "^1.1.1",
