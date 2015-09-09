@@ -5,15 +5,24 @@ let path = require('path');
 let app = require(path.resolve(__dirname, '../server'));
 
 
-module.exports = function automigrate() {
+module.exports = function automigrate(model, cb) {
 
   let ds = app.dataSources.PsqlDs;
-  const lbTables = ['Profile', 'Like', 'Dislike'];
-  ds.automigrate(lbTables, function (err) {
-    if (err) {
-      throw err;
+  const appModels = ['Profile', 'Like', 'Dislike'];
+
+  ds.isActual(appModels, function(err, actual) {
+    if (!actual) {
+      console.log('No tables for models - creating new tables'); // eslint-disable-line no-console
+      ds.autoupdate(appModels, function(error) {
+        if (error) {
+          throw (error);
+        }
+      });
     }
-    console.log('Automigration - tables dropped and recreated'); // eslint-disable-line no-console
+    else {
+      console.log('Model tables already exist - no new tables are created'); // eslint-disable-line no-console
+    }
   });
 
+  cb();
 };
