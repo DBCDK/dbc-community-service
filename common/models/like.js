@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports = function(Like) { // eslint-disable-line no-unused-vars
-  // comment
+  Like.validatesInclusionOf('value', {in: ['1', '-1']});
 };
