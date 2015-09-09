@@ -8,14 +8,14 @@ let app = require(path.resolve(__dirname, '../server'));
 module.exports = function automigrate(model, cb) {
 
   let ds = app.dataSources.PsqlDs;
-  const appModels = ['Profile', 'Like', 'Dislike'];
+  const appModels = ['Profile', 'Like'];
 
   ds.isActual(appModels, function(err, actual) {
     if (!actual) {
       console.log('No tables for models - creating new tables'); // eslint-disable-line no-console
-      ds.autoupdate(appModels, function(error) {
-        if (error) {
-          throw (error);
+      ds.autoupdate(appModels, function(err) {
+        if (err) {
+          throw (err);
         }
       });
     }

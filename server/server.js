@@ -7,8 +7,7 @@ var boot = require('loopback-boot');
 var app = module.exports = loopback();
 
 var bodyParser = require('body-parser');
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.raw({limit: '50mb'}));
 
 app.start = function() {
   // start the web server
