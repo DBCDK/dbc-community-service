@@ -8,7 +8,7 @@ let app = require(path.resolve(__dirname, '../server'));
 module.exports = function automigrate() {
 
   let ds = app.dataSources.PsqlDs;
-  const lbTables = ['Profile', 'Like', 'Dislike'];
+  const lbTables = ['Profile', 'Like'];
   ds.automigrate(lbTables, function (err) {
     if (err) {
       throw err;
