@@ -31,12 +31,12 @@ module.exports = function (Profile) {
       let uid = ctx.instance.id;
       let redirectUrl = '/login';
       let confirmUrl = util.format('http://%s/confirm?uid=%s&token=%s&redirect=%s', baseUrl, uid, token, redirectUrl);
-      let emailTemplate = '<p>Klik på linket for at bekræfte din nye brugerprofil:</p><a href=%s> Klik her!</a>';
+      let emailTemplate = '<p>Klik på linket for at bekræfte din nye brugerprofil:</p><a href=%s> %s </a>';
 
       // send email
       Email.send({
         to: profileInstance.email,
-        from: 'ux-matias@dbc.dk',
+        from: 'noreply@dbc.dk',
         subject: 'Bekræft ny brugerprofil',
         html: util.format(emailTemplate, confirmUrl, confirmUrl)
       }, function (err) {
