@@ -2,7 +2,7 @@
 
 import util from 'util';
 import crypto from 'crypto';
-import config from '../../config';
+import config from '../../config'; // eslint-disable-line no-unused-vars
 import winston from 'winston';
 
 
