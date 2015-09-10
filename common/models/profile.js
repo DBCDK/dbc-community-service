@@ -23,8 +23,9 @@ module.exports = function (Profile) {
     // was a new profile created?
     if (ctx.isNewInstance) {
       winston.info('created new profile');
+      winston.info('ctx.instance: ', ctx.instance);
       // create confirmation email content
-      let baseUrl = config.pgUrl;
+      let baseUrl = ctx.instance.basePath;
       let Email = Profile.app.models.Email;
       let profileInstance = ctx.instance;
       let token = ctx.instance.verificationToken;
