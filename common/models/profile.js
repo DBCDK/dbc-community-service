@@ -2,7 +2,7 @@
 
 import util from 'util';
 import crypto from 'crypto';
-import config from '../../config';
+import config from '../../config'; // eslint-disable-line no-unused-vars
 import winston from 'winston';
 
 
@@ -23,20 +23,21 @@ module.exports = function (Profile) {
     // was a new profile created?
     if (ctx.isNewInstance) {
       winston.info('created new profile');
+      winston.info('ctx.instance: ', ctx.instance);
       // create confirmation email content
-      let baseUrl = config.pgUrl;
+      let baseUrl = ctx.instance.basePath;
       let Email = Profile.app.models.Email;
       let profileInstance = ctx.instance;
       let token = ctx.instance.verificationToken;
       let uid = ctx.instance.id;
       let redirectUrl = '/profile/login';
       let confirmUrl = util.format('http://%s/profile/confirm?uid=%s&token=%s&redirect=%s', baseUrl, uid, token, redirectUrl);
-      let emailTemplate = '<p>Klik på linket for at bekræfte din nye brugerprofil:</p><a href=%s> Klik her!</a>';
+      let emailTemplate = '<p>Klik på linket for at bekræfte din nye brugerprofil:</p><a href=%s> %s </a>';
 
       // send email
       Email.send({
         to: profileInstance.email,
-        from: 'ux-matias@dbc.dk',
+        from: 'noreply@dbc.dk',
         subject: 'Bekræft ny brugerprofil',
         html: util.format(emailTemplate, confirmUrl, confirmUrl)
       }, function (err) {
