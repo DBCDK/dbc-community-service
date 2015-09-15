@@ -21,6 +21,10 @@ app.use('/status-page', function(req, res, next) { // eslint-disable-line no-unu
   res.send('status');
 });
 
+app.use('/email_confirm', function(req, res) {
+  res.send('{}');
+});
+
 // Bootstrap the application, configure models, datasources and middleware.
 // Sub-apps like REST API are mounted via boot scripts.
 boot(app, __dirname, function(err) {
