@@ -43,5 +43,6 @@
     "url": ""
   },
   "description": "profileservice",
-  "license": "GNU Affero GPL v3"
+  "author": "dbcdk",
+  "license": "GPL-3.0"
 }
