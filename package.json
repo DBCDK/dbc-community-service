@@ -6,9 +6,11 @@
     "lint": "eslint ./common ./client ./server ./test config.js",
     "lint:checkstyle": "eslint ./common ./client ./server ./test -o report.xml -f checkstyle",
     "start": "node .",
+    "dev": "NODE_ENV=local node .",
     "test": "mocha --compilers js:babel/register test"
   },
   "dependencies": {
+    "@dbcdk/dbc-config": "^1.0.0",
     "babel": "^5.8.20",
     "body-parser": "^1.13.3",
     "compression": "^1.0.3",
