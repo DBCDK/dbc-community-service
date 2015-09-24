@@ -12,6 +12,7 @@ sudo -i -u postgres
 psql
 ```
 
+
 Now create a new database
 
 ```
