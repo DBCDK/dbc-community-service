@@ -4,5 +4,7 @@
  * @file Write a short description here.
  */
 
-module.exports = require('@dbcdk/dbc-config').profileservice || null;
+console.log('using development config');
+
+module.exports = require('@dbcdk/dbc-config').profileservice.development || null;
 
