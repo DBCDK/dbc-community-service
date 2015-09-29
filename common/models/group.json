@@ -1,0 +1,33 @@
+{
+  "name": "Group",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "timeCreated": {
+      "type": "date",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "posts": {
+      "type": "hasMany",
+      "model": "Post",
+      "foreignKey": "postid"
+    },
+    "owner": {
+      "type": "hasOne",
+      "model": "Profile",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": []
+}

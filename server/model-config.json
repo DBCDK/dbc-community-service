@@ -43,5 +43,17 @@
   "Like": {
     "dataSource": "psqlDs",
     "public": true
+  },
+  "Group": {
+    "dataSource": "psqlDs",
+    "public": true
+  },
+  "Post": {
+    "dataSource": "psqlDs",
+    "public": true
+  },
+  "Comment": {
+    "dataSource": "psqlDs",
+    "public": true
   }
 }
