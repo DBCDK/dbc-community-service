@@ -17,19 +17,14 @@
   },
   "validations": [],
   "relations": {
-    "owner": {
-      "type": "hasOne",
-      "model": "Profile",
-      "foreignKey": ""
-    },
-    "members": {
-      "type": "hasMany",
-      "model": "Profile",
-      "foreignKey": ""
-    },
     "posts": {
       "type": "hasMany",
       "model": "Post",
+      "foreignKey": "postid"
+    },
+    "owner": {
+      "type": "hasOne",
+      "model": "Profile",
       "foreignKey": ""
     }
   },

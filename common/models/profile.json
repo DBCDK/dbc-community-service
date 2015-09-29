@@ -23,6 +23,21 @@
       "type": "hasMany",
       "model": "Like",
       "foreignKey": ""
+    },
+    "groups": {
+      "type": "hasAndBelongsToMany",
+      "model": "Group",
+      "foreignKey": "groupid"
+    },
+    "posts": {
+      "type": "hasMany",
+      "model": "Post",
+      "foreignKey": "postid"
+    },
+    "comments": {
+      "type": "hasAndBelongsToMany",
+      "model": "Comment",
+      "foreignKey": "commentid"
     }
   },
   "acls": [

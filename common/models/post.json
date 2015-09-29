@@ -24,12 +24,7 @@
     "comments": {
       "type": "hasMany",
       "model": "Comment",
-      "foreignKey": ""
-    },
-    "owner": {
-      "type": "hasOne",
-      "model": "Profile",
-      "foreignKey": ""
+      "foreignKey": "commentid"
     }
   },
   "acls": [],
