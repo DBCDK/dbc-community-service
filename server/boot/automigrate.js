@@ -8,7 +8,7 @@ let app = require(path.resolve(__dirname, '../server'));
 module.exports = function automigrate(model, cb) {
 
   let ds = app.dataSources.PsqlDs;
-  const appModels = ['Profile', 'Like'];
+  const appModels = ['Profile', 'Like', 'Group', 'Post', 'Comment'];
 
   ds.isActual(appModels, function(err, actual) {
     if (!actual) {

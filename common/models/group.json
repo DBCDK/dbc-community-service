@@ -13,6 +13,10 @@
     "timeCreated": {
       "type": "date",
       "required": true
+    },
+    "owner": {
+      "type": "number",
+      "required": true
     }
   },
   "validations": [],
@@ -21,13 +25,15 @@
       "type": "hasMany",
       "model": "Post",
       "foreignKey": "postid"
-    },
-    "owner": {
-      "type": "hasOne",
-      "model": "Profile",
-      "foreignKey": ""
     }
   },
-  "acls": [],
+  "acls": [
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    }
+  ],
   "methods": []
 }
