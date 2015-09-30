@@ -26,6 +26,11 @@
       "type": "hasOne",
       "model": "Profile",
       "foreignKey": ""
+    },
+    "members": {
+      "type": "hasAndBelongsToMany",
+      "model": "Profile",
+      "foreignKey": "profileid"
     }
   },
   "acls": [],
