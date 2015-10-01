@@ -27,12 +27,22 @@
     "groups": {
       "type": "hasAndBelongsToMany",
       "model": "Group",
-      "foreignKey": "groupid"
+      "foreignKey": ""
     },
     "posts": {
       "type": "hasMany",
       "model": "Post",
       "foreignKey": "postid"
+    },
+    "comments": {
+      "type": "hasAndBelongsToMany",
+      "model": "Comment",
+      "foreignKey": ""
+    },
+    "ownedGroups": {
+      "type": "hasAndBelongsToMany",
+      "model": "Profile",
+      "foreignKey": ""
     }
   },
   "acls": [
