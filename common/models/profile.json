@@ -33,11 +33,6 @@
       "type": "hasMany",
       "model": "Post",
       "foreignKey": "postid"
-    },
-    "comments": {
-      "type": "hasAndBelongsToMany",
-      "model": "Comment",
-      "foreignKey": "commentid"
     }
   },
   "acls": [

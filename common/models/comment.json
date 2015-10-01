@@ -18,9 +18,9 @@
   "validations": [],
   "relations": {
     "owner": {
-      "type": "hasOne",
+      "type": "belongsTo",
       "model": "Profile",
-      "foreignKey": ""
+      "foreignKey": "commentownerid"
     }
   },
   "acls": [],
