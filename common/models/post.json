@@ -25,6 +25,11 @@
       "type": "hasMany",
       "model": "Comment",
       "foreignKey": "postid"
+    },
+    "owner": {
+      "type": "belongsTo",
+      "model": "Profile",
+      "foreignKey": "postownerid"
     }
   },
   "acls": [],
