@@ -23,9 +23,9 @@
       "foreignKey": "postid"
     },
     "owner": {
-      "type": "hasOne",
+      "type": "belongsTo",
       "model": "Profile",
-      "foreignKey": ""
+      "foreignKey": "groupownerid"
     },
     "members": {
       "type": "hasAndBelongsToMany",
