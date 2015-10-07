@@ -24,7 +24,7 @@
     "posts": {
       "type": "hasMany",
       "model": "Post",
-      "foreignKey": ""
+      "foreignKey": "groupid"
     },
     "owner": {
       "type": "belongsTo",
