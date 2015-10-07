@@ -10,6 +10,10 @@
       "type": "string",
       "required": true
     },
+    "description": {
+      "type": "string",
+      "required": true
+    },
     "timeCreated": {
       "type": "date",
       "required": true
