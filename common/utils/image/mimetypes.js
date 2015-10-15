@@ -1,0 +1,55 @@
+'use strict';
+
+/**
+ * @file Mapping from accepted image MIME type to file suffix
+ */
+
+
+module.exports = {
+  'image/x-jg': '.art',
+  'image/bmp': '.bmp',
+  'image/x-windows-bmp': '.bmp',
+  'image/vnd.dwg': '.dxf',
+  'image/x-dwg': '.dxf',
+  'image/fif': '.fif',
+  'image/florian': '.flo',
+  'image/vnd.fpx': '.fpx',
+  'image/vnd.net-fpx': '.fpx',
+  'image/g3fax': '.g3',
+  'image/x-icon': '.ico',
+  'image/ief': '.ief',
+  'image/gif': '.gif',
+  'image/jpeg': '.jpg',
+  'image/pjpeg': '.jpg',
+  'image/x-jps': '.jps',
+  'image/jutvision': '.jut',
+  'image/vasa': '.mcf',
+  'image/naplps': '.nap',
+  'image/x-niff': '.niff',
+  'image/x-portable-bitmap': '.pbm',
+  'image/x-pict': '.pct',
+  'image/x-pcx': '.pcx',
+  'image/x-portable-graymap': '.pgm',
+  'image/x-portable-greymap': '.pgm',
+  'image/pict': '.pic',
+  'image/png': '.png',
+  'image/x-portable-anymap': '.pnm',
+  'image/x-portable-pixmap': '.ppm',
+  'image/x-quicktime': '.qtif',
+  'image/x-cmu-raster': '.ras',
+  'image/cmu-raster': '.rast',
+  'image/vnd.rn-realflash': '.rf',
+  'image/x-rgb': '.rgb',
+  'image/vnd.rn-realpix': '.rp',
+  'image/tiff': '.tiff',
+  'image/x-tiff': '.tiff',
+  'image/vnd.wap.wbmp': '.wbmp',
+  'image/x-xbitmap': '.xbm',
+  'image/x-xbm': '.xbm',
+  'image/xbm': '.xbm',
+  'image/vnd.xiff': '.xif',
+  'image/x-xpixmap': '.xpm',
+  'image/xpm': '.xpm',
+  'image/x-xwd': '.xwd',
+  'image/x-xwindowdump': '.xwd'
+};
