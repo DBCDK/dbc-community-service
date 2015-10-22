@@ -13,7 +13,7 @@ app.start = function() {
   // start the web server
   return app.listen(function() {
     app.emit('started');
-    console.log('Web server listening at: %s', app.get('url')); // eslint-disable-line no-console
+    console.log('Web server listening at : %s', app.get('url')); // eslint-disable-line no-console
   });
 };
 
