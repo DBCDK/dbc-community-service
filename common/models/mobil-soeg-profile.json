@@ -1,26 +1,29 @@
 {
-  "name": "Comment",
+  "name": "MobilSoegProfile",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "content": {
+    "agencyid": {
       "type": "string",
       "required": true
     },
-    "timeCreated": {
-      "type": "date",
+    "loanerid": {
+      "type": "string",
       "required": true
+    },
+    "pickup_agency": {
+      "type": "string"
     }
   },
   "validations": [],
   "relations": {
-    "owner": {
-      "type": "belongsTo",
-      "model": "Profile",
-      "foreignKey": "commentownerid"
+    "likes": {
+      "type": "hasMany",
+      "model": "Like",
+      "foreignKey": ""
     }
   },
   "acls": [],
