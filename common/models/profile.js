@@ -5,34 +5,33 @@ import crypto from 'crypto';
 import config from '../../config'; // eslint-disable-line no-unused-vars
 import winston from 'winston';
 
+module.exports = function(Profile) {
 
-module.exports = function (Profile) {
-
-  Profile.observe('before save', function (ctx, next) {
-    if (ctx.isNewInstance) {
+  Profile.observe('before save', (context, next) => {
+    if (context.isNewInstance) {
       // create verification token
       crypto.randomBytes(64, (err, buf) => {
-        ctx.instance.verificationToken = buf && buf.toString('hex');
+        context.instance.verificationToken = buf && buf.toString('hex');
       });
       winston.info('created verification token');
     }
     next();
   });
 
-  Profile.observe('after save', function (ctx, next) {
+  Profile.observe('after save', (context, next) => {
     // was a new profile created?
-    if (ctx.isNewInstance) {
+    if (context.isNewInstance) {
       winston.info('created new profile');
-      winston.info('ctx.instance: ', ctx.instance);
+      winston.info('ctx.instance: ', context.instance);
       // create confirmation email content
-      let baseUrl = ctx.instance.basePath;
-      let Email = Profile.app.models.Email;
-      let profileInstance = ctx.instance;
-      let token = ctx.instance.verificationToken;
-      let uid = ctx.instance.id;
-      let redirectUrl = '/profile/login';
-      let confirmUrl = util.format('http://%s/profile/confirm?uid=%s&token=%s&redirect=%s', baseUrl, uid, token, redirectUrl);
-      let emailTemplate = '<p>Klik på linket for at bekræfte din nye brugerprofil:</p><a href=%s> %s </a>';
+      const baseUrl = context.instance.basePath;
+      const Email = Profile.app.models.Email;
+      const profileInstance = context.instance;
+      const token = context.instance.verificationToken;
+      const uid = context.instance.id;
+      const redirectUrl = '/profile/login';
+      const confirmUrl = util.format('http://%s/profile/confirm?uid=%s&token=%s&redirect=%s', baseUrl, uid, token, redirectUrl);
+      const emailTemplate = '<p>Klik på linket for at bekræfte din nye brugerprofil:</p><a href=%s> %s </a>';
 
       // send email
       Email.send({
@@ -40,7 +39,7 @@ module.exports = function (Profile) {
         from: 'noreply@dbc.dk',
         subject: 'Bekræft ny brugerprofil',
         html: util.format(emailTemplate, confirmUrl, confirmUrl)
-      }, function (err) {
+      }, (err) => {
         if (err) {
           throw err;
         }

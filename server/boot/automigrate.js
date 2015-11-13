@@ -1,19 +1,16 @@
 'use strict';
 
-
-let path = require('path');
-let app = require(path.resolve(__dirname, '../server'));
-
+import app from '../server';
 
 module.exports = function automigrate(model, cb) {
 
   let ds = app.dataSources.PsqlDs;
-  const appModels = ['Profile', 'Like', 'Group', 'Comment', 'Post', 'GroupProfile'];
+  const appModels = ['Profile', 'MobilSoegProfile', 'Like', 'Group', 'Comment', 'Post', 'GroupProfile'];
 
-  ds.isActual(appModels, function(err, actual) {
+  ds.isActual(appModels, (err, actual) => {
     if (!actual) {
       console.log('No tables for models - creating new tables'); // eslint-disable-line no-console
-      ds.autoupdate(appModels, function(error) {
+      ds.autoupdate(appModels, (error) => {
         if (error) {
           throw (error);
         }

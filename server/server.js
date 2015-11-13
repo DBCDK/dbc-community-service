@@ -1,39 +1,37 @@
 'use strict';
 
-var loopback = require('loopback');
-require('babel/register');
-var boot = require('loopback-boot');
+import loopback from 'loopback';
+import boot from 'loopback-boot';
 
-var app = module.exports = loopback();
+const app = loopback();
+export default app;
 
-var bodyParser = require('body-parser');
+import bodyParser from 'body-parser';
+
 app.use(bodyParser.json({limit: '50mb'}));
 
-app.start = function() {
+app.start = () => {
   // start the web server
-  return app.listen(function() {
+  return app.listen(() => {
     app.emit('started');
     console.log('Web server listening at : %s', app.get('url')); // eslint-disable-line no-console
   });
 };
 
-app.use('/status-page', function(req, res, next) { // eslint-disable-line no-unused-vars
+app.use('/status-page', (req, res, next) => { // eslint-disable-line no-unused-vars
   res.send('status');
 });
 
-app.use('/email_confirm', function(req, res) {
+app.use('/email_confirm', (req, res) => {
   res.send('{}');
 });
 
 // Bootstrap the application, configure models, datasources and middleware.
 // Sub-apps like REST API are mounted via boot scripts.
-boot(app, __dirname, function(err) {
+boot(app, __dirname, (err) => {
   if (err) {
     throw err;
   }
 
-  // start the server if `$ node server.js`
-  if (require.main === module) {
-    app.start();
-  }
+  app.start();
 });

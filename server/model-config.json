@@ -55,5 +55,9 @@
   "Comment": {
     "dataSource": "psqlDs",
     "public": true
+  },
+  "MobilSoegProfile": {
+    "dataSource": "psqlDs",
+    "public": true
   }
 }
