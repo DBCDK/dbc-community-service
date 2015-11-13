@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
-    "lint": "eslint ./common ./client ./server ./test config.js",
+    "lint": "eslint ./common ./client ./server config.js",
     "lint:checkstyle": "eslint ./common ./client ./server ./test -o report.xml -f checkstyle",
     "start": "node .",
     "dev": "NODE_ENV=local supervisor --instant-kill -w client,common,server main.js",
-    "test": "mocha --compilers js:babel-core/register test"
+    "test": "mocha --compilers js:babel-core/register --recursive common"
   },
   "dependencies": {
     "@dbcdk/dbc-config": "^1.6.0",
@@ -34,12 +34,12 @@
   },
   "devDependencies": {
     "babel-eslint": "^4.0.5",
-    "chai": "^3.2.0",
+    "chai": "^3.4.1",
     "eslint": "^1.0.0",
     "eslint-loader": "^1.0.0",
     "mocha": "^2.2.4",
     "mocha-jenkins-reporter": "^0.1.9",
-    "wallaby-webpack": "0.0.5"
+    "sinon": "^1.17.2"
   },
   "repository": {
     "type": "",

@@ -1,5 +1,11 @@
 'use strict';
 
+/**
+ * @file
+ *
+ * Implements the MobilSoegProfile model
+ */
+
 import bcrypt from 'bcryptjs';
 import Config from '@dbcdk/dbc-config';
 
@@ -34,21 +40,30 @@ module.exports = function(MobilSoegProfile) {
   };
 
   /**
-   * Implementation of the 'before save' hook
-   * If the instance is a new instance the provided loanerid will be hashed
-   * through the above hashLoanerid method.
+   * Implementation of the 'before save' hook.
+   * The ctx (context) parameter is passed to the newInstanceCheck metod where
+   * lonerid might be hashed.
    *
-   * @see MobilSoegProfile.hashLoanerid
+   * @see MobilSoegProfile.newInstanceCheck
    * @see https://docs.strongloop.com/display/public/LB/Operation+hooks
    */
   MobilSoegProfile.observe('before save', (ctx, next) => {
-    if (ctx.instance) {
-      if (ctx.isNewInstance) {
-        ctx.instance.loanerid = MobilSoegProfile.hashLoanerid(ctx.instance.loanerid);
-      }
-    }
+    MobilSoegProfile.newInstanceCheck(ctx);
     next();
   });
+
+  /**
+   * If the instance is a new instance the provided loanerid will be hashed
+   * through the above hashLoanerid method.
+   *
+   * @param {Object} ctx Loopback context object
+   * @see MobilSoegProfile.hashLoanerid
+   */
+  MobilSoegProfile.newInstanceCheck = (ctx) => {
+    if (ctx.instance && ctx.isNewInstance) {
+      ctx.instance.loanerid = MobilSoegProfile.hashLoanerid(ctx.instance.loanerid);
+    }
+  };
 
   /**
    * Static method that defines a remoteMethod named findMobilSoegProfile.
@@ -112,4 +127,6 @@ module.exports = function(MobilSoegProfile) {
       }
     });
   };
+
+  return MobilSoegProfile;
 };
