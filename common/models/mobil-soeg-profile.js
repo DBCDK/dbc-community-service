@@ -91,7 +91,7 @@ module.exports = function(MobilSoegProfile) {
           required: true
         }
       ],
-      description: 'Find a Mobil Søg user profile by providing the users agencyid and loanerid.',
+      description: 'Find a Mobil Søg user profile by providing the users agencyid and loanerid. </br> If no match is found a new user will be created and returned.',
       notes: 'If the user have any likes or dislikes they will be returned along the rest of the userdata',
       http: {
         verb: 'get',
@@ -105,25 +105,43 @@ module.exports = function(MobilSoegProfile) {
   );
 
   /**
-   * Retreives a loaners profile including likes.
-   * This is is custom defined method (remoteMethod)
+   * Creates a new Mobil Søg profile
    *
-   * @param {string} agencyid
-   * @param {string} loanerid
-   * @param {Function} cb
-   * @see https://docs.strongloop.com/display/public/LB/Remote+methods
+   * @param {String} agencyid
+   * @param {String} loanerid
+   * @param {Function} cb Callback
    */
-  MobilSoegProfile.findMobilSoegProfile = (agencyid, loanerid, cb) => {
-    // Hash the loanerid
-    loanerid = MobilSoegProfile.hashLoanerid(loanerid);
-
-    // Retreive the data and return a response appropriately
-    MobilSoegProfile.findOne({where: {agencyid: agencyid, loanerid: loanerid}, include: 'likes'}, (err, instance) => {
+  MobilSoegProfile.createNewMobilSoegProfile = (agencyid, loanerid, cb) => {
+    MobilSoegProfile.create({agencyid: agencyid, loanerid: loanerid, pickup_agency: null}, (err, instance) => {
       if (instance) {
         cb(null, instance);
       }
       else {
-        cb({status: 404, message: 'The user could not be found'});
+        cb({status: 404, message: 'The user could not be found and the service failed to create a new profile'});
+      }
+    });
+  };
+
+  /**
+   * Retreives a loaners profile including likes.
+   * This is a custom defined method (remoteMethod)
+   *
+   * @param {string} agencyid
+   * @param {string} loanerid
+   * @param {Function} cb Callback
+   * @see https://docs.strongloop.com/display/public/LB/Remote+methods
+   */
+  MobilSoegProfile.findMobilSoegProfile = (agencyid, loanerid, cb) => {
+    // Hash the loanerid
+    const hashedLoanerid = MobilSoegProfile.hashLoanerid(loanerid);
+
+    // Retreive the data and return a response appropriately
+    MobilSoegProfile.findOne({where: {agencyid: agencyid, loanerid: hashedLoanerid}, include: 'likes'}, (err, instance) => {
+      if (instance) {
+        cb(null, instance);
+      }
+      else {
+        MobilSoegProfile.createNewMobilSoegProfile(agencyid, loanerid, cb);
       }
     });
   };

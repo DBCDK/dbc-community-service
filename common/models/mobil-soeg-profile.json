@@ -19,6 +19,7 @@
     }
   },
   "validations": [],
+  "hidden": ["loanerid"],
   "relations": {
     "likes": {
       "type": "hasMany",
