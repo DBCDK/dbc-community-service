@@ -38,7 +38,7 @@ module.exports = function(MobilSoegProfile) {
     }
     let err = new Error('Invalid loanerid: ' + plain);
     err.statusCode = 422;
-    logger.notice('An invalid loanerid was given. No profile was created.', {error: err});
+    logger.notice('An invalid loanerid was given. No profile was created.', {error: err, loanerid: plain});
     throw err;
   };
 
