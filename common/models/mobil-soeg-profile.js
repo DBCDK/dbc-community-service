@@ -9,6 +9,8 @@
 import bcrypt from 'bcryptjs';
 import Config from '@dbcdk/dbc-config';
 
+import * as logger from 'dbc-node-logger';
+
 module.exports = function(MobilSoegProfile) {
   MobilSoegProfile.validatesUniquenessOf('loanerid', {scopedTo: ['agencyid'], message: 'loanerid is already registered with agencyid'});
 
@@ -36,6 +38,7 @@ module.exports = function(MobilSoegProfile) {
     }
     let err = new Error('Invalid loanerid: ' + plain);
     err.statusCode = 422;
+    logger.notice('An invalid loanerid was given. No profile was created.', {error: err});
     throw err;
   };
 
@@ -114,10 +117,13 @@ module.exports = function(MobilSoegProfile) {
   MobilSoegProfile.createNewMobilSoegProfile = (agencyid, loanerid, cb) => {
     MobilSoegProfile.create({agencyid: agencyid, loanerid: loanerid, pickup_agency: null}, (err, instance) => {
       if (instance) {
+        logger.info('A new MobilSøg profile was created', {instance: instance});
         cb(null, instance);
       }
       else {
-        cb({status: 404, message: 'The user could not be found and the service failed to create a new profile'});
+        const msg = 'The user could not be found and the service failed to create a new profile';
+        logger.error(msg, {instance: instance});
+        cb({status: 404, message: msg});
       }
     });
   };
@@ -138,9 +144,11 @@ module.exports = function(MobilSoegProfile) {
     // Retreive the data and return a response appropriately
     MobilSoegProfile.findOne({where: {agencyid: agencyid, loanerid: hashedLoanerid}, include: 'likes'}, (err, instance) => {
       if (instance) {
+        logger.info('Found an existing user', {instance: instance});
         cb(null, instance);
       }
       else {
+        logger.info('No existing user was found. Attempting to create a new one', {agencyid: agencyid, loanerid: loanerid});
         MobilSoegProfile.createNewMobilSoegProfile(agencyid, loanerid, cb);
       }
     });
