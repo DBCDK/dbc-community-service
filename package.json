@@ -6,7 +6,7 @@
     "lint": "eslint ./common ./client ./server config.js",
     "lint:checkstyle": "eslint ./common ./client ./server ./test -o report.xml -f checkstyle",
     "start": "node .",
-    "dev": "NODE_ENV=local supervisor --instant-kill -w client,common,server main.js",
+    "dev": "NODE_ENV=local supervisor --instant-kill -w client,common,server,node_modules main.js",
     "test": "mocha --compilers js:babel-core/register --recursive common"
   },
   "dependencies": {
@@ -18,7 +18,7 @@
     "body-parser": "^1.13.3",
     "compression": "^1.0.3",
     "cors": "^2.5.2",
-    "dbc-node-logger": "^1.4.1",
+    "dbc-node-logger": "^1.4.6",
     "errorhandler": "^1.1.1",
     "lodash": "^3.9.3",
     "loopback": "^2.14.0",
