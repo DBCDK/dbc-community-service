@@ -6,9 +6,9 @@
   "psqlDs": {
     "host": "127.0.0.1",
     "port": 5432,
-    "database": "profile",
-    "username": "loopback",
-    "password": "l00pback",
+    "database": "dbc_community",
+    "username": "communitydb",
+    "password": "loobbackcommunity",
     "name": "psqlDs",
     "connector": "postgresql"
   },

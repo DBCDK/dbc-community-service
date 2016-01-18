@@ -1,12 +1,12 @@
-# dbc-profileservice
+# dbc-community-service
 
-[![David](https://img.shields.io/david/DBCDK/dbc-profileservice.svg?style=flat-square)](https://david-dm.org/DBCDK/dbc-profileservice#info=dependencies)
-[![David](https://img.shields.io/david/dev/DBCDK/dbc-profileservice.svg?style=flat-square)](https://david-dm.org/DBCDK/dbc-profileservice#info=devDependencies)
+[![David](https://img.shields.io/david/DBCDK/dbc-community-service.svg?style=flat-square)](https://david-dm.org/DBCDK/dbc-community-service#info=dependencies)
+[![David](https://img.shields.io/david/dev/DBCDK/dbc-community-service.svg?style=flat-square)](https://david-dm.org/DBCDK/dbc-community-service#info=devDependencies)
 
-DBC profile web service
+DBC community web service
 
 ## Logging
-The dbc-profileservice implements the [dbc-node-logger](https://github.com/DBCDK/dbc-node-logger) which makes it possible to log to Kafka among others.
+The dbc-community-service implements the [dbc-node-logger](https://github.com/DBCDK/dbc-node-logger) which makes it possible to log to Kafka among others.
 To enure your logs will be transported to Kafka the following environment variables should be set:
 
 - __KAFKA_TOPIC__
@@ -31,12 +31,12 @@ psql
 Now create a new database
 
 ```PLpgSQL
-CREATE DATABASE profile;
+CREATE DATABASE dbc_community;
 ```
 
-Create a new user with name=loopback and password=somerandompassword
+Create a new user with name=communitydb and password=loobbackcommunity
 
 ```PLpgSQL
-CREATE USER loopback WITH PASSWORD 'somerandompassword';
-GRANT ALL PRIVILEGES ON DATABASE ‘profile’ TO loopback;
+CREATE USER communitydb WITH PASSWORD 'loobbackcommunity';
+GRANT ALL PRIVILEGES ON DATABASE ‘dbc_community’ TO communitydb;
 ```
