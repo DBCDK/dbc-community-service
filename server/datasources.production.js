@@ -5,4 +5,4 @@
  */
 
 
-module.exports = require('@dbcdk/dbc-config').profileservice.production || null;
+module.exports = require('@dbcdk/biblo-config').communityservice.production || null;
