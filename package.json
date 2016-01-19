@@ -30,7 +30,7 @@
     "supertest": "^1.1.0"
   },
   "optionalDependencies": {
-    "@dbcdk/dbc-config": "^3.6.0",
+    "@dbcdk/biblo-config": "^1.1.0",
     "loopback-explorer": "^1.1.0"
   },
   "devDependencies": {

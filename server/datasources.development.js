@@ -39,7 +39,7 @@ if (process.env.USE_DEFAULT_CONFIG) { // eslint-disable-line
   };
 }
 else {
-  conf = require('@dbcdk/dbc-config').profileservice.development;
+  conf = require('@dbcdk/biblo-config').communityservice.development;
 }
 
 module.exports = conf;
