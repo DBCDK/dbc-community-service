@@ -4,8 +4,6 @@
  * @file Write a short description here.
  */
 
-import path from 'path';
-
 let conf;
 
 if (process.env.USE_DEFAULT_CONFIG) { // eslint-disable-line
@@ -28,12 +26,12 @@ if (process.env.USE_DEFAULT_CONFIG) { // eslint-disable-line
       connector: 'mail',
       transports: [
         {
-          'type': 'smtp',
-          'host': 'mailhost.example.com',
-          'secure': false,
-          'port': 25,
-          'tls': {
-            'rejectUnauthorized': false
+          type: 'smtp',
+          host: 'mailhost.example.com',
+          secure: false,
+          port: 25,
+          tls: {
+            rejectUnauthorized: false
           }
         }
       ]
