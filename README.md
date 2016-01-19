@@ -40,3 +40,8 @@ Create a new user with name=communitydb and password=loobbackcommunity
 CREATE USER communitydb WITH PASSWORD 'loobbackcommunity';
 GRANT ALL PRIVILEGES ON DATABASE ‘dbc_community’ TO communitydb;
 ```
+
+## Environment variables
+
+- __USE_DEFAULT_CONFIG__
+This environment variable ensures the config specified in datasources.development.js. This is only supported in development mode.
