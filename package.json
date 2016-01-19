@@ -7,10 +7,10 @@
     "lint:checkstyle": "eslint ./common ./client ./server ./test -o report.xml -f checkstyle",
     "start": "node .",
     "dev": "NODE_ENV=local supervisor --instant-kill -w client,common,server,node_modules main.js",
+    "dev:noconf": "USE_DEFAULT_CONFIG=true NODE_ENV=local supervisor --instant-kill -w client,common,server,node_modules main.js",
     "test": "mocha --compilers js:babel-core/register --recursive common"
   },
   "dependencies": {
-    "@dbcdk/dbc-config": "^1.6.0",
     "babel": "^6.3.26",
     "babel-core": "^6.4.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.4.0",
@@ -30,6 +30,7 @@
     "supertest": "^1.1.0"
   },
   "optionalDependencies": {
+    "@dbcdk/dbc-config": "^3.6.0",
     "loopback-explorer": "^1.1.0"
   },
   "devDependencies": {

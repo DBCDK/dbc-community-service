@@ -18,7 +18,7 @@
     "transports": [
       {
         "type": "smtp",
-        "host": "mailhost.dbc.dk",
+        "host": "mailhost.example.com",
         "secure": false,
         "port": 25,
         "tls": {
