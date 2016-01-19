@@ -4,8 +4,6 @@
  * @file Write a short description here.
  */
 
-import path from 'path';
-
 let conf;
 
 if (process.env.USE_DEFAULT_CONFIG) { // eslint-disable-line
