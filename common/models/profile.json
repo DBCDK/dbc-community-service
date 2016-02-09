@@ -43,6 +43,11 @@
       "type": "hasAndBelongsToMany",
       "model": "Profile",
       "foreignKey": ""
+    },
+    "communityRoles": {
+      "type": "hasAndBelongsToMany",
+      "model": "CommunityRole",
+      "foreignKey": ""
     }
   },
   "acls": [
@@ -60,5 +65,5 @@
       "permission": "ALLOW"
     }
   ],
-  "methods": {}
+  "methods": []
 }

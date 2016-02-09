@@ -55,5 +55,9 @@
   "Comment": {
     "dataSource": "psqlDs",
     "public": true
+  },
+  "CommunityRole": {
+    "dataSource": "psqlDs",
+    "public": true
   }
 }
