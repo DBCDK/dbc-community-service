@@ -1,0 +1,25 @@
+{
+  "name": "videoCollection",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+
+  },
+  "validations": [],
+  "relations": {
+    "original": {
+      "type": "hasOne",
+      "model": "videoContainer",
+      "foreignKey": "original_videocontainerid"
+    },
+    "resolutions": {
+      "type": "hasMany",
+      "model": "videoContainer"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

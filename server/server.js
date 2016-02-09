@@ -11,6 +11,46 @@ export default app;
 
 import bodyParser from 'body-parser';
 
+let amazonConfig;
+
+if (process.env.AMAZON_S3_KEY && process.env.AMAZON_S3_KEYID) {
+  amazonConfig = {
+    key: process.env.AMAZON_S3_KEY,
+    keyId: process.env.AMAZON_S3_KEYID
+  };
+}
+else if (require('@dbcdk/biblo-config').communityservice.amazon) {
+  amazonConfig = require('@dbcdk/biblo-config').communityservice.amazon;
+}
+else {
+  amazonConfig = {
+    key: '',
+    keyId: ''
+  };
+}
+
+// Create imageFile model, and point it to amazon.
+let ds = loopback.createDataSource({
+  connector: require('loopback-component-storage'),
+  provider: 'amazon',
+  key: amazonConfig.key,
+  keyId: amazonConfig.keyId
+});
+
+let imageContainer = ds.createModel('imageContainer');
+let videoContainer = ds.createModel(
+  'videoContainer',
+  {
+    resolution: 'string'
+  },
+  {
+    relations: {}
+  }
+);
+
+app.model(imageContainer);
+app.model(videoContainer);
+
 app.use(bodyParser.json({limit: '50mb'}));
 
 app.start = () => {
