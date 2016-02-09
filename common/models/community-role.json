@@ -1,16 +1,12 @@
 {
-  "name": "Like",
+  "name": "CommunityRole",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "item_id": {
-      "type": "string",
-      "required": true
-    },
-    "value": {
+    "name": {
       "type": "string",
       "required": true
     }
