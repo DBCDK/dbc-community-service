@@ -18,9 +18,9 @@ module.exports = function (Profile) {
       logger.info('created new profile', {instance: ctx.instance});
 
       Profile.app.models.CommunityRole.findById(1, (err, instance) => {
-        ctx.instance.communityRoles.add(instance, (err) => {
-          if (err !== null) {
-            logger.info('could not assign role:', err);
+        ctx.instance.communityRoles.add(instance, (errInner) => {
+          if (errInner !== null) {
+            logger.info('could not assign role:', errInner);
           }
         });
       });

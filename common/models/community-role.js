@@ -1,3 +1,5 @@
-module.exports = function(CommunityRole) {
+'use strict';
+
+module.exports = function(CommunityRole) { // eslint-disable-line no-unused-vars
 
 };
