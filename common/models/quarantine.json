@@ -1,0 +1,25 @@
+{
+  "name": "Quarantine",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "reason": {
+      "type": "string"
+    },
+    "duration": {
+      "type": "number",
+      "required": true
+    },
+    "start": {
+      "type": "date",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": []
+}
