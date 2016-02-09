@@ -7,7 +7,7 @@ module.exports = function (Profile) {
   Profile.observe('before save', (ctx, next) => {
     if (ctx.isNewInstance) {
       // set model properties
-      //ctx.instance.email = 'bla';
+      // ctx.instance.email = 'bla';
     }
     next();
   });
@@ -21,8 +21,6 @@ module.exports = function (Profile) {
   });
 
   Profile.observe('loaded', (ctx, next) => {
-    console.log('loaded');
-
     next();
   });
 };
