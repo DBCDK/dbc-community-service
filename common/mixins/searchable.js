@@ -18,9 +18,8 @@ module.exports = function(Model, options) {
   const doctype = options.documentType;
   const propNames = options.enabledProperties;
 
-  Model.observe('after save', function event(ctx, next) { //Observe any insert/update event on Model
+  Model.observe('after save', function event(ctx, next) { // Observe any insert/update event on Model
     if (ctx.instance) {
-      console.log('searchable');
 
       // extract indexable properties from model instance
       let document = {};
@@ -39,10 +38,10 @@ module.exports = function(Model, options) {
 
       // index document
       elasticClient.index(params).then(() => {
-        console.log('indexed', document);
-      }, (err) => {
-        console.log(err);
-      })
+        // successfully indexed
+      }, (err) => { // eslint-disable-line no-unused-vars
+        // something went wrong somewhere...
+      });
     }
     next();
   });
