@@ -5,8 +5,8 @@ import crypto from 'crypto';
 
 let uniloginSecret;
 
-if (process.env.UNILOGINSECRET) { // eslint-disable-line no-process-env
-  uniloginSecret = process.env.UNILOGINSECRET; // eslint-disable-line no-process-env
+if (process.env.UNILOGINSECRET) {
+  uniloginSecret = process.env.UNILOGINSECRET;
 }
 else {
   uniloginSecret = require('@dbcdk/biblo-config').biblo.getConfig().unilogin.secret;
