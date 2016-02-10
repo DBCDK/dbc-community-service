@@ -16,7 +16,8 @@
     "email": "string",
     "phone": "string",
     "created": "date",
-    "lastUpdated": "date"
+    "lastUpdated": "date",
+    "hasFilledInProfile": "boolean"
   },
   "validations": [],
   "relations": {
@@ -66,10 +67,10 @@
   },
   "acls": [
     {
-      "accessType": "EXECUTE",
       "principalType": "ROLE",
       "principalId": "$everyone",
-      "permission": "DENY"
+      "permission": "ALLOW",
+      "property": "find"
     },
     {
       "principalType": "ROLE",
@@ -97,27 +98,6 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": "logout"
-    },
-    {
-      "accessType": "EXECUTE",
-      "principalType": "ROLE",
-      "principalId": "$owner",
-      "permission": "ALLOW",
-      "property": "deleteById"
-    },
-    {
-      "accessType": "EXECUTE",
-      "principalType": "ROLE",
-      "principalId": "$owner",
-      "permission": "ALLOW",
-      "property": "findById"
-    },
-    {
-      "accessType": "EXECUTE",
-      "principalType": "ROLE",
-      "principalId": "$owner",
-      "permission": "ALLOW",
-      "property": "updateAttributes"
     },
     {
       "accessType": "*",
