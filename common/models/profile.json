@@ -8,10 +8,18 @@
   "properties": {
     "username": {
       "type": "string",
-      "required": true
+      "required": true,
+      "index": {
+        "unique": true
+      }
+    },
+    "displayName": {
+      "type": "string",
+      "index": {
+        "unique": true
+      }
     },
     "favoriteLibrary": "object",
-    "fullName": "string",
     "description": "string",
     "email": "string",
     "phone": "string",
