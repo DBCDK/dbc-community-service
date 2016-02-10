@@ -6,30 +6,15 @@
     "validateUpsert": true
   },
   "properties": {
-    "favoriteLibrary": {
-      "type": "object",
-      "required": true
-    },
     "username": {
       "type": "string",
       "required": true
     },
-    "fullName": {
-      "type": "string",
-      "required": true
-    },
-    "description": {
-      "type": "string",
-      "required": false
-    },
-    "email": {
-      "type": "string",
-      "required": true
-    },
-    "phone": {
-      "type": "string",
-      "required": true
-    },
+    "favoriteLibrary": "object",
+    "fullName": "string",
+    "description": "string",
+    "email": "string",
+    "phone": "string",
     "created": "date",
     "lastUpdated": "date"
   },
