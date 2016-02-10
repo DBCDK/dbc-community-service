@@ -17,6 +17,16 @@
       ]
     }
   },
+  "mixins": {
+    "Searchable": {
+      "targetIndex": "user",
+      "documentType": "user",
+      "enabledProperties": [
+        "email",
+        "username"
+      ]
+    }
+  },
   "validations": [],
   "relations": {
     "likes": {
