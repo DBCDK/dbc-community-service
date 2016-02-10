@@ -56,6 +56,10 @@
     "dataSource": "psqlDs",
     "public": true
   },
+  "videoCollection": {
+    "dataSource": "psqlDs",
+    "public": true
+  },
   "CommunityRole": {
     "dataSource": "psqlDs",
     "public": true

@@ -45,3 +45,15 @@ GRANT ALL PRIVILEGES ON DATABASE ‘dbc_community’ TO communitydb;
 
 - __USE_DEFAULT_CONFIG__
 This environment variable ensures the config specified in datasources.development.js. This is only supported in development mode.
+
+- __APPLICATION_NAME__
+The name of the application
+
+- __AMAZON_S3_KEYID__
+Your amazon keyId, for access to S3.
+
+- __AMAZON_S3_KEY__
+Your amazon key, for access to S3.
+
+- __UNILOGINSECRET__
+Your unilogin secret, this must match whatever you use to authenticate.

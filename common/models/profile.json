@@ -1,21 +1,37 @@
 {
   "name": "Profile",
-  "base": "User",
+  "base": "PersistedModel",
   "idInjection": true,
   "options": {
-    "emailVerificationRequired": false,
     "validateUpsert": true
   },
   "properties": {
-    "imageUrl": {
-      "type": "string",
-      "length": 10485760
+    "favoriteLibrary": {
+      "type": "object",
+      "required": true
     },
-    "favoriteLibraries": {
-      "type": [
-        "object"
-      ]
-    }
+    "username": {
+      "type": "string",
+      "required": true
+    },
+    "fullName": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "string",
+      "required": false
+    },
+    "email": {
+      "type": "string",
+      "required": true
+    },
+    "phone": {
+      "type": "string",
+      "required": true
+    },
+    "created": "date",
+    "lastUpdated": "date"
   },
   "mixins": {
     "Searchable": {
@@ -54,6 +70,19 @@
       "model": "Profile",
       "foreignKey": ""
     },
+    "image": {
+      "type": "hasOne",
+      "model": "imageContainer",
+      "foreignKey": "imagecontainerid"
+    },
+    "accessTokens": {
+      "type": "hasMany",
+      "model": "AccessToken",
+      "foreignKey": "profileId",
+      "options": {
+        "disableInclude": true
+      }
+    },
     "communityRoles": {
       "type": "hasAndBelongsToMany",
       "model": "CommunityRole",
@@ -65,8 +94,55 @@
       "accessType": "EXECUTE",
       "principalType": "ROLE",
       "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "principalType": "ROLE",
+      "principalId": "$everyone",
       "permission": "ALLOW",
-      "property": "confirm"
+      "property": "create"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "unilogin"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "checkIfUserExists"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "logout"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW",
+      "property": "deleteById"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW",
+      "property": "findById"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$owner",
+      "permission": "ALLOW",
+      "property": "updateAttributes"
     },
     {
       "accessType": "*",
