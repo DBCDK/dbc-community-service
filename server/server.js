@@ -5,7 +5,7 @@ import boot from 'loopback-boot';
 import Logger from 'dbc-node-logger';
 
 const app = loopback();
-const APP_NAME = process.env.APPLICATION_NAME || 'app_name'; // eslint-disable-line no-process-env
+const APP_NAME = process.env.APPLICATION_NAME || 'app_name';
 const logger = new Logger({app_name: APP_NAME});
 export default app;
 
@@ -39,13 +39,12 @@ let ds = loopback.createDataSource({
 
 let imageContainer = ds.createModel('imageContainer');
 let videoContainer = ds.createModel(
-  'videoContainer',
-  {
-    resolution: 'string'
-  },
-  {
-    relations: {}
-  }
+    'videoContainer',
+    {
+      resolution: 'string'
+    }, {
+      relations: {}
+    }
 );
 
 app.model(imageContainer);

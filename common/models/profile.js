@@ -5,8 +5,8 @@ import crypto from 'crypto';
 
 let uniloginSecret;
 
-if (process.env.UNILOGINSECRET) {
-  uniloginSecret = process.env.UNILOGINSECRET;
+if (process.env.UNILOGINSECRET) { // eslint-disable-line no-process-env
+  uniloginSecret = process.env.UNILOGINSECRET; // eslint-disable-line no-process-env
 }
 else {
   uniloginSecret = require('@dbcdk/biblo-config').biblo.getConfig().unilogin.secret;
@@ -70,10 +70,13 @@ module.exports = function(Profile) {
       }
       else if (profile) {
         profile.createAccessToken(ttl, (error, accessToken) => {
-          if (error) return cb(error);
+          if (error) {
+            return cb(error);
+          }
+
           accessToken.__data.profile = profile;
           cb(null, accessToken);
-        })
+        });
       }
       else {
         err = new Error('User does not exist!');
