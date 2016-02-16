@@ -20,9 +20,9 @@ module.exports = function(File) {
           type: fileInfo.type,
           container: fileInfo.container,
           url: CONTAINERS_URL + fileInfo.container + '/download/' + fileInfo.name
-        }, function (err, obj) {
-          if (err !== null) {
-            cb(err);
+        }, function (error, obj) {
+          if (error !== null) {
+            cb(error);
           }
           else {
             cb(null, obj);
@@ -37,9 +37,9 @@ module.exports = function(File) {
     {
       description: 'Uploads a file',
       accepts: [
-        { arg: 'ctx', type: 'object', http: { source: 'context' } },
-        { arg: 'options', type: 'object', http: { source: 'query' } },
-        { arg: 'container', type: 'string', http: { source: 'query' } }
+        {arg: 'ctx', type: 'object', http: {source: 'context'}},
+        {arg: 'options', type: 'object', http: {source: 'query'}},
+        {arg: 'container', type: 'string', http: {source: 'query'}}
       ],
       returns: {
         arg: 'fileObject', type: 'object', root: true
