@@ -5,19 +5,17 @@
   "options": {
     "validateUpsert": true
   },
-  "properties": {
-
-  },
+  "properties": {},
   "validations": [],
   "relations": {
     "original": {
       "type": "hasOne",
-      "model": "videoContainer",
-      "foreignKey": "original_videocontainerid"
+      "model": "file",
+      "foreignKey": "originalvideoid"
     },
     "resolutions": {
       "type": "hasMany",
-      "model": "videoContainer"
+      "model": "file"
     }
   },
   "acls": [],

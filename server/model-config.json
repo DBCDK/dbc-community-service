@@ -63,5 +63,9 @@
   "CommunityRole": {
     "dataSource": "psqlDs",
     "public": true
+  },
+  "file": {
+    "dataSource": "psqlDs",
+    "public": true
   }
 }
