@@ -5,6 +5,16 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "Searchable": {
+      "targetIndex": "user",
+      "documentType": "user",
+      "enabledProperties": [
+        "email",
+        "username"
+      ]
+    }
+  },
   "properties": {
     "username": {
       "type": "string",
@@ -19,22 +29,26 @@
         "unique": true
       }
     },
-    "favoriteLibrary": "object",
-    "description": "string",
-    "email": "string",
-    "phone": "string",
-    "created": "date",
-    "lastUpdated": "date",
-    "hasFilledInProfile": "boolean"
-  },
-  "mixins": {
-    "Searchable": {
-      "targetIndex": "user",
-      "documentType": "user",
-      "enabledProperties": [
-        "email",
-        "username"
-      ]
+    "favoriteLibrary": {
+      "type": "object"
+    },
+    "description": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "created": {
+      "type": "date"
+    },
+    "lastUpdated": {
+      "type": "date"
+    },
+    "hasFilledInProfile": {
+      "type": "boolean"
     }
   },
   "validations": [],
@@ -66,8 +80,8 @@
     },
     "image": {
       "type": "hasOne",
-      "model": "imageContainer",
-      "foreignKey": "imagecontainerid"
+      "model": "file",
+      "foreignKey": "imageFile"
     },
     "accessTokens": {
       "type": "hasMany",
@@ -124,5 +138,5 @@
       "permission": "ALLOW"
     }
   ],
-  "methods": []
+  "methods": {}
 }

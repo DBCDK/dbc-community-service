@@ -11,7 +11,7 @@ module.exports = function(Model, options) {
 
   const elasticClient = Client({
     host: 'localhost:9200',
-    log: 'trace'
+    log: 'error'
   });
 
   const index = options.targetIndex;

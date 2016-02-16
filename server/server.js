@@ -29,26 +29,13 @@ else {
   };
 }
 
-// Create imageFile model, and point it to amazon.
-let ds = loopback.createDataSource({
+// Create fileContainer model, and point it to amazon.
+app.model(loopback.createDataSource({
   connector: require('loopback-component-storage'),
   provider: 'amazon',
   key: amazonConfig.key,
   keyId: amazonConfig.keyId
-});
-
-let imageContainer = ds.createModel('imageContainer');
-let videoContainer = ds.createModel(
-    'videoContainer',
-    {
-      resolution: 'string'
-    }, {
-      relations: {}
-    }
-);
-
-app.model(imageContainer);
-app.model(videoContainer);
+}).createModel('fileContainer'));
 
 app.use(bodyParser.json({limit: '50mb'}));
 
