@@ -57,3 +57,21 @@ Your amazon key, for access to S3.
 
 - __UNILOGINSECRET__
 Your unilogin secret, this must match whatever you use to authenticate.
+
+- __USE_ENV_CONFIG__
+This environment variable loads as much configuration from environment variables as possible. The following variables are required.
+
+- __DATABASE_HOST__
+The host running the Postgres database. 
+
+- __DATABASE_PORT__
+The port to use when connecting to the Postgres database.
+
+- __DATABASE_DB__
+The database to hold the application data.
+
+- __DATABASE_USER__
+The user to use when connecting to the database.
+
+- __DATABASE_PASSWORD__
+The password to use when connecting to the database.
