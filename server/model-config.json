@@ -63,5 +63,9 @@
   "CommunityRole": {
     "dataSource": "psqlDs",
     "public": true
+  },
+  "Flag": {
+    "dataSource": "psqlDs",
+    "public": true
   }
 }

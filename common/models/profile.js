@@ -101,8 +101,9 @@ module.exports = function(Profile) {
   };
 
   Profile.checkIfUserExists = (username, cb) => {
+    console.log(username);
     Profile.findOne({where: {username: username}}, function(err, res) {
-      return cb(null, {username, exists: !!res});
+      return cb(null, {username: username, exists: !!res});
     });
   };
 

@@ -35,6 +35,11 @@
       "type": "hasAndBelongsToMany",
       "model": "Profile",
       "foreignKey": "profileid"
+    },
+    "flags": {
+      "type": "hasAndBelongsToMany",
+      "model": "Flag",
+      "foreignKey": ""
     }
   },
   "acls": [
