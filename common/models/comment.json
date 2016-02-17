@@ -17,6 +17,11 @@
   },
   "validations": [],
   "relations": {
+    "image": {
+      "type": "hasOne",
+      "model": "file",
+      "foreignKey": "imageFile"
+    },
     "owner": {
       "type": "belongsTo",
       "model": "Profile",
