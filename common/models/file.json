@@ -6,12 +6,9 @@
     "validateUpsert": true
   },
   "properties": {
-    "name": {
-      "type": "string"
-    },
-    "type": {
-      "type": "string"
-    },
+    "container": "string",
+    "name": "string",
+    "type": "string",
     "url": {
       "type": "string",
       "required": true

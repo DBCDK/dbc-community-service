@@ -47,4 +47,15 @@ module.exports = function(File) {
       http: {verb: 'post'}
     }
   );
+
+  File.observe('before delete', function(ctx, next) {
+    File.find({where: ctx.where}, (err, instances) => {
+      instances = Array.isArray(instances) ? instances : [instances];
+      instances.forEach((instance) => {
+        File.app.models.fileContainer.removeFile(instance.container, instance.name, function() {
+          next();
+        });
+      });
+    });
+  });
 };
