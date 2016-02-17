@@ -34,9 +34,9 @@ module.exports = function automigrate(model, cb) {
     'ProfileFlag',
     'CommentFlag',
     'GroupFlag',
-    'PostFlag'
+    'PostFlag',
+    'file'
   ];
-
   if (ds.connected) {
     migrateTables(ds, appModels);
   }

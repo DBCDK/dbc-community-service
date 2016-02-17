@@ -80,8 +80,8 @@
     },
     "image": {
       "type": "hasOne",
-      "model": "imageContainer",
-      "foreignKey": "imagecontainerid"
+      "model": "file",
+      "foreignKey": "imageFile"
     },
     "accessTokens": {
       "type": "hasMany",
@@ -143,5 +143,5 @@
       "permission": "ALLOW"
     }
   ],
-  "methods": []
+  "methods": {}
 }

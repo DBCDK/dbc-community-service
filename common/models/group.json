@@ -14,6 +14,9 @@
       "type": "string",
       "required": true
     },
+    "colour": {
+      "type": "string"
+    },
     "timeCreated": {
       "type": "date",
       "required": true
@@ -40,6 +43,11 @@
       "type": "hasAndBelongsToMany",
       "model": "Flag",
       "foreignKey": ""
+    },
+    "coverImage": {
+      "type": "hasOne",
+      "model": "file",
+      "foreignKey": "groupCoverImageId"
     }
   },
   "acls": [
@@ -50,5 +58,5 @@
       "permission": "ALLOW"
     }
   ],
-  "methods": []
+  "methods": {}
 }

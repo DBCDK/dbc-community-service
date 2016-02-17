@@ -21,6 +21,11 @@
   },
   "validations": [],
   "relations": {
+    "image": {
+      "type": "hasOne",
+      "model": "file",
+      "foreignKey": "imageFile"
+    },
     "comments": {
       "type": "hasMany",
       "model": "Comment",
@@ -38,5 +43,5 @@
     }
   },
   "acls": [],
-  "methods": []
+  "methods": {}
 }
