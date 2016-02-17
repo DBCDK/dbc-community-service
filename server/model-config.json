@@ -64,6 +64,10 @@
     "dataSource": "psqlDs",
     "public": true
   },
+  "Flag": {
+    "dataSource": "psqlDs",
+    "public": true
+  },
   "file": {
     "dataSource": "psqlDs",
     "public": true

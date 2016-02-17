@@ -5,6 +5,8 @@ import {Client} from 'elasticsearch';
 
 /**
  * @file Use this mixin to index model properties in elasticsearch
+ *
+ * To make this work, a matching index must exist in the elasticsearch cluster.
  */
 
 module.exports = function(Model, options) {

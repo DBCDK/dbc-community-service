@@ -21,8 +21,22 @@ function migrateTables(ds, appModels) {
 module.exports = function automigrate(model, cb) {
 
   let ds = app.dataSources.PsqlDs;
-  const appModels = ['Profile', 'Like', 'Group', 'Comment', 'Post', 'GroupProfile', 'CommunityRole', 'ProfileCommunityRole', 'file'];
-
+  const appModels = [
+    'Profile',
+    'Like',
+    'Group',
+    'Comment',
+    'Post',
+    'GroupProfile',
+    'CommunityRole',
+    'ProfileCommunityRole',
+    'Flag',
+    'ProfileFlag',
+    'CommentFlag',
+    'GroupFlag',
+    'PostFlag',
+    'file'
+  ];
   if (ds.connected) {
     migrateTables(ds, appModels);
   }

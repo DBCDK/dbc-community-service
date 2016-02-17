@@ -35,6 +35,11 @@
       "type": "belongsTo",
       "model": "Profile",
       "foreignKey": "postownerid"
+    },
+    "flags": {
+      "type": "hasAndBelongsToMany",
+      "model": "Flag",
+      "foreignKey": ""
     }
   },
   "acls": [],

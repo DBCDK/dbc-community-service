@@ -26,6 +26,11 @@
       "type": "belongsTo",
       "model": "Profile",
       "foreignKey": "commentownerid"
+    },
+    "flags": {
+      "type": "hasAndBelongsToMany",
+      "model": "Flag",
+      "foreignKey": ""
     }
   },
   "acls": [],
