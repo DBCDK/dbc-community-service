@@ -24,7 +24,7 @@
     "image": {
       "type": "hasOne",
       "model": "file",
-      "foreignKey": "imageFile"
+      "foreignKey": "postImageFile"
     },
     "comments": {
       "type": "hasMany",

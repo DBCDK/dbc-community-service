@@ -20,7 +20,7 @@
     "image": {
       "type": "hasOne",
       "model": "file",
-      "foreignKey": "imageFile"
+      "foreignKey": "commentImageFile"
     },
     "owner": {
       "type": "belongsTo",
