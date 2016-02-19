@@ -34,7 +34,8 @@ app.model(loopback.createDataSource({
   connector: require('loopback-component-storage'),
   provider: 'amazon',
   key: amazonConfig.key,
-  keyId: amazonConfig.keyId
+  keyId: amazonConfig.keyId,
+  maxFileSize: '524288000' // 500 mb, chosen due to video capabilities.
 }).createModel('fileContainer'));
 
 app.use(bodyParser.json({limit: '50mb'}));
