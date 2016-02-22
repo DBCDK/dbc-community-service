@@ -57,7 +57,7 @@ module.exports = function(Comment) {  // eslint-disable-line no-unused-vars
         }
 
         const flag = {
-          timeFlagged: '2015-11-09T13:15:43.733Z',
+          timeFlagged: (new Date(Date.now())).toISOString(),
           description: description
         };
 
