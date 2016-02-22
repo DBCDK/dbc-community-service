@@ -49,3 +49,4 @@ module.exports = function automigrate(model, cb) {
   }
   cb();
 };
+
