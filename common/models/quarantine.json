@@ -9,8 +9,8 @@
     "reason": {
       "type": "string"
     },
-    "duration": {
-      "type": "number",
+    "end": {
+      "type": "date",
       "required": true
     },
     "start": {
@@ -19,7 +19,13 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "profiles": {
+      "type": "hasAndBelongsToMany",
+      "model": "Profile",
+      "foreignKey": ""
+    }
+  },
   "acls": [],
-  "methods": {}
+  "methods": []
 }
