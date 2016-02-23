@@ -80,8 +80,8 @@
     },
     "image": {
       "type": "hasOne",
-      "model": "file",
-      "foreignKey": "imageFile"
+      "model": "imageCollection",
+      "foreignKey": "profileImageCollection"
     },
     "accessTokens": {
       "type": "hasMany",
