@@ -95,11 +95,6 @@
       "type": "hasAndBelongsToMany",
       "model": "CommunityRole",
       "foreignKey": ""
-    },
-    "flags": {
-      "type": "hasAndBelongsToMany",
-      "model": "Flag",
-      "foreignKey": ""
     }
   },
   "acls": [
