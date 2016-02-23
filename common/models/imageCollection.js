@@ -142,7 +142,7 @@ module.exports = function(ImageCollection) {
               }
             });
 
-            ctx.res.redirect('/' + resolution.image().url);
+            cb(null, resolution.image());
           }
           else {
             cb('Could not find any resolutions');
@@ -161,6 +161,9 @@ module.exports = function(ImageCollection) {
         {arg: 'id', type: 'number', required: true, description: 'Id of the Image Collection.'},
         {arg: 'size', type: 'string', required: true, description: 'Size of the image, either: original, small, medium or large.'}
       ],
+      returns: {
+        arg: 'image', type: 'object', root: true
+      },
       http: {path: '/:id/download/:size', verb: 'get'}
     }
   );
