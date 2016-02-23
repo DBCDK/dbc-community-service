@@ -39,11 +39,6 @@
       "model": "Profile",
       "foreignKey": "profileid"
     },
-    "flags": {
-      "type": "hasAndBelongsToMany",
-      "model": "Flag",
-      "foreignKey": ""
-    },
     "coverImage": {
       "type": "hasOne",
       "model": "file",

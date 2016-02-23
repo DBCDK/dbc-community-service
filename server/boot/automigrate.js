@@ -32,11 +32,10 @@ module.exports = function automigrate(model, cb) {
     'CommunityRole',
     'ProfileCommunityRole',
     'Flag',
-    'ProfileFlag',
     'QuarantineProfile',
-    'CommentFlag',
-    'GroupFlag',
-    'PostFlag',
+    'FlagComment',
+    'FlagGroup',
+    'FlagPost',
     'file'
   ];
   if (ds.connected) {

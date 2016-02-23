@@ -16,7 +16,28 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "owner": {
+      "type": "hasOne",
+      "model": "Profile",
+      "foreignKey": ""
+    },
+    "comments": {
+      "type": "hasAndBelongsToMany",
+      "model": "Comment",
+      "foreignKey": ""
+    },
+    "posts": {
+      "type": "hasAndBelongsToMany",
+      "model": "Post",
+      "foreignKey": ""
+    },
+    "groups": {
+      "type": "hasAndBelongsToMany",
+      "model": "Group",
+      "foreignKey": ""
+    }
+  },
   "acls": [],
   "methods": []
 }
