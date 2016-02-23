@@ -75,5 +75,13 @@
   "file": {
     "dataSource": "psqlDs",
     "public": true
+  },
+  "imageCollection": {
+    "dataSource": "psqlDs",
+    "public": true
+  },
+  "resolution": {
+    "dataSource": "psqlDs",
+    "public": true
   }
 }

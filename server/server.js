@@ -3,6 +3,7 @@
 import loopback from 'loopback';
 import boot from 'loopback-boot';
 import Logger from 'dbc-node-logger';
+import imageQueueCreator from './image.queue';
 
 const app = loopback();
 const APP_NAME = process.env.APPLICATION_NAME || 'app_name';
@@ -39,6 +40,7 @@ app.model(loopback.createDataSource({
 }).createModel('fileContainer'));
 
 app.use(bodyParser.json({limit: '50mb'}));
+app.set('imageQueue', imageQueueCreator(app, '127.0.0.1', 6379));
 
 app.start = () => {
   // start the web server

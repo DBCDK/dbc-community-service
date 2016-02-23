@@ -6,16 +6,30 @@
     "validateUpsert": true
   },
   "properties": {
-    "container": "string",
-    "name": "string",
-    "type": "string",
+    "container": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
     "url": {
       "type": "string",
       "required": true
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "resolutions": {
+      "type": "hasMany",
+      "model": "imageCollection",
+      "foreignKey": "imageFileResolutionId",
+      "through": "resolution",
+      "keyThrough": "resolutionImageFileId"
+    }
+  },
   "acls": [
     {
       "principalType": "ROLE",
