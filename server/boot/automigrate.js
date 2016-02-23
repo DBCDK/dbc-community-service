@@ -36,8 +36,11 @@ module.exports = function automigrate(model, cb) {
     'FlagComment',
     'FlagGroup',
     'FlagPost',
-    'file'
+    'file',
+    'resolution',
+    'imageCollection'
   ];
+
   if (ds.connected) {
     migrateTables(ds, appModels);
   }

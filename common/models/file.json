@@ -21,7 +21,15 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "resolutions": {
+      "type": "hasMany",
+      "model": "imageCollection",
+      "foreignKey": "imageFileResolutionId",
+      "through": "resolution",
+      "keyThrough": "resolutionImageFileId"
+    }
+  },
   "acls": [
     {
       "principalType": "ROLE",

@@ -1,21 +1,22 @@
 {
-  "name": "videoCollection",
+  "name": "resolution",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
-  "properties": {},
+  "properties": {
+    "size": {
+      "type": "string",
+      "required": true
+    }
+  },
   "validations": [],
   "relations": {
-    "original": {
+    "image": {
       "type": "hasOne",
       "model": "file",
-      "foreignKey": "originalvideoid"
-    },
-    "resolutions": {
-      "type": "hasMany",
-      "model": "file"
+      "foreignKey": "resolutionImageFileId"
     }
   },
   "acls": [],

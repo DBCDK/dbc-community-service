@@ -41,6 +41,15 @@ CREATE USER communitydb WITH PASSWORD 'loobbackcommunity';
 GRANT ALL PRIVILEGES ON DATABASE ‘dbc_community’ TO communitydb;
 ```
 
+### image resizing queue
+
+We use [sharp](https://github.com/lovell/sharp) to resize images, most windows, linux and armv6+ systems don't require anything external, however if you're running os x you need to run following command to get the dependencies:
+
+```
+brew install homebrew/science/vips
+```
+
+
 ## Environment variables
 
 - __USE_DEFAULT_CONFIG__
