@@ -41,8 +41,8 @@
     },
     "coverImage": {
       "type": "hasOne",
-      "model": "file",
-      "foreignKey": "groupCoverImageId"
+      "model": "imageCollection",
+      "foreignKey": "groupCoverImageCollectionId"
     }
   },
   "acls": [
