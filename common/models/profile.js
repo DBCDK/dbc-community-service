@@ -103,12 +103,12 @@ module.exports = function(Profile) {
   Profile.checkIfUserExists = (username, cb) => {
     Profile.count({username: {regexp: '^' + username + '$/i'}}, (err, items) => {
       if (err) {
-        cb (err);
+        cb(err);
       }
       else {
         cb(null, {
           username: username,
-          exists: 0 < items
+          exists: items > 0
         });
       }
     });
@@ -117,12 +117,12 @@ module.exports = function(Profile) {
   Profile.checkIfDisplayNameIsTaken = (displayname, cb) => {
     Profile.count({displayName: {regexp: '^' + displayname + '$/i'}}, (err, items) => {
       if (err) {
-        cb (err);
+        cb(err);
       }
       else {
         cb(null, {
           displayname: displayname,
-          exists: 0 < items
+          exists: items > 0
         });
       }
     });
