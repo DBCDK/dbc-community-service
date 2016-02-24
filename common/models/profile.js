@@ -101,8 +101,16 @@ module.exports = function(Profile) {
   };
 
   Profile.checkIfUserExists = (username, cb) => {
-    Profile.findOne({where: {username: username}}, function(err, res) {
-      return cb(null, {username: username, exists: !!res});
+    Profile.count({where: {username: {regexp: '^' + username + '$/i'}}}, (err, items) => {
+      if (err) {
+        cb (err);
+      }
+      else {
+        cb(null, {
+          username: username,
+          exists: 0 < items
+        });
+      }
     });
   };
 
@@ -114,7 +122,7 @@ module.exports = function(Profile) {
       else {
         cb(null, {
           displayname: displayname,
-          exists: 1 === items
+          exists: 0 < items
         });
       }
     });
