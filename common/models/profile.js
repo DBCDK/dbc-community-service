@@ -106,6 +106,20 @@ module.exports = function(Profile) {
     });
   };
 
+  Profile.checkIfDisplayNameIsTaken = (displayname, cb) => {
+    Profile.count({displayName: {regexp: '^' + displayname + '$/i'}}, (err, items) => {
+      if (err) {
+        cb (err);
+      }
+      else {
+        cb(null, {
+          displayname: displayname,
+          exists: 1 === items
+        });
+      }
+    });
+  };
+
   Profile.remoteMethod('unilogin', {
     description: 'Login a user with unilogin.',
     accepts: [
@@ -146,6 +160,19 @@ module.exports = function(Profile) {
       returns: {
         arg: 'exists', type: 'object', root: true,
         description: 'The response body tells whether a user exists'
+      },
+      http: {verb: 'post'}
+    }
+  );
+
+  Profile.remoteMethod(
+    'checkIfDisplayNameIsTaken',
+    {
+      description: 'Check if displayname exists',
+      accepts: {arg: 'displayname', type: 'string', required: true, description: 'The users displayname'},
+      returns: {
+        arg: 'exists', type: 'object', root: true,
+        description: 'The response body tells whether a displayname is taken'
       },
       http: {verb: 'post'}
     }
