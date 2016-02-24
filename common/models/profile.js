@@ -101,7 +101,7 @@ module.exports = function(Profile) {
   };
 
   Profile.checkIfUserExists = (username, cb) => {
-    Profile.count({where: {username: {regexp: '^' + username + '$/i'}}}, (err, items) => {
+    Profile.count({username: {regexp: '^' + username + '$/i'}}, (err, items) => {
       if (err) {
         cb (err);
       }
