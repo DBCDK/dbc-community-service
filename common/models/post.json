@@ -23,8 +23,8 @@
   "relations": {
     "image": {
       "type": "hasOne",
-      "model": "file",
-      "foreignKey": "postImageFile"
+      "model": "imageCollection",
+      "foreignKey": "postImageCollection"
     },
     "comments": {
       "type": "hasMany",

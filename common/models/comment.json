@@ -19,8 +19,8 @@
   "relations": {
     "image": {
       "type": "hasOne",
-      "model": "file",
-      "foreignKey": "commentImageFile"
+      "model": "imageCollection",
+      "foreignKey": "commentImageCollection"
     },
     "owner": {
       "type": "belongsTo",

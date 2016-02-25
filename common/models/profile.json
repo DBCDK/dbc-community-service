@@ -80,8 +80,8 @@
     },
     "image": {
       "type": "hasOne",
-      "model": "file",
-      "foreignKey": "imageFile"
+      "model": "imageCollection",
+      "foreignKey": "profileImageCollection"
     },
     "accessTokens": {
       "type": "hasMany",
@@ -123,6 +123,13 @@
       "principalId": "$everyone",
       "permission": "ALLOW",
       "property": "checkIfUserExists"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "checkIfDisplayNameIsTaken"
     },
     {
       "accessType": "EXECUTE",
