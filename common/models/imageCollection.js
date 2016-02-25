@@ -83,7 +83,11 @@ module.exports = function(ImageCollection) {
                         const buckets = [
                           {bucket: 'uxdev-biblo-imagebucket-small', size: 'small'},
                           {bucket: 'uxdev-biblo-imagebucket-medium', size: 'medium'},
-                          {bucket: 'uxdev-biblo-imagebucket-large', size: 'large'}
+                          {bucket: 'uxdev-biblo-imagebucket-large', size: 'large'},
+                          {bucket: 'uxdev-biblo-imagebucket-large', size: 'large-square'},
+                          {bucket: 'uxdev-biblo-imagebucket-medium', size: 'medium-square'},
+                          {bucket: 'uxdev-biblo-imagebucket-small', size: 'small-square'},
+                          {bucket: 'uxdev-biblo-imagebucket-thumbnail', size: 'thumbnail'}
                         ];
                         const imageQueue = ImageCollection.app.get('imageQueue');
 
