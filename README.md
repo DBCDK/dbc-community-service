@@ -49,6 +49,8 @@ We use [sharp](https://github.com/lovell/sharp) to resize images, most windows, 
 brew install homebrew/science/vips
 ```
 
+This also requires a running redis instance.
+If you wish to disable it, see the environment variables below.
 
 ## Environment variables
 
@@ -84,3 +86,6 @@ The user to use when connecting to the database.
 
 - __DATABASE_PASSWORD__
 The password to use when connecting to the database.
+
+- __DISABLE_IMAGE_SCALING_QUEUE__
+Disables image scaling, which means no dependency on redis.

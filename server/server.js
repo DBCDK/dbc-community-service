@@ -40,7 +40,15 @@ app.model(loopback.createDataSource({
 }).createModel('fileContainer'));
 
 app.use(bodyParser.json({limit: '50mb'}));
-app.set('imageQueue', imageQueueCreator(app, '127.0.0.1', 6379));
+
+if (!process.env.DISABLE_IMAGE_SCALING_QUEUE) {
+  app.set('imageQueue', imageQueueCreator(app, '127.0.0.1', 6379));
+}
+else {
+  app.set('imageQueue', {
+    add: () => {}
+  });
+}
 
 app.start = () => {
   // start the web server
