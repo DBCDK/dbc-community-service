@@ -20,8 +20,13 @@
   },
   "validations": [],
   "relations": {
-    "profiles": {
-      "type": "hasAndBelongsToMany",
+    "quarantined": {
+      "type": "belongsTo",
+      "model": "Profile",
+      "foreignKey": ""
+    },
+    "creator": {
+      "type": "belongsTo",
       "model": "Profile",
       "foreignKey": ""
     }
