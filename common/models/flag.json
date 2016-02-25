@@ -13,6 +13,10 @@
     "description": {
       "type": "string",
       "required": true
+    },
+    "markedAsRead": {
+      "type": "boolean",
+      "required": true
     }
   },
   "validations": [],
@@ -39,5 +43,5 @@
     }
   },
   "acls": [],
-  "methods": {}
+  "methods": []
 }

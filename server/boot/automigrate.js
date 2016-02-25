@@ -32,7 +32,6 @@ module.exports = function automigrate(model, cb) {
     'CommunityRole',
     'ProfileCommunityRole',
     'Flag',
-    'QuarantineProfile',
     'FlagComment',
     'FlagGroup',
     'FlagPost',
