@@ -49,6 +49,12 @@
     },
     "hasFilledInProfile": {
       "type": "boolean"
+    },
+    "birthday": {
+      "type": "string"
+    },
+    "fullName": {
+      "type": "string"
     }
   },
   "validations": [],
