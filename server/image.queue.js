@@ -49,7 +49,7 @@ module.exports = function imageQueueCreator(app, redisHost, redisPort) {
       let imageObject = sharp(tmpobj.name).png();
 
       if (width && height) {
-        imageObject.resize(width, height)
+        imageObject.resize(width, height);
       }
       else {
         imageObject.resize(width).max();
