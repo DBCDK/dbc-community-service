@@ -3,7 +3,6 @@
 import loopback from 'loopback';
 import boot from 'loopback-boot';
 import Logger from 'dbc-node-logger';
-import imageQueueCreator from './image.queue';
 
 const app = loopback();
 const APP_NAME = process.env.APPLICATION_NAME || 'app_name';
@@ -60,11 +59,12 @@ app.model(loopback.createDataSource({
 app.use(bodyParser.json({limit: '50mb'}));
 
 if (!process.env.DISABLE_IMAGE_SCALING_QUEUE) {
-  app.set('imageQueue', imageQueueCreator(app, redisConfig.host, redisConfig.port));
+  // Using require to make the dependencies optional.
+  app.set('imageQueue', require('./image.queue')(app, redisConfig.host, redisConfig.port));
 }
 else {
   app.set('imageQueue', {
-    add: () => {}
+    add: () => {} // if the imageQueue is disabled, we simply supress created jobs.
   });
 }
 

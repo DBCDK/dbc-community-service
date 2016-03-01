@@ -186,6 +186,44 @@ module.exports = function(Profile) {
     }
   );
 
+  Profile.observe('before save', (ctx, next) => {
+    if (ctx.isNewInstance) {
+      Profile.checkIfDisplayNameIsTaken(ctx.instance.displayName, (err, res) => {
+        if (err) {
+          next(err);
+        }
+        else if (res.exists) {
+          next({
+            error: 'Displayname already exists!'
+          });
+        }
+        else {
+          next();
+        }
+      });
+    }
+    else if (ctx.currentInstance) {
+      if (ctx.data && ctx.data.displayName && ctx.data.displayName !== ctx.currentInstance.displayName) {
+        Profile.checkIfDisplayNameIsTaken(ctx.data.displayName, (err, res) => {
+          if (err) {
+            next(err);
+          }
+          else if (res.exists) {
+            next({
+              error: 'Displayname already exists!'
+            });
+          }
+          else {
+            next();
+          }
+        });
+      }
+    }
+    else {
+      next();
+    }
+  });
+
   Profile.observe('after save', (ctx, next) => {
     // was a new profile created?
     if (ctx.isNewInstance) {
