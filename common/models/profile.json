@@ -51,7 +51,7 @@
       "type": "boolean"
     },
     "birthday": {
-      "type": "string"
+      "type": "date"
     },
     "fullName": {
       "type": "string"
