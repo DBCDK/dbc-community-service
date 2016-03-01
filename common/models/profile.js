@@ -218,6 +218,9 @@ module.exports = function(Profile) {
           }
         });
       }
+      else {
+        next();
+      }
     }
     else {
       next();
