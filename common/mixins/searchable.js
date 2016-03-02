@@ -7,6 +7,20 @@ import {Client} from 'elasticsearch';
  * @file Use this mixin to index model properties in elasticsearch
  *
  * To make this work, a matching index must exist in the elasticsearch cluster.
+ *
+ * model.json example:
+ *
+ * "mixins": {
+ *  "Searchable": {
+ *    "targetIndex": "user",
+ *    "documentType": "user",
+ *    "enabledProperties": [
+ *      "email",
+ *      "username"
+ *    ]
+ *  }
+ *},
+ *
  */
 
 module.exports = function(Model, options) {
