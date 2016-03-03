@@ -35,6 +35,11 @@
       "type": "belongsTo",
       "model": "Profile",
       "foreignKey": "postownerid"
+    },
+    "group": {
+      "type": "belongsTo",
+      "model": "Group",
+      "foreignKey": "postcontainergroupid"
     }
   },
   "acls": [],
