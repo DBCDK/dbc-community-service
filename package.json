@@ -30,6 +30,7 @@
     "loopback-boot": "^2.16.0",
     "loopback-component-storage": "^1.6.1",
     "loopback-connector-postgresql": "^2.4.0",
+    "loopback-counts-mixin": "^1.0.0",
     "loopback-datasource-juggler": "^2.44.0",
     "lwip": "0.0.8",
     "request": "^2.69.0",

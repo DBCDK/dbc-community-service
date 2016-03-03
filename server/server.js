@@ -4,6 +4,7 @@ import loopback from 'loopback';
 import boot from 'loopback-boot';
 import Logger from 'dbc-node-logger';
 import imageQueueCreator from './image.queue';
+import countMixin from 'loopback-counts-mixin';
 
 const app = loopback();
 const APP_NAME = process.env.APPLICATION_NAME || 'app_name';
@@ -29,6 +30,9 @@ else {
     keyId: ''
   };
 }
+
+// Add Counts Mixin to loopback
+countMixin(app);
 
 // Create fileContainer model, and point it to amazon.
 app.model(loopback.createDataSource({
