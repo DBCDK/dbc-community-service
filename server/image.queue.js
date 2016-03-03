@@ -12,6 +12,7 @@ module.exports = function imageQueueCreator(app, redisHost, redisPort) {
     var extension = job.data.fileObj.url.split('.');
     extension = extension[extension.length - 1];
     var width;
+    var height;
     switch (job.data.size) {
       case 'large':
         width = 1024;
@@ -22,6 +23,22 @@ module.exports = function imageQueueCreator(app, redisHost, redisPort) {
       case 'small':
         width = 200;
         break;
+      case 'large-square':
+        width = 1024;
+        height = 1024;
+        break;
+      case 'medium-square':
+        width = 512;
+        height = 512;
+        break;
+      case 'small-square':
+        width = 200;
+        height = 200;
+        break;
+      case 'thumbnail':
+        width = 50;
+        height = 50;
+        break;
       default:
         width = 200;
         break;
@@ -29,26 +46,30 @@ module.exports = function imageQueueCreator(app, redisHost, redisPort) {
 
     var tmpobj = tmp.fileSync({mode: '0666', prefix: 's3-image-', postfix: '.' + extension});
     request(app.get('url') + job.data.fileObj.url).pipe(fs.createWriteStream(null, {fd: tmpobj.fd})).on('close', function() {
-      try {
-        sharp(tmpobj.name)
-          .resize(width)
-          .max()
-          .toBuffer()
-          .then(function (outputBuffer) {
-            tmpobj.removeCallback();
-            app.models.ImageCollection.createResolution(
-              outputBuffer,
-              job.data.bucket,
-              job.data.fileObj,
-              job.data.size,
-              job.data.imageCollection,
-              () => done()
-            );
-          });
+      let imageObject = sharp(tmpobj.name).png();
+
+      if (width && height) {
+        imageObject.resize(width, height);
       }
-      catch (e) {
-        done();
+      else {
+        imageObject.resize(width).max();
       }
+
+      imageObject.toBuffer()
+        .then(function (outputBuffer) {
+          tmpobj.removeCallback();
+          app.models.ImageCollection.createResolution(
+            outputBuffer,
+            job.data.bucket,
+            job.data.fileObj,
+            job.data.size,
+            job.data.imageCollection,
+            () => done()
+          );
+        })
+        .catch(function () {
+          done();
+        });
     });
   });
 

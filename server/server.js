@@ -3,7 +3,6 @@
 import loopback from 'loopback';
 import boot from 'loopback-boot';
 import Logger from 'dbc-node-logger';
-import imageQueueCreator from './image.queue';
 import countMixin from 'loopback-counts-mixin';
 
 const app = loopback();
@@ -34,6 +33,24 @@ else {
 // Add Counts Mixin to loopback
 countMixin(app);
 
+let redisConfig;
+
+if (process.env.COMMUNITY_SERVICE_REDIS_HOST && process.env.COMMUNITY_SERVICE_REDIS_PORT) {
+  redisConfig = {
+    port: process.env.COMMUNITY_SERVICE_REDIS_PORT,
+    host: process.env.COMMUNITY_SERVICE_REDIS_HOST
+  };
+}
+else if (require('@dbcdk/biblo-config').communityservice.redis) {
+  redisConfig = require('@dbcdk/biblo-config').communityservice.redis;
+}
+else {
+  redisConfig = {
+    port: 6379,
+    host: '127.0.0.1'
+  };
+}
+
 // Create fileContainer model, and point it to amazon.
 app.model(loopback.createDataSource({
   connector: require('loopback-component-storage'),
@@ -46,11 +63,12 @@ app.model(loopback.createDataSource({
 app.use(bodyParser.json({limit: '50mb'}));
 
 if (!process.env.DISABLE_IMAGE_SCALING_QUEUE) {
-  app.set('imageQueue', imageQueueCreator(app, '127.0.0.1', 6379));
+  // Using require to make the dependencies optional.
+  app.set('imageQueue', require('./image.queue')(app, redisConfig.host, redisConfig.port));
 }
 else {
   app.set('imageQueue', {
-    add: () => {}
+    add: () => {} // if the imageQueue is disabled, we simply supress created jobs.
   });
 }
 
