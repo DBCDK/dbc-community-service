@@ -3,6 +3,7 @@
 import loopback from 'loopback';
 import boot from 'loopback-boot';
 import Logger from 'dbc-node-logger';
+import countMixin from 'loopback-counts-mixin';
 
 const app = loopback();
 const APP_NAME = process.env.APPLICATION_NAME || 'app_name';
@@ -28,6 +29,9 @@ else {
     keyId: ''
   };
 }
+
+// Add Counts Mixin to loopback
+countMixin(app);
 
 let redisConfig;
 

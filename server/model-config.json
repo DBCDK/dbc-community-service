@@ -9,6 +9,7 @@
     "mixins": [
       "loopback/common/mixins",
       "loopback/server/mixins",
+      "../node_modules/loopback-counts-mixin",
       "../common/mixins",
       "./mixins"
     ]
