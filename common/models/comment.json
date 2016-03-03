@@ -26,6 +26,11 @@
       "type": "belongsTo",
       "model": "Profile",
       "foreignKey": "commentownerid"
+    },
+    "post": {
+      "type": "belongsTo",
+      "model": "Post",
+      "foreignKey": "commentcontainerpostid"
     }
   },
   "acls": [],
