@@ -15,8 +15,6 @@ import bodyParser from 'body-parser';
 
 let amazonConfig;
 
-app.set('logger', logger);
-
 if (process.env.AMAZON_S3_KEY && process.env.AMAZON_S3_KEYID) {
   amazonConfig = {
     key: process.env.AMAZON_S3_KEY,
@@ -32,6 +30,9 @@ else {
     keyId: ''
   };
 }
+
+app.set('amazonConfig', amazonConfig);
+app.set('logger', logger);
 
 // Add Counts Mixin to loopback
 countMixin(app);
