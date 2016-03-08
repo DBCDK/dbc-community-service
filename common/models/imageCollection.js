@@ -80,15 +80,11 @@ module.exports = function(ImageCollection) {
                         // We send the object to the consumer, and setup async jobs to add more resolutions to the collection.
                         cb(null, imageCollectionInstance);
 
-                        const buckets = [
-                          {bucket: 'uxdev-biblo-imagebucket-small', size: 'small'},
-                          {bucket: 'uxdev-biblo-imagebucket-medium', size: 'medium'},
-                          {bucket: 'uxdev-biblo-imagebucket-large', size: 'large'},
-                          {bucket: 'uxdev-biblo-imagebucket-large', size: 'large-square'},
-                          {bucket: 'uxdev-biblo-imagebucket-medium', size: 'medium-square'},
-                          {bucket: 'uxdev-biblo-imagebucket-small', size: 'small-square'},
-                          {bucket: 'uxdev-biblo-imagebucket-thumbnail', size: 'thumbnail'}
-                        ];
+                        let amazonBuckets = ImageCollection.app.get('amazonConfig').buckets.imageBuckets;
+                        const buckets = Object.keys(amazonBuckets).map((bucketSize) => {
+                          return {bucket: amazonBuckets[bucketSize], size: bucketSize};
+                        });
+
                         const imageQueue = ImageCollection.app.get('imageQueue');
 
                         buckets.forEach((metadata) => {
@@ -128,7 +124,10 @@ module.exports = function(ImageCollection) {
   );
 
   ImageCollection.download = function downloadImageFromImageCollection (ctx, id, size, cb) {
-    if (size !== 'original' && size !== 'large' && size !== 'medium' && size !== 'small' && size !== 'large-square' && size !== 'medium-square' && size !== 'small-square') {
+    if (
+      size !== 'original' && size !== 'large' && size !== 'medium' && size !== 'small' && size !== 'large-square'
+      && size !== 'medium-square' && size !== 'small-square' && size !== 'thumbnail'
+    ) {
       cb('Cannot recognize the requested size!');
     }
     else {
