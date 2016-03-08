@@ -124,7 +124,10 @@ module.exports = function(ImageCollection) {
   );
 
   ImageCollection.download = function downloadImageFromImageCollection (ctx, id, size, cb) {
-    if (size !== 'original' && size !== 'large' && size !== 'medium' && size !== 'small' && size !== 'large-square' && size !== 'medium-square' && size !== 'small-square' && size !== 'thumbnail') {
+    if (
+      size !== 'original' && size !== 'large' && size !== 'medium' && size !== 'small' && size !== 'large-square'
+      && size !== 'medium-square' && size !== 'small-square' && size !== 'thumbnail'
+    ) {
       cb('Cannot recognize the requested size!');
     }
     else {
