@@ -8,14 +8,10 @@
   "properties": {},
   "validations": [],
   "relations": {
-    "original": {
-      "type": "hasOne",
-      "model": "file",
-      "foreignKey": "originalvideoid"
-    },
     "resolutions": {
       "type": "hasMany",
-      "model": "file"
+      "model": "resolution",
+      "foreignKey": "videoCollectionResolutionId"
     }
   },
   "acls": [],

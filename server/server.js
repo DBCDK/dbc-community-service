@@ -4,6 +4,7 @@ import loopback from 'loopback';
 import boot from 'loopback-boot';
 import Logger from 'dbc-node-logger';
 import countMixin from 'loopback-counts-mixin';
+import {amazonSNSConfirmMiddleware, amazonSNSNotificationMiddleware} from './middlewares/amazonSNS.middleware';
 
 const app = loopback();
 const APP_NAME = process.env.APPLICATION_NAME || 'app_name';
@@ -13,6 +14,8 @@ export default app;
 import bodyParser from 'body-parser';
 
 let amazonConfig;
+
+app.set('logger', logger);
 
 if (process.env.AMAZON_S3_KEY && process.env.AMAZON_S3_KEYID) {
   amazonConfig = {
@@ -60,7 +63,10 @@ app.model(loopback.createDataSource({
   maxFileSize: '524288000' // 500 mb, chosen due to video capabilities.
 }).createModel('fileContainer'));
 
+app.use(bodyParser.text({type: 'text/*'}));
 app.use(bodyParser.json({limit: '50mb'}));
+app.use(amazonSNSConfirmMiddleware.bind(null, amazonConfig));
+app.use(amazonSNSNotificationMiddleware.bind(null, amazonConfig));
 
 if (!process.env.DISABLE_IMAGE_SCALING_QUEUE) {
   // Using require to make the dependencies optional.

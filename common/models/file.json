@@ -28,6 +28,13 @@
       "foreignKey": "imageFileResolutionId",
       "through": "resolution",
       "keyThrough": "resolutionImageFileId"
+    },
+    "videoResolutions": {
+      "type": "hasMany",
+      "model": "video-collection",
+      "foreignKey": "videoFileResolutionId",
+      "through": "resolution",
+      "keyThrough": "resolutionVideoFileId"
     }
   },
   "acls": [

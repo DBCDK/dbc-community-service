@@ -17,6 +17,11 @@
       "type": "hasOne",
       "model": "file",
       "foreignKey": "resolutionImageFileId"
+    },
+    "video": {
+      "type": "hasOne",
+      "model": "file",
+      "foreignKey": "resolutionVideoFileId"
     }
   },
   "acls": [],

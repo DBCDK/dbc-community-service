@@ -141,5 +141,8 @@
       "permission": "ALLOW"
     }
   ],
-  "methods": []
+  "methods": [],
+  "mixins": {
+    "Counts": true
+  }
 }

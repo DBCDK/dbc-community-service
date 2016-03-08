@@ -37,7 +37,8 @@ module.exports = function automigrate(model, cb) {
     'FlagPost',
     'file',
     'resolution',
-    'imageCollection'
+    'imageCollection',
+    'videoCollection'
   ];
 
   if (ds.connected) {

@@ -40,6 +40,11 @@
       "type": "belongsTo",
       "model": "Group",
       "foreignKey": "postcontainergroupid"
+    },
+    "video": {
+      "type": "hasOne",
+      "model": "videoCollection",
+      "foreignKey": "postVideoCollection"
     }
   },
   "acls": [],
