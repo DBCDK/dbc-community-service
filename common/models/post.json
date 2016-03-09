@@ -45,6 +45,11 @@
       "type": "hasOne",
       "model": "videoCollection",
       "foreignKey": "postVideoCollection"
+    },
+    "flags": {
+      "type": "hasMany",
+      "model": "Flag",
+      "foreignKey": "postFlagsId"
     }
   },
   "acls": [],

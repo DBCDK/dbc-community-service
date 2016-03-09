@@ -43,6 +43,11 @@
       "type": "hasOne",
       "model": "imageCollection",
       "foreignKey": "groupCoverImageCollectionId"
+    },
+    "flags": {
+      "type": "hasMany",
+      "model": "Flag",
+      "foreignKey": "groupFlagsId"
     }
   },
   "acls": [

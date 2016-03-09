@@ -27,19 +27,19 @@
       "foreignKey": ""
     },
     "comments": {
-      "type": "hasAndBelongsToMany",
+      "type": "embedsOne",
       "model": "Comment",
-      "foreignKey": ""
+      "property": "comments"
     },
     "posts": {
-      "type": "hasAndBelongsToMany",
+      "type": "embedsOne",
       "model": "Post",
-      "foreignKey": ""
+      "property": "posts"
     },
     "groups": {
-      "type": "hasAndBelongsToMany",
+      "type": "embedsOne",
       "model": "Group",
-      "foreignKey": ""
+      "property": "groups"
     }
   },
   "acls": [],
