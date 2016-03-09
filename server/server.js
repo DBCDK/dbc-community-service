@@ -61,7 +61,7 @@ app.model(loopback.createDataSource({
   provider: 'amazon',
   key: amazonConfig.key,
   keyId: amazonConfig.keyId,
-  maxFileSize: '524288000' // 500 mb, chosen due to video capabilities.
+  maxFileSize: '52428800' // 50 mb limit on images.
 }).createModel('fileContainer'));
 
 app.use(bodyParser.text({type: 'text/*'}));
