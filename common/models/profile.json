@@ -5,6 +5,9 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "Counts": true
+  },
   "properties": {
     "username": {
       "type": "string",
@@ -45,6 +48,9 @@
     },
     "fullName": {
       "type": "string"
+    },
+    "palleid": {
+      "type": "number"
     }
   },
   "validations": [],
@@ -141,8 +147,5 @@
       "permission": "ALLOW"
     }
   ],
-  "methods": [],
-  "mixins": {
-    "Counts": true
-  }
+  "methods": {}
 }

@@ -5,6 +5,9 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "Counts": true
+  },
   "properties": {
     "title": {
       "type": "string",
@@ -53,8 +56,5 @@
     }
   },
   "acls": [],
-  "methods": [],
-  "mixins": {
-    "Counts": true
-  }
+  "methods": {}
 }

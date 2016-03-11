@@ -5,6 +5,9 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "Counts": true
+  },
   "properties": {
     "name": {
       "type": "string",
@@ -58,8 +61,5 @@
       "permission": "ALLOW"
     }
   ],
-  "methods": [],
-  "mixins": {
-    "Counts": true
-  }
+  "methods": {}
 }
