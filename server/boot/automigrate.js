@@ -28,6 +28,7 @@ module.exports = function automigrate(model, cb) {
     'Comment',
     'Quarantine',
     'Post',
+    'PostLike',
     'GroupProfile',
     'CommunityRole',
     'ProfileCommunityRole',

@@ -39,6 +39,11 @@
       "model": "Profile",
       "foreignKey": "postownerid"
     },
+    "likes": {
+      "type": "hasAndBelongsToMany",
+      "model": "Like",
+      "foreignKey": ""
+    },
     "group": {
       "type": "belongsTo",
       "model": "Group",
