@@ -15,7 +15,7 @@
     },
     "content": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "timeCreated": {
       "type": "date",
