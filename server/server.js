@@ -5,6 +5,7 @@ import boot from 'loopback-boot';
 import Logger from 'dbc-node-logger';
 import countMixin from 'loopback-counts-mixin';
 import {amazonSNSConfirmMiddleware, amazonSNSNotificationMiddleware} from './middlewares/amazonSNS.middleware';
+import globalTunnel from 'global-tunnel';
 
 const app = loopback();
 const APP_NAME = process.env.APPLICATION_NAME || 'app_name';
@@ -29,6 +30,10 @@ else {
     key: '',
     keyId: ''
   };
+}
+
+if (process.env.http_proxy) {
+  globalTunnel.initialize();
 }
 
 app.set('amazonConfig', amazonConfig);
