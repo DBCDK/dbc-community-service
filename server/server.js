@@ -4,8 +4,9 @@ import loopback from 'loopback';
 import boot from 'loopback-boot';
 import Logger from 'dbc-node-logger';
 import countMixin from 'loopback-counts-mixin';
+import AWS from 'aws-sdk';
+import ProxyAgent from 'proxy-agent';
 import {amazonSNSConfirmMiddleware, amazonSNSNotificationMiddleware} from './middlewares/amazonSNS.middleware';
-import globalTunnel from 'global-tunnel';
 
 const app = loopback();
 const APP_NAME = process.env.APPLICATION_NAME || 'app_name';
@@ -32,12 +33,23 @@ else {
   };
 }
 
-if (process.env.http_proxy) {
-  globalTunnel.initialize();
-}
-
 app.set('amazonConfig', amazonConfig);
 app.set('logger', logger);
+
+// Configure AWS globally.
+AWS.config.update({
+  region: amazonConfig.region,
+  accessKeyId: amazonConfig.keyId,
+  secretAccessKey: amazonConfig.key
+});
+
+if (process.env.http_proxy) {
+  AWS.config.update({
+    httpOptions: {
+      agent: ProxyAgent(process.env.http_proxy)
+    }
+  });
+}
 
 // Add Counts Mixin to loopback
 countMixin(app);
