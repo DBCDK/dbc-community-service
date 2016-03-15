@@ -1,52 +1,27 @@
 'use strict';
 
+import AWS from 'aws-sdk';
+import Busboy from 'busboy';
+
 const CONTAINERS_URL = 'api/fileContainers/';
+const s3 = new AWS.S3();
 
 module.exports = function(File) {
   File.uploadFromBuffer = (container, file, buffer, mimetype, cb) => {
-    var writer = File.app.models.fileContainer.uploadStream(container, file);
-    writer.on('success', function () {
-      File.create({
-        name: file,
-        type: mimetype,
-        container: container,
-        url: CONTAINERS_URL + container + '/download/' + file
-      }, function (error, obj) {
-        if (error !== null) {
-          cb(error);
-        }
-        else {
-          cb(null, obj);
-        }
-      });
-    });
-
-    writer.on('error', function () {
-      cb('error in writing to S3', null);
-    });
-
-    writer.write(buffer, function () {
-      writer.end();
-    });
-  };
-
-  File.upload = (ctx, options, container, cb) => {
-    ctx.req.params.container = container;
-    if (!options) {
-      options = {};
-    }
-
-    File.app.models.fileContainer.upload(ctx.req, ctx.result, options, function (err, fileObj) {
+    s3.upload({
+      Bucket: container,
+      Key: file,
+      Body: buffer
+    }, function(err) {
       if (err) {
         cb(err);
       }
       else {
-        let fileInfo = fileObj.files.file[0];
         File.create({
-          name: fileInfo.name,
-          type: fileInfo.type,
-          container: fileInfo.container,
-          url: CONTAINERS_URL + fileInfo.container + '/download/' + fileInfo.name
+          name: file,
+          type: mimetype,
+          container: container,
+          url: CONTAINERS_URL + container + '/download/' + file
         }, function (error, obj) {
           if (error !== null) {
             cb(error);
@@ -57,6 +32,36 @@ module.exports = function(File) {
         });
       }
     });
+  };
+
+  File.upload = (ctx, options, container, cb) => {
+    let busboy = new Busboy({headers: ctx.req.headers});
+
+    busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+      s3.upload({
+        Bucket: container,
+        Key: filename,
+        Body: file
+      }, (err, data) => {
+        console.log(err, data);
+
+        File.create({
+          name: data.key,
+          type: mimetype,
+          container: container,
+          url: CONTAINERS_URL + container + '/download/' + data.key
+        }, function (error, obj) {
+          if (error) {
+            cb(error);
+          }
+          else {
+            cb(null, obj);
+          }
+        });
+      });
+    });
+
+    ctx.req.pipe(busboy);
   };
 
   File.remoteMethod(
@@ -79,7 +84,10 @@ module.exports = function(File) {
     File.find({where: ctx.where}, (err, instances) => {
       instances = Array.isArray(instances) ? instances : [instances];
       instances.forEach((instance) => {
-        File.app.models.fileContainer.removeFile(instance.container, instance.name, function() {});
+        s3.deleteObject({
+          Bucket: instance.container,
+          Key: instance.name
+        }, function() {});
       });
     });
 

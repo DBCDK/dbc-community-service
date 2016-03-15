@@ -13,10 +13,7 @@ export function amazonSNSConfirmMiddleware (amazonConfig, req, res, next) {
     ) {
       logger.info('Confirming SNS request');
       const sns = new AWS.SNS({
-        apiVersion: amazonConfig.snsApiVersion,
-        region: amazonConfig.region,
-        accessKeyId: amazonConfig.keyId,
-        secretAccessKey: amazonConfig.key
+        apiVersion: amazonConfig.snsApiVersion
       });
       sns.confirmSubscription({
         Token: confirmBody.Token,
