@@ -43,8 +43,6 @@ module.exports = function(File) {
         Key: filename,
         Body: file
       }, (err, data) => {
-        console.log(err, data);
-
         File.create({
           name: data.key,
           type: mimetype,
