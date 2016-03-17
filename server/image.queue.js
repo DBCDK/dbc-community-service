@@ -46,37 +46,61 @@ module.exports = function imageQueueCreator(app, redisHost, redisPort) {
         break;
     }
 
+    job.progress(10);
+
     var tmpobj = tmp.fileSync({mode: '0666', prefix: 's3-image-', postfix: '.' + extension});
     request(app.get('url') + job.data.fileObj.url).pipe(fs.createWriteStream(null, {fd: tmpobj.fd})).on('close', function() {
+      job.progress(50);
       logger.info('got imagefile', {name: tmpobj.name});
-      let imageObject = sharp(tmpobj.name).png();
+      let imageObject = sharp(tmpobj.name);
+      imageObject.metadata().then((metadata) => {
+        if (metadata.orientation) {
+          imageObject.rotate();
+        }
 
-      if (width && height) {
-        imageObject.resize(width, height).withoutEnlargement();
-      }
-      else {
-        imageObject.resize(width).max().withoutEnlargement();
-      }
+        job.progress(60);
 
-      imageObject.toBuffer()
-        .then(function (outputBuffer) {
-          tmpobj.removeCallback();
-          app.models.ImageCollection.createResolution(
-            outputBuffer,
-            job.data.bucket,
-            job.data.fileObj,
-            job.data.size,
-            job.data.imageCollection,
-            () => {
-              logger.info('finished image transcoding job', job.data);
-              done();
-            }
-          );
-        })
-        .catch(function (err) {
-          logger.error('an error occurred while transcoding image', {job: job.data, error: err});
-          done();
-        });
+        return imageObject;
+      }).then((image) => {
+        imageObject = image;
+
+        if (width && height) {
+          imageObject.resize(width, height).withoutEnlargement();
+        }
+        else {
+          imageObject.resize(width).max().withoutEnlargement();
+        }
+
+        job.progress(80);
+
+        imageObject.toBuffer()
+          .then(function (outputBuffer) {
+            tmpobj.removeCallback();
+            app.models.ImageCollection.createResolution(
+              outputBuffer,
+              job.data.bucket,
+              job.data.fileObj,
+              job.data.size,
+              job.data.imageCollection,
+              () => {
+                job.progress(100);
+
+                logger.info('finished image transcoding job', {
+                  size: width && height ? `${width}x${height}` : `${width}x${width}`,
+                  data: job.data
+                });
+
+                done(null, {
+                  size: width && height ? `${width}x${height}` : `${width}x${width}`
+                });
+              }
+            );
+          })
+          .catch(function (err) {
+            logger.error('an error occurred while transcoding image', {job: job.data, error: err});
+            done();
+          });
+      });
     });
   });
 
