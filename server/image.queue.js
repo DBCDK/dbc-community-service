@@ -51,7 +51,6 @@ module.exports = function imageQueueCreator(app, redisHost, redisPort) {
     var tmpobj = tmp.fileSync({mode: '0666', prefix: 's3-image-', postfix: '.' + extension});
     request(app.get('url') + job.data.fileObj.url).pipe(fs.createWriteStream(null, {fd: tmpobj.fd})).on('close', function() {
       job.progress(50);
-      logger.info('got imagefile', {name: tmpobj.name});
       let imageObject = sharp(tmpobj.name);
       imageObject.metadata().then((metadata) => {
         if (metadata.orientation) {
@@ -85,20 +84,20 @@ module.exports = function imageQueueCreator(app, redisHost, redisPort) {
               () => {
                 job.progress(100);
 
+                done(null, {
+                  size: width && height ? `${width}x${height}` : `${width}x${width}`
+                });
+
                 logger.info('finished image transcoding job', {
                   size: width && height ? `${width}x${height}` : `${width}x${width}`,
                   data: job.data
-                });
-
-                done(null, {
-                  size: width && height ? `${width}x${height}` : `${width}x${width}`
                 });
               }
             );
           })
           .catch(function (err) {
-            logger.error('an error occurred while transcoding image', {job: job.data, error: err});
             done();
+            logger.error('an error occurred while transcoding image', {job: job.data, error: err});
           });
       });
     });
