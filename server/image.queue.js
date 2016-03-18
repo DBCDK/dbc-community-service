@@ -52,8 +52,9 @@ module.exports = function imageQueueCreator(app, redisHost, redisPort) {
     request(app.get('url') + job.data.fileObj.url).pipe(fs.createWriteStream(null, {fd: tmpobj.fd})).on('close', function() {
       job.progress(50);
       let imageObject = sharp(tmpobj.name);
-      job.progress(55);
       imageObject.metadata().then((metadata) => {
+        job.progress(55);
+
         if (metadata.orientation) {
           imageObject.rotate();
         }
