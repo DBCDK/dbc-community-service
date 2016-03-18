@@ -6,6 +6,7 @@ import Logger from 'dbc-node-logger';
 import countMixin from 'loopback-counts-mixin';
 import AWS from 'aws-sdk';
 import ProxyAgent from 'proxy-agent';
+import globalTunnel from 'global-tunnel';
 import {amazonSNSConfirmMiddleware, amazonSNSNotificationMiddleware} from './middlewares/amazonSNS.middleware';
 
 const app = loopback();
@@ -44,11 +45,13 @@ AWS.config.update({
 });
 
 if (process.env.http_proxy) {
+  globalTunnel.initialize();
   AWS.config.update({
     httpOptions: {
       agent: ProxyAgent(process.env.http_proxy)
     }
   });
+
 }
 
 // Add Counts Mixin to loopback
@@ -116,7 +119,7 @@ app.use('/email_confirm', (req, res) => {
 // Sub-apps like REST API are mounted via boot scripts.
 boot(app, __dirname, (err) => {
   if (err) {
-    logger.error('An error occured while booting up the ProfileService', {error: err});
+    logger.error('An error occured while booting up the Community Service', {error: err});
     throw err;
   }
 
