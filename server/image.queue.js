@@ -2,7 +2,6 @@
 
 var Queue = require('bull');
 var sharp = require('sharp');
-var request = require('request');
 var tmp = require('tmp');
 var fs = require('fs');
 
