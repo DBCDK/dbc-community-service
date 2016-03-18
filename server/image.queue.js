@@ -6,6 +6,8 @@ var request = require('request');
 var tmp = require('tmp');
 var fs = require('fs');
 
+import AWS from 'aws-sdk';
+
 module.exports = function imageQueueCreator(app, redisHost, redisPort) {
   var logger = app.get('logger');
   var imageQueue = Queue('image transcoding', redisPort, redisHost);
@@ -49,12 +51,14 @@ module.exports = function imageQueueCreator(app, redisHost, redisPort) {
     job.progress(10);
 
     var tmpobj = tmp.fileSync({mode: '0666', prefix: 's3-image-', postfix: '.' + extension});
-    request(app.get('url') + job.data.fileObj.url)
-      .on('error', function (err) {
-        logger.error('An error ocurred while getting the image for transcoding', {error: err});
+    (new AWS.S3())
+      .getObject({
+        Bucket: job.data.fileObj.container,
+        Key: job.data.fileObj.name
       })
+      .createReadStream()
       .pipe(fs.createWriteStream(null, {fd: tmpobj.fd}))
-      .on('close', function () {
+      .on('close', () => {
         job.progress(50);
         let imageObject = sharp(tmpobj.name);
         imageObject.metadata().then((metadata) => {
@@ -111,6 +115,19 @@ module.exports = function imageQueueCreator(app, redisHost, redisPort) {
           logger.error('an error occurred while transcoding image', {job: job.data, error: err});
         });
       });
+
+    /*
+    request(app.get('url') + job.data.fileObj.url)
+      .on('error', function (err) {
+        logger.error('An error ocurred while getting the image for transcoding', {error: err});
+      })
+      .pipe()
+      .on('close', function () {
+
+      });
+
+    */
+
   });
 
   return imageQueue;
