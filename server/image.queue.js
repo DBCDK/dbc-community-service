@@ -114,19 +114,6 @@ module.exports = function imageQueueCreator(app, redisHost, redisPort) {
           logger.error('an error occurred while transcoding image', {job: job.data, error: err});
         });
       });
-
-    /*
-    request(app.get('url') + job.data.fileObj.url)
-      .on('error', function (err) {
-        logger.error('An error ocurred while getting the image for transcoding', {error: err});
-      })
-      .pipe()
-      .on('close', function () {
-
-      });
-
-    */
-
   });
 
   return imageQueue;
