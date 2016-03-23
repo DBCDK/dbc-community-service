@@ -123,5 +123,7 @@ boot(app, __dirname, (err) => {
     throw err;
   }
 
-  app.start();
+  if (!process.env.TESTING) {
+    app.start();
+  }
 });
