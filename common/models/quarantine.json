@@ -23,12 +23,12 @@
     "quarantined": {
       "type": "belongsTo",
       "model": "Profile",
-      "foreignKey": ""
+      "foreignKey": "quarantinedProfileId"
     },
     "creator": {
       "type": "belongsTo",
       "model": "Profile",
-      "foreignKey": ""
+      "foreignKey": "quarantineCreatorProfileId"
     }
   },
   "acls": [],
