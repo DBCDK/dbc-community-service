@@ -28,10 +28,8 @@ describe('Test profile endpoints and functionality', () => {
         done();
       });
   });
-  
-  it('should create a profile, and login via unilogin', (done) => {
-    let profile;
 
+  it('should create a profile, and login via unilogin', (done) => {
     testutils.createProfile(app.get('url'))
       .then((createResponse) => {
         return testutils.loginViaUnilogin(app.get('url'), createResponse.username);
