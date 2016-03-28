@@ -51,7 +51,6 @@ if (process.env.http_proxy) {
       agent: ProxyAgent(process.env.http_proxy)
     }
   });
-
 }
 
 // Add Counts Mixin to loopback

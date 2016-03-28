@@ -58,14 +58,19 @@ export function amazonSNSNotificationMiddleware (amazonConfig, req, res, next) {
       ) {
         // time to attach the newly converted video to a videoCollection.
         req.app.models.Post.findById(message.userMetadata.postId, {include: ['video']}, function (err, postObject) {
+          if (err) {
+            logger.error('error occurred during creation of resolution', {error: err});
+            return next();
+          }
+
           if (postObject && postObject.video && postObject.video().id) {
             req.app.models.VideoCollection.createResolution(postObject.video().id, message, function(err2, info) {
               if (err2) {
-                logger.error('error occurred during creation of resolution', err2);
+                logger.error('error occurred during creation of resolution', {error: err2});
+                return next();
               }
-              else {
-                logger.info('created resolution from notification', info);
-              }
+
+              logger.info('created resolution from notification', info);
             });
           }
         });

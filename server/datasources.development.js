@@ -51,7 +51,7 @@ else if (process.env.USE_ENV_CONFIG) { // eslint-disable-line
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       name: 'psqlDs',
-      connector: 'postgresql'
+      connector: process.env.DATABASE_CONNECTOR || 'postgresql'
     },
     emailDs: {
       name: 'emailDs',
