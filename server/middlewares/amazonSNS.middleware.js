@@ -20,7 +20,7 @@ export function amazonSNSConfirmMiddleware (amazonConfig, req, res, next) {
         TopicArn: confirmBody.TopicArn
       }, function(err, data) {
         if (err) {
-          logger.info('An error occurred during confirmation', err);
+          logger.error('An error occurred during confirmation', err);
         }
         else {
           logger.info('The SNS confirm request was accepted!', data);
@@ -61,7 +61,7 @@ export function amazonSNSNotificationMiddleware (amazonConfig, req, res, next) {
           if (postObject && postObject.video && postObject.video().id) {
             req.app.models.VideoCollection.createResolution(postObject.video().id, message, function(err2, info) {
               if (err2) {
-                logger.info('error occurred during creation of resolution', err2);
+                logger.error('error occurred during creation of resolution', err2);
               }
               else {
                 logger.info('created resolution from notification', info);

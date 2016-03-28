@@ -1,8 +1,9 @@
 'use strict';
 
-module.exports = function(Post) { // eslint-disable-line no-unused-vars
+module.exports = function(Post) {
   Post.observe('before save', function videoUpload(ctx, next) {
     const logger = Post.app.get('logger');
+
     let data; // this is for accessing properties of the new object and, if they exist, video details.
 
     if (ctx.isNewInstance) {
@@ -18,6 +19,7 @@ module.exports = function(Post) { // eslint-disable-line no-unused-vars
       // We have info on a new video, time to create models and attach it to the new post object.
       Post.app.models.videoCollection.newVideoCollection(data, function newVideoCollectionCallback(err, info) {
         if (err) {
+          logger.error('An error occurred during post before save', {error: err});
           next(err);
         }
         else {
@@ -33,6 +35,8 @@ module.exports = function(Post) { // eslint-disable-line no-unused-vars
   });
 
   Post.observe('after save', function afterPostSave(ctx, next) {
+    const logger = Post.app.get('logger');
+
     // grab the id from the hookState
     if (ctx.hookState.postVideoCollection) {
       // attach the videoCollection to the newly saved post.
@@ -44,6 +48,7 @@ module.exports = function(Post) { // eslint-disable-line no-unused-vars
           postVideoCollection: ctx.instance.id
         }, function (err) {
           if (err) {
+            logger.error('An error occurred during post after save', {error: err});
             next(err);
           }
           else {

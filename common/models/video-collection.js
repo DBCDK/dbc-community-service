@@ -2,7 +2,7 @@
 
 const CONTAINERS_URL = 'api/fileContainers/';
 
-module.exports = function(VideoCollection) { // eslint-disable-line no-unused-vars
+module.exports = function(VideoCollection) {
   VideoCollection.createResolution = function createVideoResolution(videoCollectionId, message, cb) {
     const logger = VideoCollection.app.get('logger');
 
@@ -12,6 +12,7 @@ module.exports = function(VideoCollection) { // eslint-disable-line no-unused-va
         videoCollectionResolutionId: videoCollectionId
       }, function (err, resolutionObject) {
         if (err) {
+          logger.error('An error occurred during creation of video resolution', {error: err});
           return cb(err);
         }
 
@@ -24,6 +25,7 @@ module.exports = function(VideoCollection) { // eslint-disable-line no-unused-va
             resolutionVideoFileId: resolutionObject.id
           }, function (err2, info) {
             if (err2) {
+              logger.error('An error occurred during creation of video resolution', {error: err2});
               cb(err2);
             }
             else {
@@ -37,8 +39,11 @@ module.exports = function(VideoCollection) { // eslint-disable-line no-unused-va
   };
 
   VideoCollection.newVideoCollection = function newVideoCollection(data, next) {
+    const logger = VideoCollection.app.get('logger');
+
     VideoCollection.create({}, function (error1, newVideoCollectionObject) {
       if (error1) {
+        logger.error('An error occurred during creation of video collection', {error: error1});
         next(error1);
       }
       else {
@@ -47,6 +52,7 @@ module.exports = function(VideoCollection) { // eslint-disable-line no-unused-va
           videoCollectionResolutionId: newVideoCollectionObject.id
         }, function (error2, newResolutionObject) {
           if (error2) {
+            logger.error('An error occurred during creation of video collection', {error: error2});
             next(error2);
           }
           else {
@@ -58,6 +64,7 @@ module.exports = function(VideoCollection) { // eslint-disable-line no-unused-va
               resolutionVideoFileId: newResolutionObject.id
             }, function (error3) {
               if (error3) {
+                logger.error('An error occurred during creation of video collection', {error: error3});
                 next(error3);
               }
               else {
@@ -71,7 +78,13 @@ module.exports = function(VideoCollection) { // eslint-disable-line no-unused-va
   };
 
   VideoCollection.observe('before delete', function(ctx, next) {
+    const logger = VideoCollection.app.get('logger');
+
     VideoCollection.find({where: ctx.where, include: ['resolutions']}, (err, instances) => {
+      if (err) {
+        logger.error('An error occurred during delete of a video collection', {error: err});
+      }
+
       instances = Array.isArray(instances) ? instances : [instances];
       instances.forEach((instance) => {
         (instance.resolutions && Array.isArray(instance.resolutions) ? instance.resolutions : []).forEach((resolution) => {
