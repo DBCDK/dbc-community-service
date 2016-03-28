@@ -19,7 +19,7 @@ describe('Test like endpoints and functionality', () => {
 
   it('should respond with an array', (done) => {
     superagent
-      .get('http://localhost:3000/api/Likes')
+      .get(`${app.get('url')}api/Likes`)
       .set('Accept', 'application/json')
       .end((err, res) => {
         expect(err).toNotExist();

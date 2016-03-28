@@ -34,7 +34,7 @@ describe('Test Amazon middlewares work as expected', () => {
 
     // Send a confirm request to the community service
     superagent
-      .post('http://localhost:3000')
+      .post(`${app.get('url')}`.slice(0, -1))
       .send(JSON.stringify({
         Type: 'SubscriptionConfirmation',
         MessageId: '9d9fe4fc-44cc-43c5-b365-4e14d32b5b1b',
@@ -70,7 +70,7 @@ describe('Test Amazon middlewares work as expected', () => {
     console.error = () => {}; // eslint-disable-line
 
     superagent
-      .post('http://localhost:3000')
+      .post(`${app.get('url')}api/Likes`.slice(0, -1))
       .send(JSON.stringify({
         Type: 'SubscriptionConfirmation',
         MessageId: '9d9fe4fc-44cc-43c5-b365-4e14d32b5b1b',
@@ -102,7 +102,7 @@ describe('Test Amazon middlewares work as expected', () => {
 
     // Start by creating a post with a video
     superagent
-      .post('http://localhost:3000/api/Posts')
+      .post(`${app.get('url')}api/Posts`)
       .send({
         title: ' ',
         content: 'bob er sej',
@@ -120,7 +120,7 @@ describe('Test Amazon middlewares work as expected', () => {
 
         // next send a notification with a completed Elastic Encoder job
         superagent
-          .post('http://localhost:3000')
+          .post(`${app.get('url')}`.slice(0, -1))
           .send(JSON.stringify({
             Type: 'Notification',
             MessageId: 'c729e6eb-1c42-530e-a4ef-a9bcb4be20ac',
@@ -162,7 +162,7 @@ describe('Test Amazon middlewares work as expected', () => {
 
             // lastly we check that the new resolution has been created and associated with the post we originally created.
             superagent
-              .get(`http://localhost:3000/api/Posts/${postCreateResponse.body.id}?filter=${JSON.stringify({include: [{relation: 'video', scope: {include: ['resolutions']}}]})}`)
+              .get(`${app.get('url')}api/Posts/${postCreateResponse.body.id}?filter=${JSON.stringify({include: [{relation: 'video', scope: {include: ['resolutions']}}]})}`)
               .end((postGetError, postGetResponse) => {
                 expect(postGetError).toNotExist();
                 expect(Object.keys(postGetResponse.body)).toInclude('video');
