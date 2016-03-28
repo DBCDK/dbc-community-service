@@ -19,7 +19,7 @@ describe('Test Comment model and logic', () => {
 
   it('should get comments in an array.', (done) => {
     superagent
-      .get('http://localhost:3000/api/Comments')
+      .get(app.get('url') + 'api/Comments')
       .set('Accept', 'application/json')
       .end((err, res) => {
         expect(Array.isArray(res.body)).toExist();
@@ -38,7 +38,7 @@ describe('Test Comment model and logic', () => {
     };
 
     superagent
-      .post('http://localhost:3000/api/Comments')
+      .post(app.get('url') + 'api/Comments')
       .send(comment)
       .set('Accept', 'application/json')
       .end((err1, res1) => {
@@ -46,7 +46,7 @@ describe('Test Comment model and logic', () => {
         let commentPostResponse = res1.body;
 
         superagent
-          .get('http://localhost:3000/api/Comments')
+          .get(app.get('url') + 'api/Comments')
           .set('Accept', 'application/json')
           .end((err2, res2) => {
             expect(err2).toNotExist();

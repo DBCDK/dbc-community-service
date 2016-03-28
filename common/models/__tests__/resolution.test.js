@@ -6,7 +6,7 @@ import expect from 'expect';
 import superagent from 'superagent';
 import app from '../../../server/server';
 
-describe('Test CommunityRole model and logic', () => {
+describe('Test resolution endpoints and functionality', () => {
   let server;
 
   beforeEach((done) => {
@@ -17,14 +17,13 @@ describe('Test CommunityRole model and logic', () => {
     server.close(done);
   });
 
-  it('should get community roles in an array. There should be two roles.', (done) => {
+  it('should respond with an array', (done) => {
     superagent
-      .get(`${app.get('url')}api/CommunityRoles`)
+      .get(`${app.get('url')}api/Resolutions`)
       .set('Accept', 'application/json')
       .end((err, res) => {
         expect(err).toNotExist();
         expect(Array.isArray(res.body)).toExist();
-        expect(res.body.length).toEqual(2);
         done();
       });
   });
