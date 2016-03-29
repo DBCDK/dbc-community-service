@@ -8,7 +8,7 @@
     "start": "node .",
     "dev": "NODE_ENV=local supervisor --instant-kill -w client,common,server,node_modules main.js",
     "dev:noconf": "USE_DEFAULT_CONFIG=true NODE_ENV=local supervisor --instant-kill -w client,common,server,node_modules main.js",
-    "test": "TESTING=true USE_ENV_CONFIG=true DATABASE_CONNECTOR=\"memory\" mocha --compilers js:babel-core/register --recursive common server"
+    "test": "TESTING=true USE_ENV_CONFIG=true DATABASE_CONNECTOR=\"memory\" mocha --compilers js:babel-core/register --recursive common server -R mocha-jenkins-reporter"
   },
   "dependencies": {
     "aws-sdk": "^2.2.41",
