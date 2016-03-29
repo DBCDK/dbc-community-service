@@ -28,7 +28,7 @@ describe('Test Comment model and logic', () => {
       });
   });
 
-  it('should test adding a comment.', (done) => {
+  it('should test adding a comment, get by id, and delete by id.', (done) => {
     let comment = {
       content: 'Dette er en test kommentar ' + Date.now(),
       timeCreated: '2016-03-23',
@@ -44,14 +44,24 @@ describe('Test Comment model and logic', () => {
       .end((err1, res1) => {
         expect(err1).toNotExist();
         let commentPostResponse = res1.body;
+        expect(commentPostResponse.hasOwnProperty('id')).toExist();
 
         superagent
-          .get(app.get('url') + 'api/Comments')
+          .get(`${app.get('url')}api/Comments/${commentPostResponse.id}`)
           .set('Accept', 'application/json')
           .end((err2, res2) => {
             expect(err2).toNotExist();
             expect(res2.body).toContain(commentPostResponse);
-            done();
+
+            superagent
+              .del(`${app.get('url')}api/Comments/${commentPostResponse.id}`)
+              .set('Accept', 'application/json')
+              .end((err3, res3) => {
+                expect(err3).toNotExist();
+                expect(res3.body).toContain({count: 1});
+
+                done();
+              });
           });
       });
   });
