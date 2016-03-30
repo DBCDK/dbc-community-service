@@ -97,6 +97,11 @@
       "type": "hasAndBelongsToMany",
       "model": "CommunityRole",
       "foreignKey": ""
+    },
+    "quarantines": {
+      "type": "hasMany",
+      "model": "Quarantine",
+      "foreignKey": "quarantinedProfileId"
     }
   },
   "acls": [
