@@ -20,6 +20,10 @@
     "timeCreated": {
       "type": "date",
       "required": true
+    },
+    "markedAsDeleted": {
+      "type": "boolean",
+      "required": false
     }
   },
   "validations": [],
