@@ -36,6 +36,7 @@ module.exports = function(File) {
 
   File.upload = (ctx, options, container, cb) => {
     let busboy = new Busboy({headers: ctx.req.headers});
+    const logger = File.app.get('logger');
 
     busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
       s3.upload({
@@ -43,19 +44,26 @@ module.exports = function(File) {
         Key: filename,
         Body: file
       }, (err, data) => {
-        File.create({
-          name: data.key,
-          type: mimetype,
-          container: container,
-          url: CONTAINERS_URL + container + '/download/' + data.key
-        }, function (error, obj) {
-          if (error) {
-            cb(error);
-          }
-          else {
-            cb(null, obj);
-          }
-        });
+        if (err) {
+          logger.error('An error occurred while uploading to amazon', {error: err});
+          cb(err);
+        }
+        else {
+          File.create({
+            name: data.Key,
+            type: mimetype,
+            container: container,
+            url: data.Location
+          }, function (error, obj) {
+            if (error) {
+              logger.error('An error occurred while creating file entry', {error: error});
+              cb(error);
+            }
+            else {
+              cb(null, obj);
+            }
+          });
+        }
       });
     });
 
