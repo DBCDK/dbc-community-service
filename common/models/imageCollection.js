@@ -40,15 +40,19 @@ module.exports = function(ImageCollection) {
   };
 
   ImageCollection.upload = (ctx, options, container, cb) => {
+    const logger = ImageCollection.app.get('logger');
+
     // First we upload the file to amazon and save the metadata via the file model.
     ImageCollection.app.models.file.upload(ctx, options, container, (err1, fileObj) => {
       if (err1) {
+        logger.error('An error occurred during upload of imagecollection', {error: err1});
         cb(err1);
       }
       else {
         // next we create an empty imageCollection
         ImageCollection.create({}, function (err2, imageCollectionObject) {
           if (err2) {
+            logger.error('An error occurred while creating image collection', {error: err2});
             cb(err2);
           }
           else {
@@ -59,11 +63,13 @@ module.exports = function(ImageCollection) {
               imageCollectionResolutionId: imageCollectionObject.id
             }, function (err3, resolutionObject) {
               if (err3) {
+                logger.error('An error occurred while creating resolution', {error: err3});
                 cb(err3);
               }
               else {
                 ImageCollection.app.models.file.updateAll({id: fileObj.id}, {resolutionImageFileId: resolutionObject.id}, function(err4) {
                   if (err4) {
+                    logger.error('An error occurred during update of file', {error: err4});
                     cb(err4);
                   }
                   else {
@@ -74,6 +80,7 @@ module.exports = function(ImageCollection) {
                       ]
                     }, function (err5, imageCollectionInstance) {
                       if (err5) {
+                        logger.error('An error occurred while finding image collection', {error: err5});
                         cb(err5);
                       }
                       else {
@@ -93,6 +100,9 @@ module.exports = function(ImageCollection) {
                             bucket: metadata.bucket,
                             size: metadata.size,
                             imageCollection: imageCollectionInstance
+                          }, {
+                            attempts: 5,
+                            timeout: 300000 // 5 minutes.
                           });
                         });
                       }
