@@ -14,9 +14,9 @@ module.exports = function (Flag) { // eslint-disable-line no-unused-vars
     }
 
     // check that postId, commentId or groupId has been include
-    const isPostFlag = typeof data.postFlagsId !== 'undefined';
-    const isCommentFlag = typeof data.commentFlagsId !== 'undefined';
-    const isGroupFlag = typeof data.groupFlagsId !== 'undefined';
+    const isPostFlag = typeof data.postFlagsId !== 'undefined' && data.postFlagsId;
+    const isCommentFlag = typeof data.commentFlagsId !== 'undefined' && data.commentFlagsId;
+    const isGroupFlag = typeof data.groupFlagsId !== 'undefined' && data.groupFlagsId;
 
     if (
       isCommentFlag && isPostFlag ||
