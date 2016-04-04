@@ -3,30 +3,35 @@
 import AWS from 'aws-sdk';
 import Busboy from 'busboy';
 
-const CONTAINERS_URL = 'api/fileContainers/';
 const s3 = new AWS.S3();
 
 module.exports = function(File) {
   File.uploadFromBuffer = (container, file, buffer, mimetype, cb) => {
+    const logger = File.app.get('logger');
+
+    logger.info('got new file from filebuffer, uploading to S3');
     s3.upload({
       Bucket: container,
       Key: file,
       Body: buffer
-    }, function(err) {
+    }, function(err, data) {
       if (err) {
+        logger.error('Error in uploading file from buffer', {error: err});
         cb(err);
       }
       else {
         File.create({
-          name: file,
+          name: data.key || data.Key,
           type: mimetype,
           container: container,
-          url: CONTAINERS_URL + container + '/download/' + file
+          url: data.Location
         }, function (error, obj) {
           if (error !== null) {
+            logger.error('Error in uploading file from buffer', {error});
             cb(error);
           }
           else {
+            logger.info('File was uploaded to S3, and relation was created');
             cb(null, obj);
           }
         });
@@ -50,7 +55,7 @@ module.exports = function(File) {
         }
         else {
           File.create({
-            name: data.Key,
+            name: data.Key || data.key,
             type: mimetype,
             container: container,
             url: data.Location
@@ -60,6 +65,7 @@ module.exports = function(File) {
               cb(error);
             }
             else {
+              logger.info('File was uploaded to S3', {data});
               cb(null, obj);
             }
           });
