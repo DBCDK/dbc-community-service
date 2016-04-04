@@ -3,7 +3,6 @@
 import AWS from 'aws-sdk';
 import Busboy from 'busboy';
 
-const CONTAINERS_URL = 'api/fileContainers/';
 const s3 = new AWS.S3();
 
 module.exports = function(File) {
