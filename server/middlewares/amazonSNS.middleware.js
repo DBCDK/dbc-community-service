@@ -51,29 +51,50 @@ export function amazonSNSNotificationMiddleware (amazonConfig, req, res, next) {
       if (
         message.state === 'COMPLETED' &&
         message.userMetadata &&
-        message.userMetadata.postId &&
         message.userMetadata.destinationContainer &&
         message.userMetadata.mimetype &&
         message.outputs
       ) {
-        // time to attach the newly converted video to a videoCollection.
-        req.app.models.Post.findById(message.userMetadata.postId, {include: ['video']}, function (err, postObject) {
-          if (err) {
-            logger.error('error occurred during creation of resolution', {error: err});
-            return next();
-          }
+        if (message.userMetadata.postId) {
+          // time to attach the newly converted video to a videoCollection.
+          req.app.models.Post.findById(message.userMetadata.postId, {include: ['video']}, function (err, postObject) {
+            if (err) {
+              logger.error('error occurred during creation of resolution', {error: err});
+              return next();
+            }
 
-          if (postObject && postObject.video && postObject.video().id) {
-            req.app.models.VideoCollection.createResolution(postObject.video().id, message, function(err2, info) {
-              if (err2) {
-                logger.error('error occurred during creation of resolution', {error: err2});
-                return next();
-              }
+            if (postObject && postObject.video && postObject.video().id) {
+              req.app.models.VideoCollection.createResolution(postObject.video().id, message, function(err2, info) {
+                if (err2) {
+                  logger.error('error occurred during creation of resolution', {error: err2});
+                  return next();
+                }
 
-              logger.info('created resolution from notification', info);
-            });
-          }
-        });
+                logger.info('created resolution from notification', info);
+              });
+            }
+          });
+        }
+        else if (message.userMetadata.commentId) {
+          // time to attach the newly converted video to a videoCollection.
+          req.app.models.Comment.findById(message.userMetadata.commentId, {include: ['video']}, function (err, commentObject) {
+            if (err) {
+              logger.error('error occurred during creation of resolution', {error: err});
+              return next();
+            }
+
+            if (commentObject && commentObject.video && commentObject.video().id) {
+              req.app.models.VideoCollection.createResolution(commentObject.video().id, message, function(err2, info) {
+                if (err2) {
+                  logger.error('error occurred during creation of resolution', {error: err2});
+                  return next();
+                }
+
+                logger.info('created resolution from notification', info);
+              });
+            }
+          });
+        }
       }
     }
 

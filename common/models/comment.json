@@ -36,6 +36,11 @@
       "type": "hasMany",
       "model": "Flag",
       "foreignKey": "commentFlagsId"
+    },
+    "video": {
+      "type": "hasOne",
+      "model": "videoCollection",
+      "foreignKey": "commentVideoCollection"
     }
   },
   "acls": [],
