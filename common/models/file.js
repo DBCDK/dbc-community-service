@@ -47,7 +47,8 @@ module.exports = function(File) {
       s3.upload({
         Bucket: container,
         Key: filename,
-        Body: file
+        Body: file,
+        ContentType: mimetype
       }, (err, data) => {
         if (err) {
           logger.error('An error occurred while uploading to amazon', {error: err});
