@@ -1,9 +1,7 @@
 'use strict';
 
 var Queue = require('bull');
-var sharp = require('sharp');
-var tmp = require('tmp');
-var fs = require('fs');
+var gm = require('gm');
 
 import AWS from 'aws-sdk';
 
@@ -13,7 +11,9 @@ module.exports = function imageQueueCreator(app, redisHost, redisPort) {
   imageQueue.process(function (job, done) {
     logger.info('starting new image transcoding job', job.data);
     var extension = job.data.fileObj.url.split('.');
-    extension = extension[extension.length - 1];
+    extension = extension[extension.length - 1].toUpperCase();
+    extension = extension === 'GIF' ? extension : 'PNG';
+
     var width;
     var height;
     switch (job.data.size) {
@@ -49,71 +49,75 @@ module.exports = function imageQueueCreator(app, redisHost, redisPort) {
 
     job.progress(10);
 
-    var tmpobj = tmp.fileSync({mode: '0666', prefix: 's3-image-', postfix: '.' + extension});
-    (new AWS.S3())
-      .getObject({
-        Bucket: job.data.fileObj.container,
-        Key: job.data.fileObj.name
-      })
-      .createReadStream()
-      .pipe(fs.createWriteStream(null, {fd: tmpobj.fd}))
-      .on('close', () => {
-        job.progress(50);
-        let imageObject = sharp(tmpobj.name);
-        imageObject.metadata().then((metadata) => {
-          job.progress(55);
+    let s3ReadStream;
 
-          if (metadata.orientation) {
-            imageObject.rotate();
-          }
+    try {
+      s3ReadStream = (new AWS.S3())
+        .getObject({
+          Bucket: job.data.fileObj.container,
+          Key: job.data.fileObj.name
+        })
+        .createReadStream();
+    }
+    catch (e) {
+      logger.error('Error in getting image from s3', {error: e});
+      return done(e);
+    }
 
-          job.progress(60);
+    job.progress(20);
+    let imageObject;
 
-          return imageObject;
-        }).then((image) => {
-          imageObject = image;
+    try {
+      imageObject = gm(s3ReadStream)
+        .autoOrient()
+        .noProfile();
 
-          if (width && height) {
-            imageObject.resize(width, height).withoutEnlargement();
-          }
-          else {
-            imageObject.resize(width).max().withoutEnlargement();
-          }
+      job.progress(40);
 
-          job.progress(80);
+      if (extension !== 'GIF') {
+        if (width && height) {
+          imageObject = imageObject.resizeExact(width, height);
+        }
+        else {
+          imageObject = imageObject.resize(width);
+        }
+      }
 
-          imageObject.toBuffer()
-            .then(function (outputBuffer) {
-              tmpobj.removeCallback();
-              app.models.ImageCollection.createResolution(
-                outputBuffer,
-                job.data.bucket,
-                job.data.fileObj,
-                job.data.size,
-                job.data.imageCollection,
-                () => {
-                  job.progress(100);
+      job.progress(60);
+    }
+    catch (e) {
+      logger.error('Error in getting image from s3', {error: e});
+      return done(e);
+    }
 
-                  done(null, {
-                    size: width && height ? `${width}x${height}` : `${width}x${width}`
-                  });
+    imageObject.toBuffer(extension, function (err, buffer) {
+      if (err) {
+        logger.error('Error in transcoding', {error: err});
+        return done(err);
+      }
 
-                  logger.info('finished image transcoding job', {
-                    size: width && height ? `${width}x${height}` : `${width}x${width}`,
-                    data: job.data
-                  });
-                }
-              );
-            })
-            .catch(function (err) {
-              done();
-              logger.error('an error occurred while transcoding image', {job: job.data, error: err});
-            });
-        }).catch((err) => {
-          done();
-          logger.error('an error occurred while transcoding image', {job: job.data, error: err});
-        });
-      });
+      job.progress(80);
+
+      app.models.ImageCollection.createResolution(
+        buffer,
+        job.data.bucket,
+        job.data.fileObj,
+        job.data.size,
+        job.data.imageCollection,
+        () => {
+          job.progress(100);
+
+          done(null, {
+            size: width && height ? `${width}x${height}` : `${width}x${width}`
+          });
+
+          logger.info('finished image transcoding job', {
+            size: width && height ? `${width}x${height}` : `${width}x${width}`,
+            data: job.data
+          });
+        }
+      );
+    });
   });
 
   return imageQueue;
