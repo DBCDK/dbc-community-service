@@ -28,6 +28,7 @@
     "errorhandler": "^1.4.3",
     "expect": "^1.16.0",
     "global-tunnel": "^1.2.0",
+    "gm": "^1.22.0",
     "lodash": "^4.0.0",
     "loopback": "^2.26.2",
     "loopback-boot": "^2.16.0",
