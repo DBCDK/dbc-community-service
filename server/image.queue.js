@@ -85,7 +85,7 @@ module.exports = function imageQueueCreator(app, redisHost, redisPort) {
 
       job.progress(60);
     }
-    catch(e) {
+    catch (e) {
       logger.error('Error in getting image from s3', {error: e});
       return done(e);
     }
