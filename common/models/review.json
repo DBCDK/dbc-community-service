@@ -1,0 +1,58 @@
+{
+  "name": "review",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "pid": {
+      "type": "string",
+      "required": true
+    },
+    "worktype": {
+      "type": "string",
+      "required": true
+    },
+    "content": {
+      "type": "string"
+    },
+    "created": {
+      "type": "date",
+      "required": true
+    },
+    "modified": {
+      "type": "date",
+      "required": true
+    },
+    "rating": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "likes": {
+      "type": "hasMany",
+      "model": "Like",
+      "foreignKey": "reviewlikeid"
+    },
+    "image": {
+      "type": "hasOne",
+      "model": "imageCollection",
+      "foreignKey": "reviewImageCollection"
+    },
+    "video": {
+      "type": "hasOne",
+      "model": "videoCollection",
+      "foreignKey": "reviewVideoCollection"
+    },
+    "owner": {
+      "type": "belongsTo",
+      "model": "Profile",
+      "foreignKey": "reviewownerid"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

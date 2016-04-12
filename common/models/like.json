@@ -17,6 +17,11 @@
   },
   "validations": [],
   "relations": {
+    "review": {
+      "type": "belongsTo",
+      "model": "review",
+      "foreignKey": "reviewlikeid"
+    },
     "post": {
       "type": "belongsTo",
       "model": "Post",
