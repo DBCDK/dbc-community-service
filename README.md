@@ -43,11 +43,7 @@ GRANT ALL PRIVILEGES ON DATABASE ‘dbc_community’ TO communitydb;
 
 ### image resizing queue
 
-We use [sharp](https://github.com/lovell/sharp) to resize images, most windows, linux and armv6+ systems don't require anything external, however if you're running os x you need to run following command to get the dependencies:
-
-```
-brew install homebrew/science/vips
-```
+We use [gm](https://github.com/aheckmann/gm) to resize images, this means you will need to either disable the image scaling queue, or install [graphicsmagick](http://www.graphicsmagick.org/):
 
 This also requires a running redis instance.
 If you wish to disable it, see the environment variables below.
