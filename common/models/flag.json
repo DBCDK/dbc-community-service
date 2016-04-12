@@ -40,6 +40,11 @@
       "type": "embedsOne",
       "model": "Group",
       "property": "groups"
+    },
+    "reviews": {
+      "type": "embedsOne",
+      "model": "review",
+      "property": "reviews"
     }
   },
   "acls": [],
