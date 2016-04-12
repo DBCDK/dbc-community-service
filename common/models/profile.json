@@ -102,6 +102,11 @@
       "type": "hasMany",
       "model": "Quarantine",
       "foreignKey": "quarantinedProfileId"
+    },
+    "reviews": {
+      "type": "hasMany",
+      "model": "review",
+      "foreignKey": "reviewownerid"
     }
   },
   "acls": [

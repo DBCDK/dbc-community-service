@@ -35,6 +35,7 @@ module.exports = function automigrate(model, cb) {
     'Flag',
     'file',
     'resolution',
+    'review',
     'imageCollection',
     'videoCollection'
   ];
