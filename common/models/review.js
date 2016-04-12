@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = function(Review) {
 
   Review.observe('before save', function videoUpload(ctx, next) {
