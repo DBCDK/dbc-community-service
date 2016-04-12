@@ -37,6 +37,8 @@ module.exports = function(Post) {
   Post.observe('after save', function afterPostSave(ctx, next) {
     const logger = Post.app.get('logger');
 
+    logger.info('a post was created', ctx.instance.__data);
+
     // grab the id from the hookState
     if (ctx.hookState.postVideoCollection) {
       // attach the videoCollection to the newly saved post.
