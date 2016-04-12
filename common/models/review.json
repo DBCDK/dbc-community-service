@@ -51,6 +51,11 @@
       "type": "belongsTo",
       "model": "Profile",
       "foreignKey": "reviewownerid"
+    },
+    "flags": {
+      "type": "hasMany",
+      "model": "Flag",
+      "foreignKey": "reviewFlagsId"
     }
   },
   "acls": [],
