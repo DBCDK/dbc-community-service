@@ -6,7 +6,6 @@ import Logger from 'dbc-node-logger';
 import countMixin from 'loopback-counts-mixin';
 import AWS from 'aws-sdk';
 import ProxyAgent from 'proxy-agent';
-import globalTunnel from 'global-tunnel';
 import {amazonSNSConfirmMiddleware, amazonSNSNotificationMiddleware} from './middlewares/amazonSNS.middleware';
 
 const app = loopback();
@@ -45,7 +44,6 @@ AWS.config.update({
 });
 
 if (process.env.http_proxy) {
-  globalTunnel.initialize();
   AWS.config.update({
     httpOptions: {
       agent: ProxyAgent(process.env.http_proxy)
