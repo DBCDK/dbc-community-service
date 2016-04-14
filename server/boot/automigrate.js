@@ -66,9 +66,6 @@ function migrateTables(ds, appModels) {
         // Model does not exist, create it!
         let name = postgres.tableEscaped(model);
 
-        // Create schema
-        sql.push(`CREATE SCHEMA ${postgres.escapeName(postgres.schema(model))}`);
-
         // Create table
         sql.push(`CREATE TABLE ${name} (\n  ${postgres.propertiesSQL(model)}\n)`);
         downSql.push(`DROP TABLE ${name}`);
@@ -85,22 +82,24 @@ function migrateTables(ds, appModels) {
         }
       }
 
-      if (sql.length > 0) {
-        logger.debug('==========================UP==========================');
-        sql.forEach((sqlStatements) => {
-          sqlStatements.split(', ').forEach((statement) => {
-            logger.debug(`\n${statement};`);
+      if (!process.env.TESTING) {
+        if (sql.length > 0) {
+          logger.debug('==========================UP==========================');
+          sql.forEach((sqlStatements) => {
+            sqlStatements.split(', ').forEach((statement) => {
+              logger.debug(`\n${statement};`);
+            });
           });
-        });
-      }
+        }
 
-      if (downSql.length > 0) {
-        logger.debug('=========================DOWN=========================');
-        downSql.forEach((sqlStatements) => {
-          sqlStatements.split(', ').forEach((statement) => {
-            logger.debug(`\n${statement};`);
+        if (downSql.length > 0) {
+          logger.debug('=========================DOWN=========================');
+          downSql.forEach((sqlStatements) => {
+            sqlStatements.split(', ').forEach((statement) => {
+              logger.debug(`\n${statement};`);
+            });
           });
-        });
+        }
       }
     });
   });
