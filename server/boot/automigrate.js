@@ -1,6 +1,12 @@
 'use strict';
 import * as logger from 'dbc-node-logger';
 import app from '../server';
+import readline from 'readline';
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
 function migrateTables(ds, appModels) {
   if ('string' === typeof appModels) {
@@ -29,7 +35,16 @@ function migrateTables(ds, appModels) {
         downSql = downSql.concat(getAddedColoumnsToDrop(postgres, model, actualFields));
 
         // Next modify existing properties
-        sql = sql.concat(postgres.getPropertiesToModify(model, actualFields).map((colSql) => {
+        let tSql = [];
+        postgres.getPropertiesToModify(model, actualFields).forEach((colsSql) => {
+          colsSql.split(',').forEach((colSql) => {
+            tSql.push(colSql);
+          });
+        });
+
+        // Get columns to alter
+        sql = sql.concat(tSql.map((colSql) => {
+          colSql = colSql.replace('ALTER COLUMN"', 'ALTER COLUMN "').split(','); // Temporary fix until PR #137 on the connector is merged.
           return `ALTER TABLE ${postgres.tableEscaped(model)} ${colSql}`;
         }));
         downSql = downSql.concat(getModifiedColoumnsToRevert(postgres, model, actualFields));
@@ -44,6 +59,11 @@ function migrateTables(ds, appModels) {
         let indexSql = indexSqlGenerator(postgres, model, actualIndexes);
         if (indexSql.length > 0) {
           sql.push(indexSql);
+        }
+
+        let indexDownSql = generateDownIndexes(postgres, model, actualIndexes);
+        if (indexDownSql.length > 0) {
+          downSql.push(indexDownSql);
         }
       }
       else {
@@ -62,6 +82,11 @@ function migrateTables(ds, appModels) {
         if (indexSql.length > 0) {
           sql.push(indexSql);
         }
+
+        let indexDownSql = generateDownIndexes(postgres, model, undefined);
+        if (indexDownSql.length > 0) {
+          downSql.push(indexDownSql);
+        }
       }
 
       if (sql.length > 0) {
@@ -71,7 +96,9 @@ function migrateTables(ds, appModels) {
             console.log(`${statement};`);
           });
         });
+      }
 
+      if (downSql.length > 0) {
         console.log('\nDOWN:');
         downSql.forEach((sqlStatements) => {
           sqlStatements.split(', ').forEach((statement) => {
@@ -157,9 +184,10 @@ function getColoumnsToRestore(postgres, model, actualFields) {
     }
 
     if (actualFieldNotPresentInModel(actualField, model)) {
-      console.log('bob');
-      console.log(actualField);
-      // sql.push('DROP COLUMN ' + self.escapeName(actualField.column));
+      sql.push(
+        `ALTER TABLE ${postgres.tableEscaped(model)} ` +
+        `ADD COLUMN ${postgres.escapeName(actualField.column)} ${actualField.type.toUpperCase()}`
+      );
     }
   });
 
@@ -358,6 +386,74 @@ function indexSqlGenerator(postgres, model, actualIndexes) {
 
       sql.push('CREATE ' + kind + ' INDEX ' + iName + ' ON ' + postgres.tableEscaped(model) + type + ' ( ' + columns + ')');
     }
+  });
+
+  return sql.join(', ');
+}
+
+function generateDownIndexes(postgres, model, actualIndexes) {
+  actualIndexes = actualIndexes || [];
+  let m = postgres._models[model];
+  let propNames = Object.keys(m.properties).filter(function (name) {
+    return !!m.properties[name];
+  });
+
+  let indexNames = m.settings.indexes && Object.keys(m.settings.indexes).filter(function (name) {
+      return !!m.settings.indexes[name];
+    }) || [];
+
+  let sql = [];
+  let ai = {};
+  const propNameRegEx = new RegExp('^' + postgres.table(model) + '_([^_]+)_idx');
+  const propNameRegExAlt = new RegExp('^' + postgres.table(model) + '_([^_]+)_key');
+  if (actualIndexes) {
+    actualIndexes.forEach(function (i) {
+      let name = i.name;
+      if (!ai[name]) {
+        ai[name] = i;
+      }
+    });
+
+  }
+  let aiNames = Object.keys(ai);
+
+  aiNames.forEach((indexName) => {
+    let indexDef = normalizeIndexDefinition(ai[indexName]);
+    if (
+      indexDef.type === 'btree' &&
+      indexDef.primary &&
+      indexDef.unique &&
+      indexDef.keys[0][0] === 'id'
+    ) {
+      return;
+    }
+
+    if (indexName in indexNames) {
+      return;
+    }
+
+    let propName = propNameRegEx.exec(indexName) || propNameRegExAlt.exec(indexName);
+    propName = propName && postgres.propertyName(model, propName[1]) || null;
+    let iName = [postgres.table(model), postgres.column(model, propName), 'idx'].join('_');
+
+    let i = ai[indexName];
+    let pName = postgres.escapeName(postgres.column(model, propName));
+    let type = '';
+    let kind = '';
+
+    if (i.type) {
+      type = ' USING ' + i.type;
+    }
+
+    if (i.kind) {
+      kind = i.kind;
+    }
+
+    if (!kind && !type && typeof i === 'object' || i.unique && i.unique === true) {
+      kind = ' UNIQUE ';
+    }
+
+    sql.push('CREATE ' + kind + ' INDEX ' + postgres.escapeName(iName) + ' ON ' + postgres.tableEscaped(model) + type + ' ( ' + pName + ' )');
   });
 
   return sql.join(', ');
