@@ -95,6 +95,24 @@ export function amazonSNSNotificationMiddleware (amazonConfig, req, res, next) {
             }
           });
         }
+        else if (message.userMetadata.reviewId) {
+          req.app.models.Review.findById(message.userMetadata.reviewId, {include: ['video']}, function (err, reviewObject) {
+            if (err) {
+              logger.error('error occurred during creation of resolution', {error: err});
+              return next();
+            }
+
+            if (reviewObject && reviewObject.video && reviewObject.video().id) {
+              req.app.models.VideoCollection.createResolution(reviewObject.video().id, message, function(err2, info) {
+                if (err2) {
+                  logger.error('error occurred during creation of resolution', {error: err2});
+                  return next();
+                }
+                logger.info('created resolution from notification', info);
+              });
+            }
+          });
+        }
       }
     }
 
