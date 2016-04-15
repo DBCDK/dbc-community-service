@@ -127,13 +127,18 @@ module.exports = function automigrate(model, cb) {
     'videoCollection'
   ];
 
-  if (ds.connected) {
-    migrateTables(ds, appModels);
+  if (!process.env.TESTING) {
+    if (ds.connected) {
+      migrateTables(ds, appModels);
+    }
+    else {
+      ds.once('connected', () => {
+        migrateTables(ds, appModels);
+      });
+    }
   }
   else {
-    ds.once('connected', () => {
-      migrateTables(ds, appModels);
-    });
+    ds.autoupdate();
   }
   cb();
 };
