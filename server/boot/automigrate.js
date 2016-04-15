@@ -106,39 +106,21 @@ function migrateTables(ds, appModels) {
 }
 
 module.exports = function automigrate(model, cb) {
-
   let ds = app.dataSources.PsqlDs;
-  const appModels = [
-    'Profile',
-    'Like',
-    'Group',
-    'Comment',
-    'Quarantine',
-    'Post',
-    'PostLike',
-    'GroupProfile',
-    'CommunityRole',
-    'ProfileCommunityRole',
-    'Flag',
-    'file',
-    'resolution',
-    'review',
-    'imageCollection',
-    'videoCollection'
-  ];
-
-  if (!process.env.TESTING) {
+  if (process.env.TESTING) {
+    // When testing, we use a memory database, therefore we can just autoupdate it.
+    ds.autoupdate();
+  }
+  else if (!process.env.MIGRATING) {
+    // If we are already migrating, there's no point in outputting migration info.
     if (ds.connected) {
-      migrateTables(ds, appModels);
+      migrateTables(ds, null);
     }
     else {
       ds.once('connected', () => {
-        migrateTables(ds, appModels);
+        migrateTables(ds, null);
       });
     }
-  }
-  else {
-    ds.autoupdate();
   }
   cb();
 };

@@ -120,7 +120,7 @@ boot(app, __dirname, (err) => {
     throw err;
   }
 
-  if (!process.env.TESTING) {
+  if (!process.env.TESTING && !process.env.MIGRATING) {
     app.start();
   }
 });
