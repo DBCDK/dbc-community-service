@@ -2,9 +2,9 @@
 
 module.exports = {
   up: function(dataSource, next) {
-    next();
+    dataSource.connector.query('', next);
   },
   down: function(dataSource, next) {
-    next();
+    dataSource.connector.query('', next);
   }
 };
