@@ -25,7 +25,7 @@ module.exports = function(Review) {
         }
         else {
           logger.info('Created new video resolution', info);
-          ctx.hookState.postVideoCollection = info.id;
+          ctx.hookState.reviewVideoCollection = info.id;
           next();
         }
       });
