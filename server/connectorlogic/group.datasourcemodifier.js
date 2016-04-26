@@ -8,6 +8,8 @@ module.exports = function groupDatasourceModifier(app) {
 
     // Ranking behavior starts here
     if (group_pop_ordering && group_pop_ordering[1]) {
+      const limit_parameter = /LIMIT ([0-9]+)$/.exec(ctx.req.sql);
+      const limit = limit_parameter ? `LIMIT ${limit_parameter[1]}` : '';
       const where_parameter = /WHERE (.*) ORDER BY/.exec(ctx.req.sql);
       let where = '';
       if (where_parameter && where_parameter[1]) {
@@ -52,7 +54,8 @@ module.exports = function groupDatasourceModifier(app) {
         '  g.id ' +
         'ORDER BY ' +
         `  pop ${group_pop_ordering[1]}, ` + // Order by direction.
-        '  g.timecreated DESC ';
+        '  g.timecreated DESC ' +
+        `${limit} `;
     }
     next();
   });
