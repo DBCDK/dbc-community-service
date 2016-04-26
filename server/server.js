@@ -7,6 +7,7 @@ import countMixin from 'loopback-counts-mixin';
 import AWS from 'aws-sdk';
 import ProxyAgent from 'proxy-agent';
 import {amazonSNSConfirmMiddleware, amazonSNSNotificationMiddleware} from './middlewares/amazonSNS.middleware';
+import groupDatasourceModifier from './connectorlogic/group.datasourcemodifier';
 
 const app = loopback();
 const APP_NAME = process.env.APPLICATION_NAME || 'app_name';
@@ -119,6 +120,8 @@ boot(app, __dirname, (err) => {
     logger.error('An error occured while booting up the Community Service', {error: err});
     throw err;
   }
+
+  groupDatasourceModifier(app);
 
   if (!process.env.TESTING && !process.env.MIGRATING) {
     app.start();

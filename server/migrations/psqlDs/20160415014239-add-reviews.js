@@ -27,8 +27,9 @@ module.exports = {
     dataSource.connector.query(
       'ALTER TABLE "public"."like" DROP COLUMN "reviewlikeid";\n' +
       'ALTER TABLE "public"."flag" DROP COLUMN "_reviews";\n' +
-      'ALTER TABLE "public"."imagecollection" DROP COLUMN "reviewImageCollection";\n' +
-      'ALTER TABLE "public"."videocollection" DROP COLUMN "reviewVideoCollection";\n' +
+      'ALTER TABLE "public"."flag" DROP COLUMN "reviewflagsid";\n' +
+      'ALTER TABLE "public"."imagecollection" DROP COLUMN "reviewimagecollection";\n' +
+      'ALTER TABLE "public"."videocollection" DROP COLUMN "reviewvideocollection";\n' +
       'DROP TABLE "public"."review";\n',
       next
     );
