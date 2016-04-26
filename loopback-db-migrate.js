@@ -29,10 +29,7 @@ datasource.createModel('Migration', {
     "name": {
         "type": "String",
         "required": true,
-        "length": 100,
-        "index": {
-            "unique": true
-        }
+        "length": 100
     },
     "db": {
         "type": "String",
@@ -97,7 +94,7 @@ function findScriptsToRun(upOrDown, cb) {
                 // return scripts that exist on disk but not in the db
                 var scriptNamesToRun = localScriptNames.filter(function (scriptName) {
                     return runScriptsNames.indexOf(scriptName) < 0;
-                })
+                });
                 if (countFilter) {
                     scriptNamesToRun = scriptNamesToRun.slice(0, countFilter)
                 }
@@ -124,7 +121,7 @@ function migrateScripts(upOrDown) {
                         if (err) {
                             console.log('Error saving migration', localScriptName, 'to database!');
                             console.log(err.stack);
-                            process.exit(1);;
+                            process.exit(1);
                         }
 
                         console.log(localScriptName, 'finished sucessfully.');
