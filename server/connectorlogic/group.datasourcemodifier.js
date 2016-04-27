@@ -3,6 +3,15 @@
 module.exports = function groupDatasourceModifier(app) {
   let Group = app.models.Group;
   let connector = Group.getDataSource().connector;
+
+  // ranking parameters
+  const timefactor = process.env.group_ranking_tf1 || 40000; // eslint-ignore-line no-process-env
+  const group_create_timefactor = process.env.group_ranking_tf2 || 45000; // eslint-ignore-line no-process-env
+  const postfactor = process.env.group_ranking_pf || 2; // eslint-ignore-line no-process-env
+  const followerfactor = process.env.group_ranking_ff || 5; // eslint-ignore-line no-process-env
+  const commentfactor = process.env.group_ranking_cf || 2; // eslint-ignore-line no-process-env
+  const likefactor = process.env.group_ranking_lf || 2; // eslint-ignore-line no-process-env
+
   connector.observe('before execute', (ctx, next) => {
     const group_pop_ordering = /ORDER BY "group_pop" (ASC|DESC)/.exec(ctx.req.sql);
 
@@ -20,11 +29,6 @@ module.exports = function groupDatasourceModifier(app) {
         }).join(' ');
       }
 
-      const timefactor = 2;
-      const postfactor = 2;
-      const followerfactor = 1;
-      const commentfactor = 1;
-
       ctx.req.sql = '' +
         'SELECT ' +
         '  g.id, ' +
@@ -33,14 +37,18 @@ module.exports = function groupDatasourceModifier(app) {
         '  g.colour, ' +
         '  g.timecreated, ' +
         '  g.groupownerid, ' +
-        '  ROUND((GREATEST( ' +
-        '    EXTRACT(EPOCH FROM MAX(p.timecreated)), ' +
-        '    EXTRACT(EPOCH FROM MAX(c.timecreated)), ' +
-        '    1461568281 ' +
-        `  ) + EXTRACT(EPOCH FROM MAX(g.timecreated)))/(${timefactor}*45000) + ` +
-        `  COUNT(distinct p.id)*${postfactor} +` +
-        `  COUNT(distinct gp.id)*${followerfactor} +` +
-        `  COUNT(DISTINCT c.id))*${commentfactor} as pop ` +
+        `(EXTRACT(EPOCH FROM MAX(g.timecreated))/${group_create_timefactor}) *` +
+        `(COUNT(DISTINCT gp.id)*${followerfactor}) +` +
+        '(' +
+        `  COUNT(DISTINCT pl.id) * ${likefactor} +` +
+        `  COUNT(DISTINCT p.id) * ${postfactor} +` +
+        `  COUNT(DISTINCT c.id) * ${commentfactor}` +
+        ') *' +
+        '(GREATEST(' +
+        '  EXTRACT(EPOCH FROM MAX(p.timecreated)),' +
+        '  EXTRACT(EPOCH FROM MAX(c.timecreated)),' +
+        '  1461568281' +
+        `) / ${timefactor}) as pop ` +
         'FROM ' +
         '  "group" g ' +
         '  JOIN "groupprofile" gp ' +
@@ -49,6 +57,8 @@ module.exports = function groupDatasourceModifier(app) {
         '    ON g.id=p.groupid ' +
         '  LEFT JOIN "comment" c ' +
         '    ON c.postid=p.id ' +
+        '  LEFT JOIN postlike pl' +
+        '    ON pl.postid=p.id' +
         `${where} ` +
         'GROUP BY ' +
         '  g.id ' +
