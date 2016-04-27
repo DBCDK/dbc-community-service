@@ -7,34 +7,10 @@
 import superagent from 'superagent';
 import crypto from 'crypto';
 
-export function loginViaUnilogin(endpoint, username) {
-  username = username || 'bobby';
-
+export function superAgentGetPromise(url) {
   return (new Promise((resolve, reject) => {
-    let uniloginSecret;
-
-    if (process.env.UNILOGINSECRET) {
-      uniloginSecret = process.env.UNILOGINSECRET;
-    }
-    else {
-      uniloginSecret = require('@dbcdk/biblo-config').biblo.getConfig().unilogin.secret;
-    }
-
-    let timestamp = (new Date()).toISOString();
-    let serverToken = crypto
-      .createHash('md5')
-      .update(timestamp + uniloginSecret + username)
-      .digest('hex');
-
     superagent
-      .post(`${endpoint}api/Profiles/unilogin`)
-      .type('form')
-      .send({
-        username,
-        timestamp,
-        authtoken: serverToken,
-        ttl: 0
-      })
+      .get(url)
       .end((err, res) => {
         if (err) {
           reject(err);
@@ -46,28 +22,12 @@ export function loginViaUnilogin(endpoint, username) {
   }));
 }
 
-export function createProfile(endpoint, userObject) {
+export function superAgentPostPromise(url, payload) {
   return (new Promise((resolve, reject) => {
-    userObject = Object.assign({
-      username: 'bobby',
-      displayName: 'bobby',
-      favoriteLibrary: {
-        libraryId: '775100' // Århus
-      },
-      description: 'Dette er en beskrivelse af en bruger',
-      email: 'bob@mailinator.com',
-      phone: '+4588888888',
-      created: '2016-03-28',
-      lastUpdated: '2016-03-28',
-      hasFilledInProfile: true,
-      birthday: '2016-03-28',
-      fullName: 'Bobby Bendsen'
-    }, userObject || {});
-
     superagent
-      .post(`${endpoint}api/Profiles`)
+      .post(url)
       .type('form')
-      .send(userObject)
+      .send(payload)
       .end((err, res) => {
         if (err) {
           reject(err);
@@ -77,4 +37,61 @@ export function createProfile(endpoint, userObject) {
         }
       });
   }));
+}
+
+export function loginViaUnilogin(endpoint, username) {
+  username = username || 'bobby';
+
+  let uniloginSecret;
+
+  if (process.env.UNILOGINSECRET) {
+    uniloginSecret = process.env.UNILOGINSECRET;
+  }
+  else {
+    uniloginSecret = require('@dbcdk/biblo-config').biblo.getConfig().unilogin.secret;
+  }
+
+  let timestamp = (new Date()).toISOString();
+  let serverToken = crypto
+    .createHash('md5')
+    .update(timestamp + uniloginSecret + username)
+    .digest('hex');
+
+  return superAgentPostPromise(`${endpoint}api/Profiles/unilogin`, {
+    username,
+    timestamp,
+    authtoken: serverToken,
+    ttl: 0
+  });
+}
+
+export function createProfile(endpoint, userObject) {
+  userObject = Object.assign({
+    username: 'bobby',
+    displayName: 'bobby',
+    favoriteLibrary: {
+      libraryId: '775100' // Århus
+    },
+    description: 'Dette er en beskrivelse af en bruger',
+    email: 'bob@mailinator.com',
+    phone: '+4588888888',
+    created: '2016-03-28',
+    lastUpdated: '2016-03-28',
+    hasFilledInProfile: true,
+    birthday: '2016-03-28',
+    fullName: 'Bobby Bendsen'
+  }, userObject || {});
+
+  return superAgentPostPromise(`${endpoint}api/Profiles`, userObject);
+}
+
+export function createGroup(endpoint, groupObject) {
+  groupObject = Object.assign({
+    name: `Gruppen! ${Date.now()}`,
+    description: 'Dette er GRUPPEN!',
+    colour: 'red',
+    timeCreated: (new Date()).toUTCString()
+  }, groupObject || {});
+
+  return superAgentPostPromise(`${endpoint}api/Groups`, groupObject);
 }
