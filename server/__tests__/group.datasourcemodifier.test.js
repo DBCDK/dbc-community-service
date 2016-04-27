@@ -3,9 +3,8 @@
 process.env.TESTING = true;
 
 import expect from 'expect';
-import superagent from 'superagent';
 import app from '../server';
-import {createGroup, superAgentPostPromise, superAgentGetPromise} from '../../common/models/__tests__/testutils';
+import {createGroup, superAgentGetPromise} from '../../common/models/__tests__/testutils';
 
 describe('Test group rankings', () => {
   let server;
