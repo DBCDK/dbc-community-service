@@ -38,6 +38,9 @@
     "markedAsDeleted": {
       "type": "boolean",
       "required": false
+    },
+    "palleid": {
+      "type": "number"
     }
   },
   "validations": [],
