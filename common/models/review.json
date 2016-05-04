@@ -19,7 +19,9 @@
       "required": true
     },
     "content": {
-      "type": "string"
+      "type": "string",
+      "max": 25000,
+      "length": 25000
     },
     "created": {
       "type": "date",
