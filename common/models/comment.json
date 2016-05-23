@@ -41,6 +41,11 @@
       "type": "hasOne",
       "model": "videoCollection",
       "foreignKey": "commentVideoCollection"
+    },
+    "review": {
+      "type": "belongsTo",
+      "model": "review",
+      "foreignKey": "attachedReviewId"
     }
   },
   "acls": [],
