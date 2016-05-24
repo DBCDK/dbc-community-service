@@ -39,6 +39,13 @@ module.exports = function(ImageCollection) {
     });
   };
 
+  /**
+   * Method used to upload a file to s3.
+   * @param {Object} ctx
+   * @param {Object} options
+   * @param {Object} container
+   * @param {Function} cb
+   */
   ImageCollection.upload = (ctx, options, container, cb) => {
     const logger = ImageCollection.app.get('logger');
 
@@ -133,6 +140,13 @@ module.exports = function(ImageCollection) {
     }
   );
 
+  /**
+   * Looks up an image by id and size, then serves that image.
+   * @param {Object} ctx
+   * @param {Number} id
+   * @param {String} size
+   * @param {Function} cb
+   */
   ImageCollection.download = function downloadImageFromImageCollection (ctx, id, size, cb) {
     if (
       size !== 'original' && size !== 'large' && size !== 'medium' && size !== 'small' && size !== 'large-square'
