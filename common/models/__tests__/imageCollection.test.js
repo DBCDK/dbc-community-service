@@ -44,7 +44,7 @@ describe('Test imageCollection endpoints and functionality', () => {
     superagent
       .post(`${app.get('url')}api/ImageCollections/upload?container=uxdev-biblo-imagebucket`)
       .attach('file', fs.readFileSync(`${__dirname}/../__mocks__/1by1.png`), `test_file_${Date.now()}.png`)
-      .end((err, res) => {
+      .end((err) => {
         expect(err).toNotExist();
 
         // we create six resolutions, therefore the imageQueue should be called six times.
