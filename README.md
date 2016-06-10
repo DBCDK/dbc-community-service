@@ -85,3 +85,12 @@ The password to use when connecting to the database.
 
 - __DISABLE_IMAGE_SCALING_QUEUE__
 Disables image scaling, which means no dependency on redis.
+
+- __ELASTIC_ENABLED__
+Set this environment variable to enable elastic search. Default: disabled
+
+- __ELASTIC_HOST__
+If elastic search is enabled, use this to set the host, port and auth for the elastic search instance. Default: localhost:9200
+
+- __ELASTIC_INDEXNAME__
+Use to set a unique index for a specific service instance. If this value is set, it ensures no clash will occur between different service instances using the same elastic.

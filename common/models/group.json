@@ -6,7 +6,27 @@
     "validateUpsert": true
   },
   "mixins": {
-    "CountsNotDeleted": true
+    "CountsNotDeleted": true,
+    "Searchable": {
+      "targetIndex": "group",
+      "documentType": "group",
+      "suggestionProperty": "name",
+      "enabledProperties": [
+        "name",
+        "description",
+        "timeCreated",
+        "posts"
+      ],
+      "filter": {
+        "include": {
+          "posts": "comments"
+        }
+      },
+      "triggers": [{
+        "modelName":"Post",
+        "modelFkField": "postcontainergroupid"
+      }]
+    }
   },
   "properties": {
     "name": {
