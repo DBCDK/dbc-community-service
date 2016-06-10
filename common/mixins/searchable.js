@@ -412,11 +412,11 @@ module.exports = function (Model, options) {
      * @param {Number} from - From is an offset in items, also used for pagination.
      * @param {function} next - callback from loopback.
      */
-    Model.search = function queryElastic(q, fields, limit = 15, from = 0, next) {
+    Model.search = function queryElastic(q, fields, limit, from, next) {
       let params = {
         index,
-        size: limit,
-        from
+        size: limit || 15,
+        from: from || 0
       };
 
       // If we have fields, we want to use a different query type
