@@ -114,7 +114,9 @@ module.exports = function (Model, options) {
       if (triggers && triggers.length > 0) {
         // Wait for the app to initialize...
         setTimeout(() => {
-          triggers.forEach(({modelName, modelFkField}) => {
+          triggers.forEach((trigger) => {
+            const modelName = trigger.modelName;
+            const modelFkField = trigger.modelFkField;
 
             // Check that the model exists
             if (typeof app.models[modelName] !== 'undefined') {
