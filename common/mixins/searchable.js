@@ -2,6 +2,7 @@
 
 import {eachSeries} from 'async';
 import {Client} from 'elasticsearch';
+import ProxyAgent from 'proxy-agent';
 
 /* eslint-disable no-use-before-define */
 
@@ -159,12 +160,20 @@ module.exports = function (Model, options) {
     });
 
     // Create a connection to elastic search.
-    const elasticClient = Client({
-      host: ELASTIC_HOST,
+    let elasticConfig = {
       log: 'error',
       apiVersion: '2.2',
-      suggestCompression: true
-    });
+      suggestCompression: true,
+      host: ELASTIC_HOST
+    };
+
+    if (process.env.http_proxy) { // eslint-disable-line no-process-env
+      elasticConfig.createNodeAgent = () => {
+        return ProxyAgent(process.env.http_proxy); // eslint-disable-line no-process-env
+      };
+    }
+
+    const elasticClient = Client(elasticConfig);
 
     /**
      * This is a helper function to create a document for elastic.
