@@ -13,14 +13,17 @@
       "suggestionProperty": "name",
       "enabledProperties": [
         "name",
+        "coverImage",
         "description",
         "timeCreated",
         "posts"
       ],
       "filter": {
-        "include": {
+        "include": [
+         "coverImage",
+         {
           "posts": "comments"
-        }
+         }]
       },
       "triggers": [{
         "modelName":"Post",
