@@ -13,16 +13,23 @@
       "suggestionProperty": "name",
       "enabledProperties": [
         "name",
+        "coverImage",
         "description",
         "timeCreated",
         "posts"
       ],
       "filter": {
-        "include": {
-          "posts": "comments"
-        }
+        "include": [
+          "coverImage",
+          {
+            "posts": "comments"
+          }
+        ]
       },
       "triggers": [{
+          "modelName": "ImageCollection",
+          "modelFkField": "groupCoverImageCollectionId"
+      },{
         "modelName":"Post",
         "modelFkField": "postcontainergroupid"
       }]
