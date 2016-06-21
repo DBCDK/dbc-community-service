@@ -20,12 +20,16 @@
       ],
       "filter": {
         "include": [
-         "coverImage",
-         {
-          "posts": "comments"
-         }]
+          "coverImage",
+          {
+            "posts": "comments"
+          }
+        ]
       },
       "triggers": [{
+          "modelName": "ImageCollection",
+          "modelFkField": "groupCoverImageCollectionId"
+      },{
         "modelName":"Post",
         "modelFkField": "postcontainergroupid"
       }]
