@@ -48,7 +48,18 @@ const FORCE_INITIAL_INDEX = !!process.env.ELASTIC_FORCE_INDEX_ON_INIT; // eslint
 function loopbackToElasticDatatype(type) {
   switch (type) {
     case 'string': {
-      return {type: 'string'};
+      return {
+        index: 'analyzed',
+        omit_norms: true,
+        type: 'string',
+        fields: {
+          raw: {
+            ignore_above: 256,
+            index: 'not_analyzed',
+            type: 'string'
+          }
+        }
+      };
     }
 
     case 'number': {
