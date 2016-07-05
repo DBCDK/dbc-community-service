@@ -193,17 +193,23 @@ module.exports = function (Model, options) {
         props.forEach((propName) => {
           if (typeof obj[propName] !== 'undefined') {
             switch (typeof obj[propName]) {
+              // If it's a function, it's typically an internal method by loopback for lazy loading
+              // We evaluate it to get the result.
               case 'function': {
                 doc[propName] = obj[propName]();
                 break;
               }
 
               case 'object': {
+                // Is the object a date/time?
+                // If so, convert it to a string and let elastic take care of it.
                 if (obj[propName] instanceof Date) {
                   doc[propName] = obj[propName].toISOString();
                   break;
                 }
 
+                // Is the object an array?
+                // If so, iterate over it checking the props.
                 if (Array.isArray(obj[propName])) {
                   doc[propName] = obj[propName].map(
                     itm => (!!itm) && (itm.constructor === Object) ? checkProps(itm, Object.keys(itm)) : itm
@@ -211,10 +217,14 @@ module.exports = function (Model, options) {
                   break;
                 }
 
+                // Is it null or a plain object?
+                // Check the props.
                 doc[propName] = obj[propName] && checkProps(obj[propName], Object.keys(obj[propName]));
                 break;
               }
 
+              // Mostly just strings and numbers
+              // let elastic handle it.
               default: {
                 doc[propName] = obj[propName];
               }
