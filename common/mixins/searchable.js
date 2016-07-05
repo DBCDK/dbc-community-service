@@ -199,6 +199,11 @@ module.exports = function (Model, options) {
               }
 
               case 'object': {
+                if (obj[propName] instanceof Date) {
+                  doc[propName] = obj[propName].toISOString();
+                  break;
+                }
+
                 if (Array.isArray(obj[propName])) {
                   doc[propName] = obj[propName].map(
                     itm => (!!itm) && (itm.constructor === Object) ? checkProps(itm, Object.keys(itm)) : itm
@@ -206,7 +211,7 @@ module.exports = function (Model, options) {
                   break;
                 }
 
-                doc[propName] = checkProps(obj[propName], Object.keys(obj[propName]));
+                doc[propName] = obj[propName] && checkProps(obj[propName], Object.keys(obj[propName]));
                 break;
               }
 

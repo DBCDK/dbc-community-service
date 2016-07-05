@@ -5,6 +5,46 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "CountsNotDeleted": true,
+    "Searchable": {
+      "targetIndex": "review",
+      "documentType": "review",
+      "enabledProperties": [
+        "pid",
+        "libraryid",
+        "worktype",
+        "content",
+        "created",
+        "modified",
+        "rating",
+        "markedAsDeleted"
+      ],
+      "filter": {
+        "include": [
+          {
+            "image": {"resolutions": "image"}
+          },
+          {
+            "video": {"resolutions": "video"}
+          }
+        ],
+        "where": {
+          "markedAsDeleted": null
+        }
+      },
+      "triggers": [{
+        "modelName": "ImageCollection",
+        "modelFkField": "reviewImageCollection"
+      }, {
+        "modelName": "VideoCollection",
+        "modelFkField": "reviewVideoCollection"
+      }, {
+        "modelName": "Like",
+        "modelFkField": "reviewlikeid"
+      }]
+    }
+  },
   "properties": {
     "pid": {
       "type": "string",
