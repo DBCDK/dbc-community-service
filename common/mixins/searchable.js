@@ -460,11 +460,32 @@ module.exports = function (Model, options) {
         fields.forEach((field) => params.body.query.multi_match.fields.push(field));
       }
       else {
-        params.q = q;
+        try {
+          const query = JSON.parse(q);
+          params.body = query;
+        }
+        catch (e) {
+          params.q = q;
+        }
       }
 
       // Hit elastic with the search!
-      elasticClient.search(params, (err, res) => next(err || null, res && res.hits));
+      elasticClient.search(params, (err, res) => {
+        if (err) {
+          return next(err);
+        }
+
+        // If the model has a afterSearch function, we want to let it sort the results
+        if (res && typeof Model.afterSearch === 'function') {
+          res = Model.afterSearch(params, res);
+        }
+        // Otherwise we just want to return the hits.
+        else if (res) {
+          res = res.hits;
+        }
+
+        return next(null, res);
+      });
     };
 
     if (suggestionProperty) {

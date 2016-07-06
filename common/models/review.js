@@ -2,6 +2,23 @@
 
 module.exports = function(Review) {
 
+  Review.afterSearch = function reviewAfterSearch (params, result) {
+    if (
+      params.body &&
+      params.body.size &&
+      result.aggregations &&
+      result.aggregations.pids &&
+      result.aggregations.pids.buckets
+    ) {
+      return result.aggregations.pids.buckets
+        .sort((a, b) => b.pid_score.value-a.pid_score.value)
+        .slice(0, params.body.size)
+        .map(a => a.key);
+    }
+
+    return result;
+  };
+
   Review.observe('before save', function videoUpload(ctx, next) {
     const logger = Review.app.get('logger');
 
