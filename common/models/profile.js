@@ -60,7 +60,7 @@ module.exports = function(Profile) {
     }
 
     // user is now authenticated
-    Profile.findOne({where: {username: username}}, function(err1, profile) {
+    Profile.findOne({where: {username: {regexp: '/^' + username + '$/i'}}}, function(err1, profile) {
       let defaultError = new Error('login failed');
       defaultError.statusCode = 401;
       defaultError.code = 'LOGIN_FAILED';
