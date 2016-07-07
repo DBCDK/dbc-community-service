@@ -7,10 +7,13 @@ module.exports = function(Review) {
       params.body &&
       params.body.size &&
       result.aggregations &&
-      result.aggregations.pids &&
-      result.aggregations.pids.buckets
+      result.aggregations.range &&
+      result.aggregations.range.buckets &&
+      result.aggregations.range.buckets[0] &&
+      result.aggregations.range.buckets[0].pids &&
+      result.aggregations.range.buckets[0].pids.buckets
     ) {
-      return result.aggregations.pids.buckets
+      return result.aggregations.range.buckets[0].pids.buckets
         .sort((a, b) => b.pid_score.value-a.pid_score.value)
         .slice(0, params.body.size)
         .map(a => a.key);
