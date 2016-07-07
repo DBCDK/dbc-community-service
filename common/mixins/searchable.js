@@ -185,7 +185,7 @@ module.exports = function (Model, options) {
     }
 
     const elasticClient = Client(elasticConfig);
-    const createRegex = /create/i
+    const createRegex = /create/i;
 
     /**
      * This is a helper function to create a document for elastic.
@@ -217,7 +217,7 @@ module.exports = function (Model, options) {
                 // If so, convert it to a string and let elastic take care of it.
                 if (obj[propName] instanceof Date) {
                   if (createRegex.test(propName)) {
-                    doc['ES_Timestamp'] = obj[propName].toISOString();
+                    doc.ES_Timestamp = obj[propName].toISOString();
                   }
 
                   doc[propName] = obj[propName].toISOString();
