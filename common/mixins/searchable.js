@@ -185,6 +185,7 @@ module.exports = function (Model, options) {
     }
 
     const elasticClient = Client(elasticConfig);
+    const createRegex = /create/i
 
     /**
      * This is a helper function to create a document for elastic.
@@ -215,6 +216,10 @@ module.exports = function (Model, options) {
                 // Is the object a date/time?
                 // If so, convert it to a string and let elastic take care of it.
                 if (obj[propName] instanceof Date) {
+                  if (createRegex.test(propName)) {
+                    doc['ES_Timestamp'] = obj[propName].toISOString();
+                  }
+
                   doc[propName] = obj[propName].toISOString();
                   break;
                 }
@@ -274,7 +279,9 @@ module.exports = function (Model, options) {
         elasticClient.indices.exists({index}, (err, res) => {
           // if this is true, the indice does not exist, so we create it :)
           if (!err && !res) {
-            let elasticModel = {};
+            let elasticModel = {
+              ES_Timestamp: {type: 'date', format: 'dateOptionalTime'}
+            };
 
             // We want to map the property types from the loopback model to elastic types.
             // Check if the property is defined (its not if its a relation for example),

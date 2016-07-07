@@ -18,16 +18,24 @@
         "created",
         "modified",
         "rating",
+        "owner",
+        "image",
+        "video",
+        "likes",
         "markedAsDeleted"
       ],
       "filter": {
         "include": [
           {
-            "image": {"resolutions": "image"}
+            "relation": "owner",
+            "scope": {
+              "fields": ["displayName", "id"],
+              "include": {"image": {"resolutions": "image"}}
+            }
           },
-          {
-            "video": {"resolutions": "video"}
-          }
+          {"image": {"resolutions": "image"}},
+          {"video": {"resolutions": "video"}},
+          "likes"
         ],
         "where": {
           "markedAsDeleted": null
