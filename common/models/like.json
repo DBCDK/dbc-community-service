@@ -5,6 +5,19 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "Searchable": {
+      "targetIndex": "like",
+      "documentType": "like",
+      "enabledProperties": [
+        "value",
+        "id",
+        "profileId",
+        "likeid",
+        "reviewlikeid"
+      ]
+    }
+  },
   "properties": {
     "item_id": {
       "type": "string",

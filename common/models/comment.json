@@ -5,6 +5,33 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "Counts": true,
+    "Searchable": {
+      "targetIndex": "comment",
+      "documentType": "comment",
+      "enabledProperties": [
+        "content",
+        "owner",
+        "image",
+        "video",
+        "timeCreated"
+      ],
+      "filter": {
+        "include": [
+          {
+            "relation": "owner",
+            "scope": {
+              "fields": ["displayName", "id"],
+              "include": {"image": {"resolutions": "image"}}
+            }
+          },
+          {"image": {"resolutions": "image"}},
+          {"video": {"resolutions": "video"}}
+        ]
+      }
+    }
+  },
   "properties": {
     "content": {
       "type": "string",
