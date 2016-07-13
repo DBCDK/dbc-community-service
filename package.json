@@ -12,9 +12,9 @@
     "dev:proxy": "NODE_TLS_REJECT_UNAUTHORIZED=0 http_proxy=http://localhost:8888 NODE_ENV=local nodemon main.js",
     "dev:noconf": "USE_DEFAULT_CONFIG=true NODE_ENV=local nodemon main.js",
     "test": "TESTING=true USE_ENV_CONFIG=true DATABASE_CONNECTOR=\"memory\" mocha --compilers js:babel-core/register --recursive common server -R mocha-jenkins-reporter",
-    "migrate-create": "MIGRATING=true ./loopback-db-migrate.js --datasource psqlDs create",
-    "migrate-up": "MIGRATING=true ./loopback-db-migrate.js up --datasource psqlDs",
-    "migrate-down": "MIGRATING=true ./loopback-db-migrate.js down --datasource psqlDs"
+    "migrate-create": "ELASTIC_ENABLED=0 MIGRATING=true ./loopback-db-migrate.js --datasource psqlDs create",
+    "migrate-up": "ELASTIC_ENABLED=0 MIGRATING=true ./loopback-db-migrate.js up --datasource psqlDs",
+    "migrate-down": "ELASTIC_ENABLED=0 MIGRATING=true ./loopback-db-migrate.js down --datasource psqlDs"
   },
   "dependencies": {
     "async": "^2.0.0-rc.6",
