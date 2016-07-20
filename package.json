@@ -8,7 +8,6 @@
     "start": "node .",
     "dev": "NODE_ENV=local nodemon main.js",
     "dev:search": "ELASTIC_ENABLED=1 NODE_ENV=local nodemon main.js",
-    "dev:search:remote": "ELASTIC_ENABLED=1 ELASTIC_HOST=\"search-ux-biblo-dev-elastic-yhrvcfy4qoogjtjrp56h6q6bx4.eu-west-1.es.amazonaws.com\" NODE_ENV=local nodemon main.js",
     "dev:proxy": "NODE_TLS_REJECT_UNAUTHORIZED=0 http_proxy=http://localhost:8888 NODE_ENV=local nodemon main.js",
     "dev:noconf": "USE_DEFAULT_CONFIG=true NODE_ENV=local nodemon main.js",
     "test": "TESTING=true USE_ENV_CONFIG=true DATABASE_CONNECTOR=\"memory\" mocha --compilers js:babel-core/register --recursive common server -R mocha-jenkins-reporter",
