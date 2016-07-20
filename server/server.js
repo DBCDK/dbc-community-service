@@ -8,6 +8,7 @@ import AWS from 'aws-sdk';
 import ProxyAgent from 'proxy-agent';
 import {amazonSNSConfirmMiddleware, amazonSNSNotificationMiddleware} from './middlewares/amazonSNS.middleware';
 import groupDatasourceModifier from './connectorlogic/group.datasourcemodifier';
+import Primus from 'primus';
 
 const app = loopback();
 const APP_NAME = process.env.APPLICATION_NAME || 'app_name';
@@ -105,6 +106,40 @@ app.start = () => {
   });
 };
 
+/**
+ * This function boots up Primus.
+ * Primus accepts connections and emits a change event whenever one of the user defined models are changed.
+ * @param {HttpServer} webserver
+ */
+app.startPrimus = webserver => {
+  const primus = new Primus(webserver, {
+    transformer: 'websockets'
+  });
+
+  const listeners = {};
+  const defaultModels = ['User', 'AccessToken', 'ACL', 'RoleMapping', 'Role', 'Email'];
+  const modelKeys = Object.keys(app.models).filter(key => defaultModels.indexOf(key) < 0);
+  modelKeys.forEach(key => {
+    const lowKey = key.toLowerCase();
+    if (!listeners[lowKey]) {
+      const model = app.models[key];
+      model.observe('after save', (ctx, next) => {
+        if (ctx.instance) {
+          primus.write({
+            event: `${lowKey}Changed`,
+            data: ctx.instance,
+            isNewInstance: ctx.isNewInstance
+          });
+        }
+
+        next();
+      });
+
+      listeners[lowKey] = 1;
+    }
+  });
+};
+
 app.use('/status-page', (req, res, next) => { // eslint-disable-line no-unused-vars
   res.send('status');
 });
@@ -124,6 +159,7 @@ boot(app, __dirname, (err) => {
   groupDatasourceModifier(app);
 
   if (!process.env.TESTING && !process.env.MIGRATING) {
-    app.start();
+    const webserver = app.start();
+    app.startPrimus(webserver);
   }
 });
