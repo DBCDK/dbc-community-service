@@ -55,6 +55,9 @@
       "required": true
     }
   },
+  "scope": {
+    "include": "campaign"
+  },
   "validations": [],
   "relations": {
     "posts": {
