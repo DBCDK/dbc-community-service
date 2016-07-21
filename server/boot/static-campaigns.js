@@ -18,7 +18,7 @@ if (!process.env.MIGRATING) { // eslint-disable-line
       medium: '/sommerbogen-logo.png',
       large: '/sommerbogen-logo.png'
     },
-    type: 'group'
+    type: 'review'
   }, (err, campaign) => {
     if (!err) {
       const staticWorktypes = {where: {or: [{worktype: 'book'}, {worktype: 'literature'}, {worktype: 'audiobook'}]}};
