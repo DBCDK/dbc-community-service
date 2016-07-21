@@ -22,12 +22,27 @@
           {
             "relation": "owner",
             "scope": {
-              "fields": ["displayName", "id"],
-              "include": {"image": {"resolutions": "image"}}
+              "fields": [
+                "displayName",
+                "id"
+              ],
+              "include": {
+                "image": {
+                  "resolutions": "image"
+                }
+              }
             }
           },
-          {"image": {"resolutions": "image"}},
-          {"video": {"resolutions": "video"}}
+          {
+            "image": {
+              "resolutions": "image"
+            }
+          },
+          {
+            "video": {
+              "resolutions": "video"
+            }
+          }
         ]
       }
     }

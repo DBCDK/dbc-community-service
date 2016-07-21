@@ -5,6 +5,9 @@
   "options": {
     "validateUpsert": true
   },
+  "scope": {
+    "include": {"resolutions": "video"}
+  },
   "properties": {},
   "validations": [],
   "relations": {

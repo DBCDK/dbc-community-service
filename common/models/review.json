@@ -29,28 +29,47 @@
           {
             "relation": "owner",
             "scope": {
-              "fields": ["displayName", "id"],
-              "include": {"image": {"resolutions": "image"}}
+              "fields": [
+                "displayName",
+                "id"
+              ],
+              "include": {
+                "image": {
+                  "resolutions": "image"
+                }
+              }
             }
           },
-          {"image": {"resolutions": "image"}},
-          {"video": {"resolutions": "video"}},
+          {
+            "image": {
+              "resolutions": "image"
+            }
+          },
+          {
+            "video": {
+              "resolutions": "video"
+            }
+          },
           "likes"
         ],
         "where": {
           "markedAsDeleted": null
         }
       },
-      "triggers": [{
-        "modelName": "ImageCollection",
-        "modelFkField": "reviewImageCollection"
-      }, {
-        "modelName": "VideoCollection",
-        "modelFkField": "reviewVideoCollection"
-      }, {
-        "modelName": "Like",
-        "modelFkField": "reviewlikeid"
-      }]
+      "triggers": [
+        {
+          "modelName": "ImageCollection",
+          "modelFkField": "reviewImageCollection"
+        },
+        {
+          "modelName": "VideoCollection",
+          "modelFkField": "reviewVideoCollection"
+        },
+        {
+          "modelName": "Like",
+          "modelFkField": "reviewlikeid"
+        }
+      ]
     }
   },
   "properties": {

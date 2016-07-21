@@ -15,7 +15,8 @@
     ]
   },
   "User": {
-    "dataSource": "psqlDs"
+    "dataSource": "psqlDs",
+    "public": false
   },
   "AccessToken": {
     "dataSource": "db",
@@ -39,7 +40,7 @@
   },
   "Email": {
     "dataSource": "emailDs",
-    "public": true
+    "public": false
   },
   "Like": {
     "dataSource": "psqlDs",
@@ -86,6 +87,14 @@
     "public": true
   },
   "review": {
+    "dataSource": "psqlDs",
+    "public": true
+  },
+  "Campaign": {
+    "dataSource": "psqlDs",
+    "public": true
+  },
+  "CampaignWorktype": {
     "dataSource": "psqlDs",
     "public": true
   }

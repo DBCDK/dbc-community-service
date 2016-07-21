@@ -26,13 +26,16 @@
           }
         ]
       },
-      "triggers": [{
+      "triggers": [
+        {
           "modelName": "ImageCollection",
           "modelFkField": "groupCoverImageCollectionId"
-      },{
-        "modelName":"Post",
-        "modelFkField": "postcontainergroupid"
-      }]
+        },
+        {
+          "modelName": "Post",
+          "modelFkField": "postcontainergroupid"
+        }
+      ]
     }
   },
   "properties": {
@@ -78,6 +81,11 @@
       "type": "hasMany",
       "model": "Flag",
       "foreignKey": "groupFlagsId"
+    },
+    "campaign": {
+      "type": "belongsTo",
+      "model": "Campaign",
+      "foreignKey": "campaignGroupFK"
     }
   },
   "acls": [

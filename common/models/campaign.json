@@ -1,0 +1,44 @@
+{
+  "name": "Campaign",
+  "plural": "Campaigns",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "scope": {
+    "include": "workTypes"
+  },
+  "properties": {
+    "campaignName": {
+      "type": "string",
+      "required": true
+    },
+    "startDate": {
+      "type": "date",
+      "required": true
+    },
+    "endDate": {
+      "type": "date",
+      "required": true
+    },
+    "logos": {
+      "type": "object",
+      "required": true
+    },
+    "type": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "workTypes": {
+      "type": "hasAndBelongsToMany",
+      "model": "CampaignWorktype",
+      "foreignKey": "campaignWorktype"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

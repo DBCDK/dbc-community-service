@@ -227,8 +227,4 @@ module.exports = function(Profile) {
     }
     next();
   });
-
-  Profile.observe('loaded', (ctx, next) => {
-    next();
-  });
 };

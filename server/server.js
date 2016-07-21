@@ -124,6 +124,7 @@ app.startPrimus = webserver => {
     if (!listeners[lowKey]) {
       const model = app.models[key];
       model.observe('after save', (ctx, next) => {
+        logger.info(`Got change, model: ${key}`);
         if (ctx.instance) {
           primus.write({
             event: `${lowKey}Changed`,
