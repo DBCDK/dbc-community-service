@@ -26,7 +26,7 @@ module.exports = function(File) {
           container: container,
           url: data.Location
         }, function (error, obj) {
-          if (error !== null) {
+          if (error) {
             logger.error('Error in uploading file from buffer', {error});
             cb(error);
           }
