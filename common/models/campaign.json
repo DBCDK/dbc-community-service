@@ -37,6 +37,11 @@
       "type": "hasAndBelongsToMany",
       "model": "CampaignWorktype",
       "foreignKey": "campaignWorktype"
+    },
+    "group": {
+      "type": "hasOne",
+      "model": "Group",
+      "foreignKey": "campaignGroupFK"
     }
   },
   "acls": [],
