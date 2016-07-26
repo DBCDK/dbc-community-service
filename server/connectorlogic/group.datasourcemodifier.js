@@ -1,4 +1,4 @@
-'use strict';
+
 
 module.exports = function groupDatasourceModifier(app) {
   let Group = app.models.Group;

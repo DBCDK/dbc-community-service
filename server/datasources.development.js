@@ -1,4 +1,4 @@
-'use strict';
+
 
 /**
  * @file Write a short description here.

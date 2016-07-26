@@ -1,4 +1,4 @@
-'use strict';
+
 
 module.exports = function(Resolution) {
   Resolution.observe('before delete', function(ctx, next) {

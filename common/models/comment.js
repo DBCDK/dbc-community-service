@@ -1,4 +1,4 @@
-'use strict';
+
 
 module.exports = function(Comment) {  // eslint-disable-line no-unused-vars
   Comment.observe('before save', function videoUpload(ctx, next) {

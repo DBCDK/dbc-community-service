@@ -1,4 +1,4 @@
-'use strict';
+
 
 export function getAddedColoumnsToDrop(postgres, model, actualFields) {
   let m = postgres._models[model];
