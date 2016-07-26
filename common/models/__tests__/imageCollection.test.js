@@ -1,4 +1,4 @@
-'use strict';
+
 
 process.env.TESTING = true;
 

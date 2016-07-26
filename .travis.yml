@@ -1,0 +1,20 @@
+language: node_js
+sudo: false
+dist: trusty
+cache:
+  bundler: true
+  directories:
+  - node_modules
+branches:
+  only:
+  - master
+before_install:
+- npm config set //registry.npmjs.org/:_authToken $NPM_KEY
+services:
+- redis-server
+script:
+- npm run lint
+- npm test
+notifications:
+  slack:
+    secure: i6a+7+AVNIfreuSJK9EDndyqv1cmr8WZMwjZwe/tW1BtSsaMVKW6xs8miFg5zEq7me+TVmNHyDmwfoXW76ZZESq+e5XRp8uHRBoCtyjP6LnhtdUWJa4CnxsIc9ABFNB9l5v7TxmyoDk9D6d0Rk+chxAOT8vzo20X+82wW3OT2wmmMCYuB7XkLFk67O7ELF5ZAXYmGnxAwDUOdQt2a2yzx3d2bDRZQuIZSAkT6Ea9EJsk5UgfgmL+wizECxIsX7PfXVqvXRa3uAp82MrTuzH4G2trVYspotfmho+0g99ImiXo5dhfwqQqmtQJu6pReeFolm6B8JhK6D3sFjMLfZuyNVOHGe7sd5f4ilyoc1ZD29pi+9sONQz22nsxkBRNXXLCjVM2ebGFGyyeWMaXMiwV+smy16i5cHbmnZEPd+s0nZcNvnslGl4hgkejKzg/5nTYz2SVj9ANksn0MVdYTlABNQolAODa/9+tZP/1MS2pfIXwrGPv5BW1WMinPG0vkN2duVLDxRNJVilRQtBvnoqScuaJCZZAbfdFgjMj3jE54hH+XcfCZBdD9z5eovkk9OtyRroyHvXVBU/HSt4L0EDdSSuWq2J0AJjQ5Jx+YQFn4kX9aYBrkDqDskh8XLBcXviPstg5BFGOMFe8UbbufFv020G6WCVuJKc99d6RsbKypfc=

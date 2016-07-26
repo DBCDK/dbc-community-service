@@ -1,4 +1,4 @@
-'use strict';
+
 
 const CONTAINERS_URL = 'api/fileContainers/';
 

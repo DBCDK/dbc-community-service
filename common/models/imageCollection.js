@@ -1,4 +1,4 @@
-'use strict';
+
 
 /**
  * @file: imageCollection.js - Contains custom logic for imageCollections.

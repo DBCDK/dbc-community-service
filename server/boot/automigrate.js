@@ -1,4 +1,4 @@
-'use strict';
+
 
 import * as logger from 'dbc-node-logger';
 import app from '../server';

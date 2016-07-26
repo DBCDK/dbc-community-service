@@ -1,4 +1,4 @@
-'use strict';
+
 
 module.exports = function(Quarantine) {
   Quarantine.checkIfProfileIsQuarantined = function(ctx, id, next) {
