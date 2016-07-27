@@ -9,7 +9,7 @@ module.exports = function(Quarantine) {
       }
     }, function (err, res) {
       next(null, {
-        quarantined: (res.length > 0)
+        quarantined: !err && (res.length > 0)
       });
     });
   };

@@ -60,11 +60,6 @@
       "model": "Like",
       "foreignKey": ""
     },
-    "groups": {
-      "type": "hasAndBelongsToMany",
-      "model": "Group",
-      "foreignKey": ""
-    },
     "posts": {
       "type": "hasMany",
       "model": "Post",
@@ -107,6 +102,12 @@
       "type": "hasMany",
       "model": "review",
       "foreignKey": "reviewownerid"
+    },
+    "groups": {
+      "type": "hasMany",
+      "model": "Group",
+      "foreignKey": "profileid",
+      "through": "GroupProfile"
     }
   },
   "acls": [
