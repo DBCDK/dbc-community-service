@@ -1,8 +1,83 @@
-
-
 import * as logger from 'dbc-node-logger';
 import app from '../server';
 import {generateDownIndexes, getAddedColoumnsToDrop, getColoumnsToRestore, getModifiedColoumnsToRevert, indexSqlGenerator} from './migration.utils';
+
+function generateIndexes(postgres, model, actualIndexes, sql, downSql) {
+  let indexSql = indexSqlGenerator(postgres, model, actualIndexes);
+  if (indexSql.length > 0) {
+    sql.push(indexSql);
+  }
+
+  let indexDownSql = generateDownIndexes(postgres, model, actualIndexes);
+  if (indexDownSql.length > 0) {
+    downSql.push(indexDownSql);
+  }
+}
+
+function generateMigrationSql(sql, postgres, actualFields, actualIndexes, downSql, model) {
+  // Model already exists, start generating a migration
+  // Start by adding the new coloumns
+  sql = sql.concat(postgres.getColumnsToAdd(model, actualFields).map((colSql) => {
+    return `ALTER TABLE ${postgres.tableEscaped(model)} ${colSql}`;
+  }));
+  downSql = downSql.concat(getAddedColoumnsToDrop(postgres, model, actualFields));
+
+  // Next modify existing properties
+  let tSql = [];
+  postgres.getPropertiesToModify(model, actualFields).forEach((colsSql) => {
+    colsSql.split(',').forEach((colSql) => {
+      tSql.push(colSql);
+    });
+  });
+
+  // Get columns to alter
+  sql = sql.concat(tSql.map((colSql) => {
+    colSql = colSql.replace('ALTER COLUMN"', 'ALTER COLUMN "').split(','); // Temporary fix until PR #137 on the connector is merged.
+    return `ALTER TABLE ${postgres.tableEscaped(model)} ${colSql}`;
+  }));
+  downSql = downSql.concat(getModifiedColoumnsToRevert(postgres, model, actualFields));
+
+  // Then drop unneeded coloumns
+  sql = sql.concat(postgres.getColumnsToDrop(model, actualFields).map((colSql) => {
+    return `ALTER TABLE ${postgres.tableEscaped(model)} ${colSql}`;
+  }));
+  downSql = downSql.concat(getColoumnsToRestore(postgres, model, actualFields));
+
+  // Finally add indexes
+  generateIndexes(postgres, model, actualIndexes, sql, downSql);
+}
+
+function generateCreateSql(postgres, model, sql, downSql) {
+  // Model does not exist, create it!
+  let name = postgres.tableEscaped(model);
+
+  // Create table
+  sql.push(`CREATE TABLE ${name} (\n  ${postgres.propertiesSQL(model)}\n)`);
+  downSql.push(`DROP TABLE ${name}`);
+
+  // Create indexes
+  generateIndexes(postgres, model, null, sql, downSql);
+}
+
+function outputSql(sql, downSql) {
+  if (sql.length > 0) {
+    logger.debug('==========================UP==========================');
+    sql.forEach((sqlStatements) => {
+      sqlStatements.split(', ').forEach((statement) => {
+        logger.debug(`\n${statement};`);
+      });
+    });
+  }
+
+  if (downSql.length > 0) {
+    logger.debug('=========================DOWN=========================');
+    downSql.forEach((sqlStatements) => {
+      sqlStatements.split(', ').forEach((statement) => {
+        logger.debug(`\n${statement};`);
+      });
+    });
+  }
+}
 
 function migrateTables(ds, appModels) {
   if (typeof appModels === 'string') {
@@ -23,83 +98,14 @@ function migrateTables(ds, appModels) {
       let sql = [];
       let downSql = [];
       if (!err && actualFields.length) {
-        // Model already exists, start generating a migration
-        // Start by adding the new coloumns
-        sql = sql.concat(postgres.getColumnsToAdd(model, actualFields).map((colSql) => {
-          return `ALTER TABLE ${postgres.tableEscaped(model)} ${colSql}`;
-        }));
-        downSql = downSql.concat(getAddedColoumnsToDrop(postgres, model, actualFields));
-
-        // Next modify existing properties
-        let tSql = [];
-        postgres.getPropertiesToModify(model, actualFields).forEach((colsSql) => {
-          colsSql.split(',').forEach((colSql) => {
-            tSql.push(colSql);
-          });
-        });
-
-        // Get columns to alter
-        sql = sql.concat(tSql.map((colSql) => {
-          colSql = colSql.replace('ALTER COLUMN"', 'ALTER COLUMN "').split(','); // Temporary fix until PR #137 on the connector is merged.
-          return `ALTER TABLE ${postgres.tableEscaped(model)} ${colSql}`;
-        }));
-        downSql = downSql.concat(getModifiedColoumnsToRevert(postgres, model, actualFields));
-
-        // Then drop unneeded coloumns
-        sql = sql.concat(postgres.getColumnsToDrop(model, actualFields).map((colSql) => {
-          return `ALTER TABLE ${postgres.tableEscaped(model)} ${colSql}`;
-        }));
-        downSql = downSql.concat(getColoumnsToRestore(postgres, model, actualFields));
-
-        // Finally add indexes
-        let indexSql = indexSqlGenerator(postgres, model, actualIndexes);
-        if (indexSql.length > 0) {
-          sql.push(indexSql);
-        }
-
-        let indexDownSql = generateDownIndexes(postgres, model, actualIndexes);
-        if (indexDownSql.length > 0) {
-          downSql.push(indexDownSql);
-        }
+        generateMigrationSql(sql, postgres, actualFields, actualIndexes, downSql, model);
       }
       else {
-        // Model does not exist, create it!
-        let name = postgres.tableEscaped(model);
-
-        // Create table
-        sql.push(`CREATE TABLE ${name} (\n  ${postgres.propertiesSQL(model)}\n)`);
-        downSql.push(`DROP TABLE ${name}`);
-
-        // Create indexes
-        let indexSql = indexSqlGenerator(postgres, model, null);
-        if (indexSql.length > 0) {
-          sql.push(indexSql);
-        }
-
-        let indexDownSql = generateDownIndexes(postgres, model, null);
-        if (indexDownSql.length > 0) {
-          downSql.push(indexDownSql);
-        }
+        generateCreateSql(postgres, model, sql, downSql);
       }
 
       if (!process.env.TESTING) {
-        if (sql.length > 0) {
-          logger.debug('==========================UP==========================');
-          sql.forEach((sqlStatements) => {
-            sqlStatements.split(', ').forEach((statement) => {
-              logger.debug(`\n${statement};`);
-            });
-          });
-        }
-
-        if (downSql.length > 0) {
-          logger.debug('=========================DOWN=========================');
-          downSql.forEach((sqlStatements) => {
-            sqlStatements.split(', ').forEach((statement) => {
-              logger.debug(`\n${statement};`);
-            });
-          });
-        }
+        outputSql(sql, downSql)
       }
     });
   });
