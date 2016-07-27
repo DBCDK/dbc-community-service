@@ -48,7 +48,7 @@ module.exports = function(Comment) {  // eslint-disable-line no-unused-vars
           commentVideoCollection: ctx.instance.id
         }, function (err) {
           if (err) {
-            logger.error('An error occurred during post after save', {error: err});
+            logger.error('An error occurred during comment after save', {error: err});
             next(err);
           }
           else {
