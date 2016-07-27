@@ -105,7 +105,7 @@ function migrateTables(ds, appModels) {
       }
 
       if (!process.env.TESTING) {
-        outputSql(sql, downSql)
+        outputSql(sql, downSql);
       }
     });
   });
