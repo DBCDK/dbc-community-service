@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
   up: function(dataSource, next) {
     dataSource.connector.query('ALTER TABLE "public"."groupprofile" ADD COLUMN "visited" TIMESTAMP WITH TIME ZONE;', next);
