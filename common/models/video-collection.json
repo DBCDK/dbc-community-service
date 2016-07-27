@@ -6,7 +6,9 @@
     "validateUpsert": true
   },
   "scope": {
-    "include": {"resolutions": "video"}
+    "include": {
+      "resolutions": "video"
+    }
   },
   "properties": {},
   "validations": [],

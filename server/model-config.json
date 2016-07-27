@@ -97,5 +97,9 @@
   "CampaignWorktype": {
     "dataSource": "psqlDs",
     "public": true
+  },
+  "GroupProfile": {
+    "dataSource": "psqlDs",
+    "public": true
   }
 }

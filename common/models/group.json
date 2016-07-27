@@ -38,6 +38,9 @@
       ]
     }
   },
+  "scope": {
+    "include": "campaign"
+  },
   "properties": {
     "name": {
       "type": "string",
@@ -55,9 +58,6 @@
       "required": true
     }
   },
-  "scope": {
-    "include": "campaign"
-  },
   "validations": [],
   "relations": {
     "posts": {
@@ -69,11 +69,6 @@
       "type": "belongsTo",
       "model": "Profile",
       "foreignKey": "groupownerid"
-    },
-    "members": {
-      "type": "hasAndBelongsToMany",
-      "model": "Profile",
-      "foreignKey": "profileid"
     },
     "coverImage": {
       "type": "hasOne",
@@ -89,6 +84,12 @@
       "type": "belongsTo",
       "model": "Campaign",
       "foreignKey": "campaignGroupFK"
+    },
+    "members": {
+      "type": "hasMany",
+      "model": "Profile",
+      "foreignKey": "groupid",
+      "through": "GroupProfile"
     }
   },
   "acls": [
