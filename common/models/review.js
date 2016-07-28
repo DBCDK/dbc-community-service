@@ -22,20 +22,8 @@ module.exports = function(Review) {
     return result;
   };
 
-  Review.observe('before save', function videoUpload(ctx, next) {
+  function updateVideo(ctx, data, next) {
     const logger = Review.app.get('logger');
-
-    let data; // this is for accessing properties of the new object and, if they exist, video details.
-
-    if (ctx.isNewInstance) {
-      data = Object.assign({}, ctx.instance.__data);
-    }
-    else {
-      data = Object.assign({}, ctx.currentInstance.__data, ctx.data);
-    }
-
-    logger.info('review before save', data);
-
     if (data && data.mimetype && data.videofile && data.container) {
       // We have info on a new video, time to create models and attach it to the new post object.
       Review.app.models.videoCollection.newVideoCollection(data, function newVideoCollectionCallback(err, info) {
@@ -52,6 +40,37 @@ module.exports = function(Review) {
     }
     else {
       next();
+    }
+  }
+
+  Review.observe('before save', function videoUpload(ctx, next) {
+    const logger = Review.app.get('logger');
+    let data; // this is for accessing properties of the new object and, if they exist, video details.
+
+    if (ctx.isNewInstance) {
+      data = Object.assign({}, ctx.instance.__data);
+      logger.info('review before save', data);
+
+      // check that we do not have an existing review that is not deleted for the chosen pid
+      Review.app.models.review.findOne({where: {markedAsDeleted: null, pid: data.pid, reviewownerid: data.reviewownerid}}, (error, review) => {
+        if (!error && review) {
+          logger.info('existing review', review);
+          const err = new Error();
+          err.status = 500;
+          err.message = 'Eksisterende anmeldelse'; // note: we currently have a hook in the biblo.dk depending on this exact string
+          next(err);
+        }
+        else {
+          updateVideo(ctx, data, next);
+        }
+      });
+    }
+    else {
+      data = Object.assign({}, ctx.currentInstance.__data, ctx.data);
+
+      logger.info('review before save', data);
+      // we are updating a existing review. Skip unique checks on pid + reviewownerid (to support altering old reviews)
+      updateVideo(ctx, data, next);
     }
   });
 
