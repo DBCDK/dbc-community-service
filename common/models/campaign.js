@@ -1,4 +1,4 @@
-'use strict';
+
 
 module.exports = function(Campaign) {
   function logoValidator(err) {

@@ -1,4 +1,4 @@
-'use strict';
+
 
 import loopback from 'loopback';
 import boot from 'loopback-boot';

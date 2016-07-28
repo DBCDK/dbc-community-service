@@ -1,4 +1,3 @@
-'use strict';
 
 /**
  * @file configurations that depend on deploy environment

@@ -1,4 +1,4 @@
-'use strict';
+
 
 /**
  * @file Mapping from accepted image MIME type to file suffix

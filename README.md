@@ -2,6 +2,7 @@
 
 [![David](https://img.shields.io/david/DBCDK/dbc-community-service.svg?style=flat-square)](https://david-dm.org/DBCDK/dbc-community-service#info=dependencies)
 [![David](https://img.shields.io/david/dev/DBCDK/dbc-community-service.svg?style=flat-square)](https://david-dm.org/DBCDK/dbc-community-service#info=devDependencies)
+[![Build Status](https://travis-ci.org/DBCDK/dbc-community-service.svg?branch=master)](https://travis-ci.org/DBCDK/dbc-community-service)
 
 DBC community web service
 

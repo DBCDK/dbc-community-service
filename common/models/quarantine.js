@@ -1,4 +1,4 @@
-'use strict';
+
 
 module.exports = function(Quarantine) {
   Quarantine.checkIfProfileIsQuarantined = function(ctx, id, next) {
@@ -9,7 +9,7 @@ module.exports = function(Quarantine) {
       }
     }, function (err, res) {
       next(null, {
-        quarantined: (res.length > 0)
+        quarantined: !err && (res.length > 0)
       });
     });
   };

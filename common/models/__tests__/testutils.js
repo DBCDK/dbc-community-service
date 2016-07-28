@@ -1,4 +1,4 @@
-'use strict';
+
 
 /**
  * @file: A collection of testutils for testing biblo.

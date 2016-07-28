@@ -1,0 +1,34 @@
+{
+  "name": "GroupProfile",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "profileid": {
+      "type": "number"
+    },
+    "groupid": {
+      "type": "number"
+    },
+    "visited": {
+      "type": "date"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "group": {
+      "type": "belongsTo",
+      "model": "Group",
+      "foreignKey": "groupid"
+    },
+    "profile": {
+      "type": "belongsTo",
+      "model": "Profile",
+      "foreignKey": "profileid"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

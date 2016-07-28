@@ -1,4 +1,4 @@
-'use strict';
+
 
 /**
  * @file Utility functions for working with images

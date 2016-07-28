@@ -1,10 +1,8 @@
-'use strict';
-
 export function getAddedColoumnsToDrop(postgres, model, actualFields) {
   let m = postgres._models[model];
   let propNames = Object.keys(m.properties);
   let sql = [];
-  propNames.forEach(function (propName) {
+  propNames.forEach(function(propName) {
     if (postgres.id(model, propName)) {
       return;
     }
@@ -99,23 +97,23 @@ export function normalizeIndexKeyDefinition(keys) {
 
   // Default is ASC
   if (typeof keys === 'string') {
-    result = keys.split(',').map(function (key) {
+    result = keys.split(',').map(function(key) {
       parts = key.trim().split(' ');
       column = parts[0].trim();
       attribs = parts.slice(1).join(' ');
       return column && [column, attribs];
-    }).filter(function (key) {
+    }).filter(function(key) {
       return key.length;
     });
   }
   else if (typeof keys.length === 'undefined') {
-    result = Object.keys(keys).map(function (resultColumn) {
+    result = Object.keys(keys).map(function(resultColumn) {
       attribs = keys[resultColumn] === -1 ? 'DESC' : 'ASC';
       return resultColumn && [resultColumn, attribs];
     });
   }
   else if (keys && keys.length) {
-    result = keys.map(function (resultColumn) {
+    result = keys.map(function(resultColumn) {
       if (typeof resultColumn === 'string') {
         parts = resultColumn.trim().split(' ');
         resultColumn = parts[0].trim();
@@ -149,12 +147,12 @@ export function normalizeIndexDefinition(index) {
 
 export function indexSqlGenerator(postgres, model, actualIndexes) {
   let m = postgres._models[model];
-  let propNames = Object.keys(m.properties).filter(function (name) {
+  let propNames = Object.keys(m.properties).filter(function(name) {
     return !!m.properties[name];
   });
 
   let indexNames = m.settings.indexes && Object.keys(m.settings.indexes)
-      .filter(function (name) {
+      .filter(function(name) {
         return !!m.settings.indexes[name];
       }) || [];
 
@@ -162,7 +160,7 @@ export function indexSqlGenerator(postgres, model, actualIndexes) {
   let ai = {};
   const propNameRegEx = new RegExp('^' + postgres.table(model) + '_([^_]+)_idx');
   if (actualIndexes) {
-    actualIndexes.forEach(function (i) {
+    actualIndexes.forEach(function(i) {
       let name = i.name;
       if (!ai[name]) {
         ai[name] = i;
@@ -172,7 +170,7 @@ export function indexSqlGenerator(postgres, model, actualIndexes) {
   let aiNames = Object.keys(ai);
 
   // remove indexes
-  aiNames.forEach(function (indexName) {
+  aiNames.forEach(function(indexName) {
     let i = ai[indexName];
     let propName = propNameRegEx.exec(indexName);
     let si; // index definition from model schema
@@ -204,14 +202,14 @@ export function indexSqlGenerator(postgres, model, actualIndexes) {
         si = normalizeIndexDefinition(m.settings.indexes[indexName]);
 
         var identical =
-          (!si.type || si.type === i.type) && // compare type
-          ((si.options && !!si.options.unique) === i.unique); // compare unique
+              (!si.type || si.type === i.type) && // compare type
+              ((si.options && !!si.options.unique) === i.unique); // compare unique
 
         // if this is a multi-column query, verify that the order matches
         var siKeys = Object.keys(si.keys);
         if (identical && siKeys.length > 1) {
           if (siKeys.length === i.keys.length) {
-            siKeys.forEach(function (siPropName, iter) {
+            siKeys.forEach(function(siPropName, iter) {
               identical = identical && postgres.column(model, siPropName) === i.keys[iter];
             });
           }
@@ -226,7 +224,7 @@ export function indexSqlGenerator(postgres, model, actualIndexes) {
   });
 
   // add single-column indexes
-  propNames.forEach(function (propName) {
+  propNames.forEach(function(propName) {
     let i = m.properties[propName].index;
     if (!i) {
       return;
@@ -257,13 +255,13 @@ export function indexSqlGenerator(postgres, model, actualIndexes) {
   });
 
   // add multi-column indexes
-  indexNames.forEach(function (indexName) {
+  indexNames.forEach(function(indexName) {
     let i = m.settings.indexes[indexName];
     let found = ai[indexName];
     if (!found) {
       i = normalizeIndexDefinition(i);
       let iName = postgres.escapeName(indexName);
-      let columns = i.keys.map(function (key) {
+      let columns = i.keys.map(function(key) {
         return postgres.escapeName(postgres.column(model, key[0])) + (key[1] ? ' ' + key[1] : '');
       }).join(', ');
 
@@ -287,32 +285,22 @@ export function indexSqlGenerator(postgres, model, actualIndexes) {
   return sql.join(', ');
 }
 
-export function generateDownIndexes(postgres, model, actualIndexes) {
-  actualIndexes = actualIndexes || [];
-  let m = postgres._models[model];
-
-  let indexNames = m.settings.indexes && Object.keys(m.settings.indexes)
-      .filter(function (name) {
-        return !!m.settings.indexes[name];
-      }) || [];
-
-  let sql = [];
-  let ai = {};
-  const propNameRegEx = new RegExp('^' + postgres.table(model) + '_([^_]+)_idx');
-  const propNameRegExAlt = new RegExp('^' + postgres.table(model) + '_([^_]+)_key');
-  if (actualIndexes) {
-    actualIndexes.forEach(function (i) {
-      let name = i.name;
-      if (!ai[name]) {
-        ai[name] = i;
-      }
-    });
-
-  }
-  let aiNames = Object.keys(ai);
+/**
+ * Generates array of SQL queries
+ * @param aiNames
+ * @param ai
+ * @param indexNames
+ * @param propNameRegEx
+ * @param propNameRegExAlt
+ * @param postgres
+ * @param model
+ * @returns {Array}
+ */
+function generateSQLForDownIndexes(aiNames, ai, indexNames, propNameRegEx, propNameRegExAlt, postgres, model) {
+  const sql = [];
 
   aiNames.forEach((indexName) => {
-    let indexDef = normalizeIndexDefinition(ai[indexName]);
+    const indexDef = normalizeIndexDefinition(ai[indexName]);
     if (
       indexDef.type === 'btree' &&
       indexDef.primary &&
@@ -328,14 +316,14 @@ export function generateDownIndexes(postgres, model, actualIndexes) {
 
     let propName = propNameRegEx.exec(indexName) || propNameRegExAlt.exec(indexName);
     propName = propName && postgres.propertyName(model, propName[1]) || null;
-    let iName = [postgres.table(model), postgres.column(model, propName), 'idx'].join('_');
+    const iName = [postgres.table(model), postgres.column(model, propName), 'idx'].join('_');
 
     if (ai[iName]) {
       return;
     }
 
-    let i = ai[indexName];
-    let pName = postgres.escapeName(postgres.column(model, propName));
+    const i = ai[indexName];
+    const pName = postgres.escapeName(postgres.column(model, propName));
     let type = '';
     let kind = '';
 
@@ -353,6 +341,35 @@ export function generateDownIndexes(postgres, model, actualIndexes) {
 
     sql.push('CREATE ' + kind + ' INDEX ' + postgres.escapeName(iName) + ' ON ' + postgres.tableEscaped(model) + type + ' ( ' + pName + ' )');
   });
+
+  return sql;
+}
+
+export function generateDownIndexes(postgres, model, actualIndexes) {
+  actualIndexes = actualIndexes || [];
+  const m = postgres._models[model];
+
+  const indexNames = m.settings.indexes && Object.keys(m.settings.indexes)
+      .filter(function(name) {
+        return !!m.settings.indexes[name];
+      }) || [];
+
+  const ai = {};
+  const propNameRegEx = new RegExp('^' + postgres.table(model) + '_([^_]+)_idx');
+  const propNameRegExAlt = new RegExp('^' + postgres.table(model) + '_([^_]+)_key');
+  if (actualIndexes) {
+    actualIndexes.forEach(function(i) {
+      let name = i.name;
+      if (!ai[name]) {
+        ai[name] = i;
+      }
+    });
+
+  }
+
+  const aiNames = Object.keys(ai);
+
+  const sql = generateSQLForDownIndexes(aiNames, ai, indexNames, propNameRegEx, propNameRegExAlt, postgres, model);
 
   return sql.join(', ');
 }
