@@ -70,7 +70,7 @@ else {
 
 app.start = () => {
   // start the web server
-  return app.listen(() => {
+  return app.listen(config.get('CommunityService.port'), () => {
     app.emit('started');
     logger.debug(`Web server listening at :: ${app.get('url')}`); // eslint-disable-line no-console
   });
