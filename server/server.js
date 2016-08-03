@@ -1,4 +1,5 @@
 
+import {config} from '@dbcdk/biblo-config';
 
 import loopback from 'loopback';
 import boot from 'loopback-boot';
@@ -11,30 +12,12 @@ import groupDatasourceModifier from './connectorlogic/group.datasourcemodifier';
 import Primus from 'primus';
 
 const app = loopback();
-const APP_NAME = process.env.APPLICATION_NAME || 'app_name';
-const logger = new Logger({app_name: APP_NAME});
+const logger = new Logger({app_name: config.get('CommunityService.applicationTitle')});
 export default app;
 
 import bodyParser from 'body-parser';
 
-let amazonConfig;
-
-if (process.env.AMAZON_S3_KEY && process.env.AMAZON_S3_KEYID) {
-  amazonConfig = {
-    key: process.env.AMAZON_S3_KEY,
-    keyId: process.env.AMAZON_S3_KEYID
-  };
-}
-else if (require('@dbcdk/biblo-config').communityservice.amazon) {
-  amazonConfig = require('@dbcdk/biblo-config').communityservice.amazon;
-}
-else {
-  amazonConfig = {
-    key: '',
-    keyId: ''
-  };
-}
-
+const amazonConfig = config.get('ServiceProvider.aws');
 app.set('amazonConfig', amazonConfig);
 app.set('logger', logger);
 
@@ -45,10 +28,10 @@ AWS.config.update({
   secretAccessKey: amazonConfig.key
 });
 
-if (process.env.http_proxy) {
+if (config.get('Proxy.http_proxy')) {
   AWS.config.update({
     httpOptions: {
-      agent: ProxyAgent(process.env.http_proxy)
+      agent: ProxyAgent(config.get('Proxy.http_proxy'))
     }
   });
 }
@@ -56,23 +39,10 @@ if (process.env.http_proxy) {
 // Add Counts Mixin to loopback
 countMixin(app);
 
-let redisConfig;
-
-if (process.env.COMMUNITY_SERVICE_REDIS_HOST && process.env.COMMUNITY_SERVICE_REDIS_PORT) {
-  redisConfig = {
-    port: process.env.COMMUNITY_SERVICE_REDIS_PORT,
-    host: process.env.COMMUNITY_SERVICE_REDIS_HOST
-  };
-}
-else if (require('@dbcdk/biblo-config').communityservice.redis) {
-  redisConfig = require('@dbcdk/biblo-config').communityservice.redis;
-}
-else {
-  redisConfig = {
-    port: 6379,
-    host: '127.0.0.1'
-  };
-}
+const redisConfig = {
+  port: config.get('Redis.port'),
+  host: config.get('Redis.host')
+};
 
 // Create fileContainer model, and point it to amazon.
 app.model(loopback.createDataSource({

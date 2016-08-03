@@ -6,11 +6,11 @@
     "lint": "eslint ./common ./client ./server config.js",
     "lint:checkstyle": "eslint ./common ./client ./server ./test -o report.xml -f checkstyle",
     "start": "node .",
-    "dev": "NODE_ENV=local nodemon main.js",
-    "dev:search": "ELASTIC_ENABLED=1 NODE_ENV=local nodemon main.js",
-    "dev:proxy": "NODE_TLS_REJECT_UNAUTHORIZED=0 http_proxy=http://localhost:8888 NODE_ENV=local nodemon main.js",
-    "dev:noconf": "USE_DEFAULT_CONFIG=true NODE_ENV=local nodemon main.js",
-    "test": "TESTING=true USE_ENV_CONFIG=true DATABASE_CONNECTOR=\"memory\" mocha --compilers js:babel-core/register --recursive common server -R mocha-jenkins-reporter",
+    "dev": "nodemon main.js",
+    "dev:search": "ELASTIC_ENABLED=1 nodemon main.js",
+    "dev:proxy": "NODE_TLS_REJECT_UNAUTHORIZED=0 http_proxy=http://localhost:8888 nodemon main.js",
+    "dev:noconf": "USE_DEFAULT_CONFIG=true nodemon main.js",
+    "test": "TESTING=true COMMUNITY_POSTGRES_CONNECTOR=\"memory\" mocha --compilers js:babel-core/register --recursive common server -R mocha-jenkins-reporter",
     "migrate-create": "ELASTIC_ENABLED=0 MIGRATING=true ./loopback-db-migrate.js --datasource psqlDs create",
     "migrate-up": "ELASTIC_ENABLED=0 MIGRATING=true ./loopback-db-migrate.js up --datasource psqlDs",
     "migrate-down": "ELASTIC_ENABLED=0 MIGRATING=true ./loopback-db-migrate.js down --datasource psqlDs"
@@ -53,7 +53,7 @@
     "ws": "^1.1.1"
   },
   "optionalDependencies": {
-    "@dbcdk/biblo-config": "^1.3.1",
+    "@dbcdk/biblo-config": "^2.0.0",
     "bull": "^1.0.0-rc1",
     "loopback-component-explorer": "^2.3.0"
   },
