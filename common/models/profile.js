@@ -3,14 +3,7 @@
 import * as logger from 'dbc-node-logger';
 import crypto from 'crypto';
 
-let uniloginSecret;
-
-if (process.env.UNILOGINSECRET) {
-  uniloginSecret = process.env.UNILOGINSECRET;
-}
-else {
-  uniloginSecret = require('@dbcdk/biblo-config').biblo.getConfig().unilogin.secret;
-}
+const config = require('@dbcdk/biblo-config').config;
 
 module.exports = function(Profile) {
   Profile.prototype.createAccessToken = function(ttl, cb) {
@@ -50,7 +43,7 @@ module.exports = function(Profile) {
 
     let serverToken = crypto
       .createHash('md5')
-      .update(timestamp + uniloginSecret + username)
+      .update(timestamp + config.get('UNILogin.secret') + username)
       .digest('hex');
 
     if (serverToken !== authtoken) {

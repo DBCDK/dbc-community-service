@@ -6,6 +6,7 @@
 
 import superagent from 'superagent';
 import crypto from 'crypto';
+import {config} from '@dbcdk/biblo-config';
 
 export function superAgentGetPromise(url) {
   return (new Promise((resolve, reject) => {
@@ -42,14 +43,7 @@ export function superAgentPostPromise(url, payload) {
 export function loginViaUnilogin(endpoint, username) {
   username = username || 'bobby';
 
-  let uniloginSecret;
-
-  if (process.env.UNILOGINSECRET) {
-    uniloginSecret = process.env.UNILOGINSECRET;
-  }
-  else {
-    uniloginSecret = require('@dbcdk/biblo-config').biblo.getConfig().unilogin.secret;
-  }
+  const uniloginSecret = config.get('UNILogin.secret');
 
   let timestamp = (new Date()).toISOString();
   let serverToken = crypto
