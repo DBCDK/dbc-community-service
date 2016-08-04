@@ -3,6 +3,7 @@
 import {eachSeries} from 'async';
 import {Client} from 'elasticsearch';
 import ProxyAgent from 'proxy-agent';
+import {config} from '@dbcdk/biblo-config';
 
 /* eslint-disable no-use-before-define */
 
@@ -29,13 +30,13 @@ import ProxyAgent from 'proxy-agent';
  */
 
 // Check if we even want elastic enabled
-const ELASTIC_ENABLED = !!process.env.ELASTIC_ENABLED; // eslint-disable-line no-process-env
+const ELASTIC_ENABLED = config.get('CommunityService.elasticSearch.enabled');
 
 // Check what host we want to run on
-const ELASTIC_HOST = process.env.ELASTIC_HOST || 'localhost:9200'; // eslint-disable-line no-process-env
+const ELASTIC_HOST = config.get('CommunityService.elasticSearch.host');
 
 // Check the index name (this is the middle part of the index), we want. Use this to avoid document collisions.
-const ELASTIC_INDEXNAME = process.env.ELASTIC_INDEXNAME || 'dev'; // eslint-disable-line no-process-env
+const ELASTIC_INDEXNAME = config.get('CommunityService.elasticSearch.indexName');
 
 // Set to 1 to check for missing documents.
 const FORCE_INITIAL_INDEX = !!process.env.ELASTIC_FORCE_INDEX_ON_INIT; // eslint-disable-line no-process-env
