@@ -72,6 +72,7 @@ app.start = () => {
   // start the web server
   return app.listen(config.get('CommunityService.port'), () => {
     app.emit('started');
+    logger.debug(`Running: ${config.util.getEnv('NODE_ENV')}-${config.util.getEnv('NODE_APP_INSTANCE')} from ${config.util.getEnv('CONFIG_DIR')}`);
     logger.debug(`Web server listening at :: ${app.get('url')}`); // eslint-disable-line no-console
   });
 };
