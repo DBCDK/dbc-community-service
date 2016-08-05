@@ -53,8 +53,8 @@ function generateMigrationSql(postgres, actualFields, actualIndexes, model) {
 }
 
 function generateCreateSql(postgres, model) {
-  let sql = []
-  let downSql = []
+  let sql = [];
+  let downSql = [];
 
   // Model does not exist, create it!
   let name = postgres.tableEscaped(model);
