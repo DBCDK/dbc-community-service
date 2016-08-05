@@ -1,5 +1,11 @@
 
-import {config} from '@dbcdk/biblo-config';
+let config;
+try {
+  config = require('@dbcdk/biblo-config').config;
+}
+catch (err) {
+  config = require('config');
+}
 
 import loopback from 'loopback';
 import boot from 'loopback-boot';

@@ -3,7 +3,14 @@
 import {eachSeries} from 'async';
 import {Client} from 'elasticsearch';
 import ProxyAgent from 'proxy-agent';
-import {config} from '@dbcdk/biblo-config';
+
+let config;
+try {
+  config = require('@dbcdk/biblo-config').config;
+}
+catch (err) {
+  config = require('config');
+}
 
 /* eslint-disable no-use-before-define */
 

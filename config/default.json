@@ -1,0 +1,152 @@
+{
+  "Biblo": {
+    "applicationTitle": "Biblo",
+    "endpoint": "http://localhost:8080",
+    "port": 8080,
+    "frontPageBucket": "uxdev-biblo-content-frontpage",
+    "workers": 1,
+    "brokers": 1,
+    "rebootWorkers": true,
+    "showInSearchEngines": false
+  },
+  "CacheTimes": {
+    "standard": 1,
+    "extended": 2
+  },
+  "CommunityService": {
+    "applicationTitle": "CommunityService",
+    "endpoint": "http://localhost:3000/",
+    "port": 3000,
+    "datasources": {
+      "db": {
+        "name": "db",
+        "connector": "memory"
+      },
+      "psqlDs": {
+        "host": "127.0.0.1",
+        "port": 5432,
+        "database": "dbc_community",
+        "username": "communitydb",
+        "password": "loobbackcommunity",
+        "name": "psqlDs",
+        "connector": "postgresql"
+      }
+    },
+    "elasticSearch": {
+      "enabled": false,
+      "host": null,
+      "indexName": "local"
+    }
+  },
+  "Redis": {
+    "host": "127.0.0.1",
+    "port": 6379,
+    "db": 0,
+    "queue_prefix": "local"
+  },
+  "UNILogin": {
+    "id": "XXXX",
+    "secret": "XXXX",
+    "uniloginBasePath": "https://sso.emu.dk/unilogin/login.cgi",
+    "returURL": "http:localhost:8080/login"
+  },
+  "NewRelic": {
+    "enabled": false,
+    "app_name": "biblo"
+  },
+  "Logger": {
+    "KAFKA_TOPIC": null,
+    "KAFKA_HOST": null
+  },
+  "Proxy": {
+    "NO_PROXY": null,
+    "https_proxy": null,
+    "http_proxy": null
+  },
+  "ServiceProvider": {
+    "aws": {
+      "key": "XXXX",
+      "keyId": "XXXX",
+      "region": "eu-west-1",
+      "TopicArn": "XXXX",
+      "snsApiVersion": "2010-03-31",
+      "transcoding": {
+        "pipelineId": "XXXX",
+        "presetId": "XXXX"
+      },
+      "buckets": {
+        "imageBucket": "uxdev-biblo-imagebucket",
+        "videoInputBucket": "uxdev-biblo-input-videobucket",
+        "videoOutputBucket": "uxdev-biblo-output-videobucket",
+        "imageBuckets": {
+          "thumbnail": "uxdev-biblo-imagebucket-thumbnail",
+          "small": "uxdev-biblo-imagebucket-small",
+          "medium": "uxdev-biblo-imagebucket-medium",
+          "large": "uxdev-biblo-imagebucket-large",
+          "large-square": "uxdev-biblo-imagebucket-large",
+          "medium-square": "uxdev-biblo-imagebucket-medium",
+          "small-square": "uxdev-biblo-imagebucket-small"
+        }
+      },
+      "cloudfrontUrls": {
+        "uxdev-biblo-imagebucket": "d1icxfab6bsrut.cloudfront.net",
+        "uxdev-biblo-imagebucket-thumbnail": "d3nnqcao3aoim7.cloudfront.net",
+        "uxdev-biblo-imagebucket-small": "d2pgs2dpocri0y.cloudfront.net",
+        "uxdev-biblo-imagebucket-medium": "dczpmmgd95zr7.cloudfront.net",
+        "uxdev-biblo-imagebucket-large": "d2csregejdex1w.cloudfront.net",
+        "uxprod-biblo-imagebucket": "d1bfas8l4gcllv.cloudfront.net",
+        "uxprod-biblo-imagebucket-thumbnail": "d123o5rjfmxljg.cloudfront.net",
+        "uxprod-biblo-imagebucket-small": "d2fyyv5dljhxha.cloudfront.net",
+        "uxprod-biblo-imagebucket-medium": "d1kc8nz87gqbqv.cloudfront.net",
+        "uxprod-biblo-imagebucket-large": "d3nuo9i5ofo7in.cloudfront.net"
+      },
+      "DynamoDB": {
+        "tableName": null,
+        "apiVersion": "2012-08-10",
+        "readCap": 1,
+        "writeCap": 1
+      }
+    },
+    "bibloadmin": {
+      "endpoint": "http://uxscrum-i02.dbc.dk:8889",
+      "user": "XXXX",
+      "password": "XXXX"
+    },
+    "community": {
+      "endpoint": "http://localhost:3000/"
+    },
+    "entitysuggest": {
+      "endpoint": "http://xptest.dbc.dk/ms/entity-suggest/v1",
+      "port": 8015,
+      "cache": "CacheTimes.extended"
+    },
+    "openplatform": {
+      "endpoint": "http://aabenplatform.dbc.dk:8080/v1/",
+      "smaug": "http://aabenplatform:3000/",
+      "token": "XXXX",
+      "clientId": "XXXX",
+      "clientSecret": "XXXX",
+      "cache": "CacheTimes.standard"
+    },
+    "openorder": {
+      "endpoint": "https://openorder.addi.dk/2.7/",
+      "user": "XXXX",
+      "group": "XXXX",
+      "password": "XXXX",
+      "orderSystem": "XXXX",
+      "serviceRequester": "XXXX",
+      "needBeforeDate": "90"
+    },
+    "openuserstatus": {
+      "endpoint": "https://openuserstatus.addi.dk/1.4/"
+    },
+    "openagency": {
+      "wsdl": "http://openagency.addi.dk/2.24/?wsdl",
+      "libraryType": "Folkebibliotek",
+      "cache": "CacheTimes.standard"
+    }
+  },
+  "Sessions": {
+    "secret": "XXXX"
+  }
+}

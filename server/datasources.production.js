@@ -4,4 +4,12 @@
  * @file Write a short description here.
  */
 
-module.exports = require('@dbcdk/biblo-config').config.get('CommunityService.datasources');
+let config;
+try {
+  config = require('@dbcdk/biblo-config').config;
+}
+catch (err) {
+  config = require('config');
+}
+
+module.exports = config.get('CommunityService.datasources');

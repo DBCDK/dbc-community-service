@@ -3,7 +3,13 @@
 import * as logger from 'dbc-node-logger';
 import crypto from 'crypto';
 
-const config = require('@dbcdk/biblo-config').config;
+let config;
+try {
+  config = require('@dbcdk/biblo-config').config;
+}
+catch (err) {
+  config = require('config');
+}
 
 module.exports = function(Profile) {
   Profile.prototype.createAccessToken = function(ttl, cb) {
