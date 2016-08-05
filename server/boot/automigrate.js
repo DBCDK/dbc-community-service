@@ -4,17 +4,22 @@ import {generateDownIndexes, getAddedColoumnsToDrop, getColoumnsToRestore, getMo
 
 function generateIndexes(postgres, model, actualIndexes, sql, downSql) {
   let indexSql = indexSqlGenerator(postgres, model, actualIndexes);
-  if (indexSql.length > 0) {
+  if (indexSql && indexSql.length > 0) {
     sql.push(indexSql);
   }
 
   let indexDownSql = generateDownIndexes(postgres, model, actualIndexes);
-  if (indexDownSql.length > 0) {
+  if (indexDownSql && indexDownSql.length > 0) {
     downSql.push(indexDownSql);
   }
+
+  return {sql, downSql};
 }
 
-function generateMigrationSql(sql, postgres, actualFields, actualIndexes, downSql, model) {
+function generateMigrationSql(postgres, actualFields, actualIndexes, model) {
+  let sql = [];
+  let downSql = [];
+
   // Model already exists, start generating a migration
   // Start by adding the new coloumns
   sql = sql.concat(postgres.getColumnsToAdd(model, actualFields).map((colSql) => {
@@ -44,10 +49,13 @@ function generateMigrationSql(sql, postgres, actualFields, actualIndexes, downSq
   downSql = downSql.concat(getColoumnsToRestore(postgres, model, actualFields));
 
   // Finally add indexes
-  generateIndexes(postgres, model, actualIndexes, sql, downSql);
+  return generateIndexes(postgres, model, actualIndexes, sql, downSql);
 }
 
-function generateCreateSql(postgres, model, sql, downSql) {
+function generateCreateSql(postgres, model) {
+  let sql = [];
+  let downSql = [];
+
   // Model does not exist, create it!
   let name = postgres.tableEscaped(model);
 
@@ -56,7 +64,7 @@ function generateCreateSql(postgres, model, sql, downSql) {
   downSql.push(`DROP TABLE ${name}`);
 
   // Create indexes
-  generateIndexes(postgres, model, null, sql, downSql);
+  return generateIndexes(postgres, model, null, sql, downSql);
 }
 
 function outputSql(sql, downSql) {
@@ -95,17 +103,16 @@ function migrateTables(ds, appModels) {
   // Get down to generating sql!
   appModels.forEach((model) => {
     postgres.getTableStatus(model, (err, actualFields, actualIndexes) => {
-      let sql = [];
-      let downSql = [];
+      let sqlObject = {sql: [], downSql: []};
       if (!err && actualFields.length) {
-        generateMigrationSql(sql, postgres, actualFields, actualIndexes, downSql, model);
+        sqlObject = generateMigrationSql(postgres, actualFields, actualIndexes, model);
       }
       else {
-        generateCreateSql(postgres, model, sql, downSql);
+        sqlObject = generateCreateSql(postgres, model);
       }
 
       if (!process.env.TESTING) {
-        outputSql(sql, downSql);
+        outputSql(sqlObject.sql, sqlObject.downSql);
       }
     });
   });

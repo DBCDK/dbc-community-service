@@ -1,0 +1,37 @@
+{
+  "CommunityService": {
+    "applicationTitle": "APPLICATION_NAME",
+    "port": "PORT",
+    "datasources": {
+      "psqlDs": {
+        "host": "DATABASE_HOST",
+        "port": "DATABASE_PORT",
+        "database": "DATABASE_DB",
+        "username": "DATABASE_USER",
+        "password": "DATABASE_PASSWORD",
+        "name": "DATABASE_NAME",
+        "connector": "DATABASE_CONNECTOR"
+      }
+    },
+    "elasticSearch": {
+      "enabled": "ELASTIC_ENABLED",
+      "host": "ELASTIC_HOST",
+      "indexName": "ELASTIC_INDEXNAME"
+    }
+  },
+  "Redis": {
+    "host": "COMMUNITY_SERVICE_REDIS_HOST",
+    "port": "COMMUNITY_SERVICE_REDIS_PORT"
+  },
+  "UNILogin": {
+    "id": "UNILOGINID",
+    "secret": "UNILOGINSECRET"
+  },
+  "ServiceProvider": {
+    "aws": {
+      "key": "AMAZON_S3_KEY",
+      "keyId": "AMAZON_S3_KEYID"
+    }
+  }
+}
+
