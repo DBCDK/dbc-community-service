@@ -6,7 +6,7 @@ module.exports = function(Comment) {  // eslint-disable-line no-unused-vars
 
     if (ctx.isNewInstance) {
       if (ctx.instance.__data.commentcontainerpostid < 0 || ctx.instance.__data.postid < 0) {
-        logger.warning('A new comment was associated with a negative postid', {instance: ctx.instance});
+        logger.warning('A new comment was associated with a negative postid', {__data: ctx.instance.__data});
         ctx.instance.__data.commentcontainerpostid = Math.abs(ctx.instance.__data.commentcontainerpostid);
         ctx.instance.__data.postid = Math.abs(ctx.instance.__data.postid);
       }
@@ -15,8 +15,8 @@ module.exports = function(Comment) {  // eslint-disable-line no-unused-vars
     }
     else {
       if (ctx.currentInstance.__data.commentcontainerpostid < 0 || ctx.currentInstance.__data.postid < 0) {
-        logger.warning('A new comment was associated with a negative postid', {
-          instance: ctx.currentInstance,
+        logger.warning('An existing comment was associated with a negative postid', {
+          __data: ctx.currentInstance.__data,
           data: ctx.data
         });
         ctx.currentInstance.__data.commentcontainerpostid = Math.abs(ctx.currentInstance.__data.commentcontainerpostid);
