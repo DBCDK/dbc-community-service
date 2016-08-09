@@ -1,5 +1,3 @@
-
-
 module.exports = function(Comment) {  // eslint-disable-line no-unused-vars
   Comment.observe('before save', function videoUpload(ctx, next) {
     const logger = Comment.app.get('logger');
@@ -7,9 +5,24 @@ module.exports = function(Comment) {  // eslint-disable-line no-unused-vars
     let data; // this is for accessing properties of the new object and, if they exist, video details.
 
     if (ctx.isNewInstance) {
+      if (ctx.instance.__data.commentcontainerpostid < 0 || ctx.instance.__data.postid < 0) {
+        logger.warning('A new comment was associated with a negative postid', {instance: ctx.instance});
+        ctx.instance.__data.commentcontainerpostid = Math.abs(ctx.instance.__data.commentcontainerpostid);
+        ctx.instance.__data.postid = Math.abs(ctx.instance.__data.postid);
+      }
+
       data = Object.assign({}, ctx.instance.__data);
     }
     else {
+      if (ctx.currentInstance.__data.commentcontainerpostid < 0 || ctx.currentInstance.__data.postid < 0) {
+        logger.warning('A new comment was associated with a negative postid', {
+          instance: ctx.currentInstance,
+          data: ctx.data
+        });
+        ctx.currentInstance.__data.commentcontainerpostid = Math.abs(ctx.currentInstance.__data.commentcontainerpostid);
+        ctx.currentInstance.__data.postid = Math.abs(ctx.currentInstance.__data.postid);
+      }
+
       data = Object.assign({}, ctx.currentInstance.__data, ctx.data);
     }
 
@@ -46,7 +59,7 @@ module.exports = function(Comment) {  // eslint-disable-line no-unused-vars
         },
         {
           commentVideoCollection: ctx.instance.id
-        }, function (err) {
+        }, function(err) {
           if (err) {
             logger.error('An error occurred during comment after save', {error: err});
             next(err);
