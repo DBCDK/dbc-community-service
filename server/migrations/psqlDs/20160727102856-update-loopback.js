@@ -1,147 +1,151 @@
 module.exports = {
   up: function(dataSource, next) {
-    // User
-    dataSource.connector.query('ALTER TABLE "public"."user" ALTER COLUMN "realm" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."user"  ALTER COLUMN "username" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."user"  ALTER COLUMN "password" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."user"  ALTER COLUMN "credentials" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."user"  ALTER COLUMN "challenges" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."user"  ALTER COLUMN "email" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."user"  ALTER COLUMN "verificationtoken" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."user"  ALTER COLUMN "status" TYPE TEXT;', next);
+    dataSource.connector.query(`
+      /* User */
+      ALTER TABLE "public"."user" ALTER COLUMN "realm" TYPE TEXT;
+      ALTER TABLE "public"."user"  ALTER COLUMN "username" TYPE TEXT;
+      ALTER TABLE "public"."user"  ALTER COLUMN "password" TYPE TEXT;
+      ALTER TABLE "public"."user"  ALTER COLUMN "credentials" TYPE TEXT;
+      ALTER TABLE "public"."user"  ALTER COLUMN "challenges" TYPE TEXT;
+      ALTER TABLE "public"."user"  ALTER COLUMN "email" TYPE TEXT;
+      ALTER TABLE "public"."user"  ALTER COLUMN "verificationtoken" TYPE TEXT;
+      ALTER TABLE "public"."user"  ALTER COLUMN "status" TYPE TEXT;
+      
+      /* Profile */
+      ALTER TABLE "public"."profile" ALTER COLUMN "username" TYPE TEXT;
+      ALTER TABLE "public"."profile"  ALTER COLUMN "displayname" TYPE TEXT;
+      ALTER TABLE "public"."profile"  ALTER COLUMN "favoritelibrary" TYPE TEXT;
+      ALTER TABLE "public"."profile"  ALTER COLUMN "description" TYPE TEXT;
+      ALTER TABLE "public"."profile"  ALTER COLUMN "email" TYPE TEXT;
+      ALTER TABLE "public"."profile"  ALTER COLUMN "phone" TYPE TEXT;
+      ALTER TABLE "public"."profile"  ALTER COLUMN "fullname" TYPE TEXT;
 
-    // Profile
-    dataSource.connector.query('ALTER TABLE "public"."profile" ALTER COLUMN "username" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."profile"  ALTER COLUMN "displayname" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."profile"  ALTER COLUMN "favoritelibrary" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."profile"  ALTER COLUMN "description" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."profile"  ALTER COLUMN "email" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."profile"  ALTER COLUMN "phone" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."profile"  ALTER COLUMN "fullname" TYPE TEXT;', next);
+      /* Like */
+      ALTER TABLE "public"."like" ALTER COLUMN "item_id" TYPE TEXT;
+      ALTER TABLE "public"."like"  ALTER COLUMN "value" TYPE TEXT;
 
-    // Like
-    dataSource.connector.query('ALTER TABLE "public"."like" ALTER COLUMN "item_id" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."like"  ALTER COLUMN "value" TYPE TEXT;', next);
+      /* Group */
+      ALTER TABLE "public"."group" ALTER COLUMN "name" TYPE TEXT;
+      ALTER TABLE "public"."group"  ALTER COLUMN "description" TYPE TEXT;
+      ALTER TABLE "public"."group"  ALTER COLUMN "colour" TYPE TEXT;
 
-    // Group
-    dataSource.connector.query('ALTER TABLE "public"."group" ALTER COLUMN "name" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."group"  ALTER COLUMN "description" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."group"  ALTER COLUMN "colour" TYPE TEXT;', next);
+      /* Post */
+      ALTER TABLE "public"."post" ALTER COLUMN "title" TYPE TEXT;
+      ALTER TABLE "public"."post"  ALTER COLUMN "content" TYPE TEXT;
 
-    // Post
-    dataSource.connector.query('ALTER TABLE "public"."post" ALTER COLUMN "title" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."post"  ALTER COLUMN "content" TYPE TEXT;', next);
+      /* Community Role */
+      ALTER TABLE "public"."communityrole" ALTER COLUMN "name" TYPE TEXT;
 
-    // Community Role
-    dataSource.connector.query('ALTER TABLE "public"."communityrole" ALTER COLUMN "name" TYPE TEXT;', next);
+      /* Comment */
+      ALTER TABLE "public"."comment" ALTER COLUMN "content" TYPE TEXT;
 
-    // Comment
-    dataSource.connector.query('ALTER TABLE "public"."comment" ALTER COLUMN "content" TYPE TEXT;', next);
+      /* Quarantine */
+      ALTER TABLE "public"."quarantine" ALTER COLUMN "reason" TYPE TEXT;
 
-    // Quarantine
-    dataSource.connector.query('ALTER TABLE "public"."quarantine" ALTER COLUMN "reason" TYPE TEXT;', next);
+      /* File */
+      ALTER TABLE "public"."file" ALTER COLUMN "container" TYPE TEXT;
+      ALTER TABLE "public"."file"  ALTER COLUMN "name" TYPE TEXT;
+      ALTER TABLE "public"."file"  ALTER COLUMN "type" TYPE TEXT;
+      ALTER TABLE "public"."file"  ALTER COLUMN "url" TYPE TEXT;
 
-    // File
-    dataSource.connector.query('ALTER TABLE "public"."file" ALTER COLUMN "container" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."file"  ALTER COLUMN "name" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."file"  ALTER COLUMN "type" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."file"  ALTER COLUMN "url" TYPE TEXT;', next);
+      /* Flag */
+      ALTER TABLE "public"."flag" ALTER COLUMN "description" TYPE TEXT;
+      ALTER TABLE "public"."flag"  ALTER COLUMN "_comments" TYPE TEXT;
+      ALTER TABLE "public"."flag"  ALTER COLUMN "_posts" TYPE TEXT;
+      ALTER TABLE "public"."flag"  ALTER COLUMN "_groups" TYPE TEXT;
+      ALTER TABLE "public"."flag"  ALTER COLUMN "_reviews" TYPE TEXT;
 
-    // Flag
-    dataSource.connector.query('ALTER TABLE "public"."flag" ALTER COLUMN "description" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."flag"  ALTER COLUMN "_comments" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."flag"  ALTER COLUMN "_posts" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."flag"  ALTER COLUMN "_groups" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."flag"  ALTER COLUMN "_reviews" TYPE TEXT;', next);
+      /* Review */
+      ALTER TABLE "public"."review" ALTER COLUMN "pid" TYPE TEXT;
+      ALTER TABLE "public"."review"  ALTER COLUMN "libraryid" TYPE TEXT;
+      ALTER TABLE "public"."review"  ALTER COLUMN "worktype" TYPE TEXT;
+      ALTER TABLE "public"."review"  ALTER COLUMN "content" TYPE TEXT;
 
-    // Review
-    dataSource.connector.query('ALTER TABLE "public"."review" ALTER COLUMN "pid" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."review"  ALTER COLUMN "libraryid" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."review"  ALTER COLUMN "worktype" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."review"  ALTER COLUMN "content" TYPE TEXT;', next);
+      /* Resolution */
+      ALTER TABLE "public"."resolution" ALTER COLUMN "size" TYPE TEXT;
 
-    // Resolution
-    dataSource.connector.query('ALTER TABLE "public"."resolution" ALTER COLUMN "size" TYPE TEXT;', next);
+      /* Campaign */
+      ALTER TABLE "public"."campaign" ALTER COLUMN "campaignname" TYPE TEXT;
+      ALTER TABLE "public"."campaign"  ALTER COLUMN "logos" TYPE TEXT;
+      ALTER TABLE "public"."campaign"  ALTER COLUMN "type" TYPE TEXT;
 
-    // Campaign
-    dataSource.connector.query('ALTER TABLE "public"."campaign" ALTER COLUMN "campaignname" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."campaign"  ALTER COLUMN "logos" TYPE TEXT;', next);
-    dataSource.connector.query('ALTER TABLE "public"."campaign"  ALTER COLUMN "type" TYPE TEXT;', next);
-
-    // Campaign Work Type
-    dataSource.connector.query('ALTER TABLE "public"."campaignworktype" ALTER COLUMN "worktype" TYPE TEXT;', next);
+      /* Campaign Work Type */
+      ALTER TABLE "public"."campaignworktype" ALTER COLUMN "worktype" TYPE TEXT;
+      `, next);
   },
 
   down: function(dataSource, next) {
-    // User
-    dataSource.connector.query('ALTER TABLE "public"."user" ALTER COLUMN "realm" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."user" ALTER COLUMN "username" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."user" ALTER COLUMN "password" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."user" ALTER COLUMN "credentials" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."user" ALTER COLUMN "challenges" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."user" ALTER COLUMN "email" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."user" ALTER COLUMN "verificationToken" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."user" ALTER COLUMN "status" TYPE VARCHAR(1024);', next);
+    dataSource.connector.query(`
+    /* User */
+    ALTER TABLE "public"."user" ALTER COLUMN "realm" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."user" ALTER COLUMN "username" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."user" ALTER COLUMN "password" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."user" ALTER COLUMN "credentials" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."user" ALTER COLUMN "challenges" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."user" ALTER COLUMN "email" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."user" ALTER COLUMN "verificationToken" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."user" ALTER COLUMN "status" TYPE VARCHAR(1024);
 
-    // Profile
-    dataSource.connector.query('ALTER TABLE "public"."profile" ALTER COLUMN "username" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."profile" ALTER COLUMN "displayName" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."profile" ALTER COLUMN "favoriteLibrary" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."profile" ALTER COLUMN "description" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."profile" ALTER COLUMN "email" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."profile" ALTER COLUMN "phone" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."profile" ALTER COLUMN "fullName" TYPE VARCHAR(1024);', next);
+    /* Profile */
+    ALTER TABLE "public"."profile" ALTER COLUMN "username" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."profile" ALTER COLUMN "displayName" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."profile" ALTER COLUMN "favoriteLibrary" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."profile" ALTER COLUMN "description" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."profile" ALTER COLUMN "email" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."profile" ALTER COLUMN "phone" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."profile" ALTER COLUMN "fullName" TYPE VARCHAR(1024);
 
-    // Like
-    dataSource.connector.query('ALTER TABLE "public"."like" ALTER COLUMN "item_id" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."like" ALTER COLUMN "value" TYPE VARCHAR(1024);', next);
+    /* Like */
+    ALTER TABLE "public"."like" ALTER COLUMN "item_id" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."like" ALTER COLUMN "value" TYPE VARCHAR(1024);
 
-    // Group
-    dataSource.connector.query('ALTER TABLE "public"."group" ALTER COLUMN "name" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."group" ALTER COLUMN "description" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."group" ALTER COLUMN "colour" TYPE VARCHAR(1024);', next);
+    /* Group */
+    ALTER TABLE "public"."group" ALTER COLUMN "name" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."group" ALTER COLUMN "description" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."group" ALTER COLUMN "colour" TYPE VARCHAR(1024);
 
-    // Post
-    dataSource.connector.query('ALTER TABLE "public"."post" ALTER COLUMN "title" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."post" ALTER COLUMN "content" TYPE VARCHAR(1024);', next);
+    /* Post */
+    ALTER TABLE "public"."post" ALTER COLUMN "title" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."post" ALTER COLUMN "content" TYPE VARCHAR(1024);
 
-    // Community Role
-    dataSource.connector.query('ALTER TABLE "public"."communityrole" ALTER COLUMN "name" TYPE VARCHAR(1024);', next);
+    /* Community Role */
+    ALTER TABLE "public"."communityrole" ALTER COLUMN "name" TYPE VARCHAR(1024);
 
-    // Comment
-    dataSource.connector.query('ALTER TABLE "public"."comment" ALTER COLUMN "content" TYPE VARCHAR(1024);', next);
+    /* Comment */
+    ALTER TABLE "public"."comment" ALTER COLUMN "content" TYPE VARCHAR(1024);
 
-    // Quarantine
-    dataSource.connector.query('ALTER TABLE "public"."quarantine" ALTER COLUMN "reason" TYPE VARCHAR(1024);', next);
+    /* Quarantine */
+    ALTER TABLE "public"."quarantine" ALTER COLUMN "reason" TYPE VARCHAR(1024);
 
-    // File
-    dataSource.connector.query('ALTER TABLE "public"."file" ALTER COLUMN "container" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."file" ALTER COLUMN "name" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."file" ALTER COLUMN "type" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."file" ALTER COLUMN "url" TYPE VARCHAR(1024);', next);
+    /* File */
+    ALTER TABLE "public"."file" ALTER COLUMN "container" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."file" ALTER COLUMN "name" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."file" ALTER COLUMN "type" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."file" ALTER COLUMN "url" TYPE VARCHAR(1024);
 
-    // Flag
-    dataSource.connector.query('ALTER TABLE "public"."flag" ALTER COLUMN "description" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."flag" ALTER COLUMN "_comments" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."flag" ALTER COLUMN "_posts" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."flag" ALTER COLUMN "_groups" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."flag" ALTER COLUMN "_reviews" TYPE VARCHAR(1024);', next);
+    /* Flag */
+    ALTER TABLE "public"."flag" ALTER COLUMN "description" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."flag" ALTER COLUMN "_comments" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."flag" ALTER COLUMN "_posts" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."flag" ALTER COLUMN "_groups" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."flag" ALTER COLUMN "_reviews" TYPE VARCHAR(1024);
 
-    // Review
-    dataSource.connector.query('ALTER TABLE "public"."review" ALTER COLUMN "pid" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."review" ALTER COLUMN "libraryid" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."review" ALTER COLUMN "worktype" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."review" ALTER COLUMN "content" TYPE VARCHAR(25000);', next);
+    /* Review */
+    ALTER TABLE "public"."review" ALTER COLUMN "pid" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."review" ALTER COLUMN "libraryid" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."review" ALTER COLUMN "worktype" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."review" ALTER COLUMN "content" TYPE VARCHAR(25000);
 
-    // Resolution
-    dataSource.connector.query('ALTER TABLE "public"."resolution" ALTER COLUMN "size" TYPE VARCHAR(1024);', next);
+    /* Resolution */
+    ALTER TABLE "public"."resolution" ALTER COLUMN "size" TYPE VARCHAR(1024);
 
-    // Campaign
-    dataSource.connector.query('ALTER TABLE "public"."campaign" ALTER COLUMN "campaignName" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."campaign" ALTER COLUMN "logos" TYPE VARCHAR(1024);', next);
-    dataSource.connector.query('ALTER TABLE "public"."campaign" ALTER COLUMN "type" TYPE VARCHAR(1024);', next);
+    /* Campaign */
+    ALTER TABLE "public"."campaign" ALTER COLUMN "campaignName" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."campaign" ALTER COLUMN "logos" TYPE VARCHAR(1024);
+    ALTER TABLE "public"."campaign" ALTER COLUMN "type" TYPE VARCHAR(1024);
 
-    // Campaign Work Type
-    dataSource.connector.query('ALTER TABLE "public"."campaignworktype" ALTER COLUMN "worktype" TYPE VARCHAR(1024);', next);
+    /* Campaign Work Type */
+    ALTER TABLE "public"."campaignworktype" ALTER COLUMN "worktype" TYPE VARCHAR(1024);
+    `, next);
   }
 };
