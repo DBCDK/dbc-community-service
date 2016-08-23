@@ -1,5 +1,5 @@
 /**
- * Only query deleted Models if requested explicit
+ * Only query deleted Groups if requested explicit
  * @param query
  * @returns {*}
  */
@@ -17,29 +17,39 @@ function queryDeleted(query) {
   return query;
 }
 
-module.exports = function (Model) {
+module.exports = function (Group) {
 
-  Model.on('dataSourceAttached', obj => { // eslint-disable-line no-unused-vars
+  Group.observe('after save', function afterGroupSave(ctx, next) {
+    Group.app.models.Post.updateAll(
+      {
+        groupid: ctx.instance.id,
+      },
+      {
+        groupDeleted: ctx.instance.markedAsDeleted
+      }, function (err) {
+        if (err) {
+          logger.error('An error occurred during group after save', {error: err});
+          next(err);
+        }
+        else {
+          next();
+        }
+      }
+    );
+  });
 
-    Model.destroyAll = function softDestroyAll(where, cb) {
-      return Model.updateAll(where, {markedAsDeleted: true})
+  Group.on('dataSourceAttached', function initSoftDestroyOnGroup() {
+
+    Group.destroyById = function softDestroyById(id, cb) {
+      return Group.upsert({id: id, markedAsDeleted: true})
         .then(result => (typeof cb === 'function') ? cb(null, result) : result)
         .catch(error => (typeof cb === 'function') ? cb(error) : Promise.reject(error));
     };
 
-    Model.remove = Model.destroyAll;
-    Model.deleteAll = Model.destroyAll;
+    Group.removeById = Group.destroyById;
+    Group.deleteById = Group.destroyById;
 
-    Model.destroyById = function softDestroyById(id, cb) {
-      return Model.updateAll({[Model.dataSource.idName(Model.modelName)]: id}, {markedAsDeleted: true})
-        .then(result => (typeof cb === 'function') ? cb(null, result) : result)
-        .catch(error => (typeof cb === 'function') ? cb(error) : Promise.reject(error));
-    };
-
-    Model.removeById = Model.destroyById;
-    Model.deleteById = Model.destroyById;
-
-    Model.prototype.destroy = function softDestroy(options, cb) {
+    Group.prototype.destroy = function softDestroy(options, cb) {
       const callback = (typeof cb === 'undefined' && typeof options === 'function') ? options : cb;
 
       return this.updateAttributes({markedAsDeleted: true})
@@ -47,18 +57,17 @@ module.exports = function (Model) {
         .catch(error => (typeof cb === 'function') ? callback(error) : Promise.reject(error));
     };
 
-    Model.prototype.remove = Model.prototype.destroy;
-    Model.prototype.delete = Model.prototype.destroy;
+    Group.prototype.remove = Group.prototype.destroy;
+    Group.prototype.delete = Group.prototype.destroy;
 
-
-    const _find = Model.find;
-    Model.find = function findDeleted(query = {}, ...rest) {
-      return _find.call(Model, queryDeleted(query), ...rest);
+    const _find = Group.find;
+    Group.find = function findDeleted(query = {}, ...rest) {
+      return _find.call(Group, queryDeleted(query), ...rest);
     };
 
-    const _findOrCreate = Model.findOrCreate;
-    Model.findOrCreate = function findOrCreateDeleted(query = {}, ...rest) {
-      return _findOrCreate.call(Model, queryDeleted(query), ...rest);
+    const _findOrCreate = Group.findOrCreate;
+    Group.findOrCreate = function findOrCreateDeleted(query = {}, ...rest) {
+      return _findOrCreate.call(Group, queryDeleted(query), ...rest);
     };
   });
 };

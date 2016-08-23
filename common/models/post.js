@@ -1,8 +1,41 @@
+/**
+ * Only query deleted Models if requested explicit
+ * @param query
+ * @returns {*}
+ */
+function queryDeleted(query) {
+  const queryNonDeleted = {markedAsDeleted: null, groupDeleted: false};
+
+  if (!query.deleted && !(query.where && query.where.id)) {
+    if (!query.where || Object.keys(query.where).length === 0) {
+      query.where = {and: queryNonDeleted};
+    }
+    else {
+      query.where = Object.assign({}, query.where, queryNonDeleted);
+    }
+  }
+  console.log(query);
+  return query;
+}
 
 
-module.exports = function(Post) {
+module.exports = function (Post) {
+
+  Post.on('dataSourceAttached', function initSoftDeleteOnPost() {
+    const _find = Post.find;
+    Post.find = function findDeleted(query = {}, ...rest) {
+      return _find.call(Post, queryDeleted(query), ...rest);
+    };
+  });
+
   Post.observe('before save', function videoUpload(ctx, next) {
     const logger = Post.app.get('logger');
+
+    // Abort if save is not done on an instance
+    if (!ctx.instance) {
+      next();
+      return;
+    }
 
     let data; // this is for accessing properties of the new object and, if they exist, video details.
 
@@ -35,6 +68,11 @@ module.exports = function(Post) {
   });
 
   Post.observe('after save', function afterPostSave(ctx, next) {
+    if (!ctx.instance) {
+      next();
+      return;
+    }
+
     const logger = Post.app.get('logger');
 
     logger.info('a post was created', ctx.instance.__data);
