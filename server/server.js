@@ -1,3 +1,5 @@
+// #20: quickfix for removing warnings in console output.
+require('events').EventEmitter.prototype._maxListeners = 20;
 
 let config;
 try {
