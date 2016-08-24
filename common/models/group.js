@@ -20,15 +20,16 @@ function queryDeleted(query) {
 module.exports = function (Group) {
 
   Group.observe('after save', function afterGroupSave(ctx, next) {
+    const logger = Group.app.get('logger');
     Group.app.models.Post.updateAll(
       {
-        groupid: ctx.instance.id,
+        groupid: ctx.instance.id
       },
       {
         groupDeleted: ctx.instance.markedAsDeleted
       }, function (err) {
         if (err) {
-          logger.error('An error occurred during group after save', {error: err});
+          logger.error('An error occurred during group after save updating posts', {error: err});
           next(err);
         }
         else {

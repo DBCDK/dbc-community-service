@@ -8,13 +8,12 @@ function queryDeleted(query) {
 
   if (!query.deleted && !(query.where && query.where.id)) {
     if (!query.where || Object.keys(query.where).length === 0) {
-      query.where = {and: queryNonDeleted};
+      query.where = queryNonDeleted;
     }
     else {
       query.where = Object.assign({}, query.where, queryNonDeleted);
     }
   }
-  console.log(query);
   return query;
 }
 
