@@ -59,7 +59,7 @@ module.exports = function groupDatasourceModifier(app) {
         '    ON c.postid=p.id ' +
         '  LEFT JOIN postlike pl' +
         '    ON pl.postid=p.id' +
-        `${where} ` +
+        ` ${where} ` +
         'GROUP BY ' +
         '  g.id ' +
         'ORDER BY ' +

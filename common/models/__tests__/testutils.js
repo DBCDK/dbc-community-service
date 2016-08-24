@@ -84,7 +84,8 @@ export function createGroup(endpoint, groupObject) {
     name: `Gruppen! ${Date.now()}`,
     description: 'Dette er GRUPPEN!',
     colour: 'red',
-    timeCreated: (new Date()).toUTCString()
+    timeCreated: (new Date()).toUTCString(),
+    markedAsDeleted: false
   }, groupObject || {});
 
   return superAgentPostPromise(`${endpoint}api/Groups`, groupObject);

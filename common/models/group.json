@@ -16,7 +16,8 @@
         "coverImage",
         "description",
         "timeCreated",
-        "posts"
+        "posts",
+        "markedAsDeleted"
       ],
       "filter": {
         "include": [
@@ -24,7 +25,10 @@
           {
             "posts": "comments"
           }
-        ]
+        ],
+        "where": {
+          "markedAsDeleted": null
+        }
       },
       "triggers": [
         {
@@ -59,6 +63,10 @@
     },
     "timeClosed": {
       "type": "date"
+    },
+    "markedAsDeleted": {
+      "type": "boolean",
+      "required": false
     }
   },
   "validations": [],

@@ -67,6 +67,10 @@
       "type": "date",
       "required": true
     },
+    "groupDeleted": {
+      "type": "boolean",
+      "required": false
+    },
     "markedAsDeleted": {
       "type": "boolean",
       "required": false
