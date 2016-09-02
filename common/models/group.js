@@ -26,7 +26,7 @@ module.exports = function (Group) {
         groupid: ctx.instance.id
       },
       {
-        groupDeleted: ctx.instance.markedAsDeleted
+        groupDeleted: ctx.instance.markedAsDeleted || false
       }, function (err) {
         if (err) {
           logger.error('An error occurred during group after save updating posts', {error: err});
