@@ -20,7 +20,13 @@ Promise.all(require('./server/ds').getDS()).then(res => {
     countFilter = (countFlag > -1) ? process.argv[countFlag + 1] : '',
     migrationsFolder = process.cwd() + '/server/migrations/',
     dbMigrationsFolder = migrationsFolder + dbName,
-    datasource = require(process.cwd() + '/server/server.js')['default'].dataSources[dbName];
+    datasource = null;
+
+  res.forEach(ds => {
+    if (ds.settings.name === dbName) {
+      datasource = ds;
+    }
+  });
 
   if (!datasource) {
     console.log('datasource \'' + dbName + '\' not found!');
