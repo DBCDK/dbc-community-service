@@ -14,9 +14,15 @@ catch (err) {
 
 const loopback = require('loopback');
 
+function getDSDefs() {
+  return config.get('CommunityService.datasources');
+}
+
+module.exports.getDSDefs = getDSDefs;
+
 module.exports.getDS = function getDS() {
   const promises = [];
-  const dsCfg = config.get('CommunityService.datasources');
+  const dsCfg = getDSDefs();
 
   Object.keys(dsCfg).forEach(ds => {
     promises.push(new Promise((resolve, reject) => {
