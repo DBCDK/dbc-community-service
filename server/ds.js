@@ -32,4 +32,4 @@ module.exports.getDS = function getDS() {
   });
 
   return promises;
-}
+};
