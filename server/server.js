@@ -19,6 +19,7 @@ import ProxyAgent from 'proxy-agent';
 import {amazonSNSConfirmMiddleware, amazonSNSNotificationMiddleware} from './middlewares/amazonSNS.middleware';
 import groupDatasourceModifier from './connectorlogic/group.datasourcemodifier';
 import Primus from 'primus';
+import {getDSDefs} from './ds';
 
 const app = loopback();
 const logger = new Logger({app_name: config.get('CommunityService.applicationTitle')});
@@ -131,7 +132,10 @@ app.use('/email_confirm', (req, res) => {
 
 // Bootstrap the application, configure models, datasources and middleware.
 // Sub-apps like REST API are mounted via boot scripts.
-boot(app, __dirname, (err) => {
+boot(app, {
+  appRootDir: __dirname,
+  dataSources: getDSDefs()
+}, (err) => {
   if (err) {
     logger.error('An error occured while booting up the Community Service', {error: err});
     throw err;
