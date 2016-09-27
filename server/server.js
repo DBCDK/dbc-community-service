@@ -6,6 +6,7 @@ try {
   config = require('@dbcdk/biblo-config').config;
 }
 catch (err) {
+  console.error('Cannot find config module, falling back to default config.'); // eslint-disable-line no-console
   config = require('config');
 }
 
@@ -44,9 +45,6 @@ if (config.get('Proxy.http_proxy')) {
   });
 }
 
-// Add Counts Mixin to loopback
-countMixin(app);
-
 const redisConfig = {
   port: config.get('Redis.port'),
   host: config.get('Redis.host')
@@ -60,6 +58,9 @@ app.model(loopback.createDataSource({
   keyId: amazonConfig.keyId,
   maxFileSize: '52428800' // 50 mb limit on images.
 }).createModel('fileContainer'));
+
+// Add Counts Mixin to loopback
+countMixin(app);
 
 app.use(bodyParser.text({type: 'text/*'}));
 app.use(bodyParser.json({limit: '50mb'}));
