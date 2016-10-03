@@ -6,6 +6,7 @@ try {
   config = require('@dbcdk/biblo-config').config;
 }
 catch (err) {
+  console.error('Cannot find config module, falling back to default config.'); // eslint-disable-line no-console
   config = require('config');
 }
 
@@ -18,6 +19,7 @@ import ProxyAgent from 'proxy-agent';
 import {amazonSNSConfirmMiddleware, amazonSNSNotificationMiddleware} from './middlewares/amazonSNS.middleware';
 import groupDatasourceModifier from './connectorlogic/group.datasourcemodifier';
 import Primus from 'primus';
+import {getDSDefs} from './ds';
 
 const app = loopback();
 const logger = new Logger({app_name: config.get('CommunityService.applicationTitle')});
@@ -44,9 +46,6 @@ if (config.get('Proxy.http_proxy')) {
   });
 }
 
-// Add Counts Mixin to loopback
-countMixin(app);
-
 const redisConfig = {
   port: config.get('Redis.port'),
   host: config.get('Redis.host')
@@ -60,6 +59,9 @@ app.model(loopback.createDataSource({
   keyId: amazonConfig.keyId,
   maxFileSize: '52428800' // 50 mb limit on images.
 }).createModel('fileContainer'));
+
+// Add Counts Mixin to loopback
+countMixin(app);
 
 app.use(bodyParser.text({type: 'text/*'}));
 app.use(bodyParser.json({limit: '50mb'}));
@@ -130,7 +132,10 @@ app.use('/email_confirm', (req, res) => {
 
 // Bootstrap the application, configure models, datasources and middleware.
 // Sub-apps like REST API are mounted via boot scripts.
-boot(app, __dirname, (err) => {
+boot(app, {
+  appRootDir: __dirname,
+  dataSources: getDSDefs()
+}, (err) => {
   if (err) {
     logger.error('An error occured while booting up the Community Service', {error: err});
     throw err;

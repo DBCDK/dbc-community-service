@@ -38,10 +38,6 @@
     "dataSource": "psqlDs",
     "public": true
   },
-  "Email": {
-    "dataSource": "emailDs",
-    "public": false
-  },
   "Like": {
     "dataSource": "psqlDs",
     "public": true
