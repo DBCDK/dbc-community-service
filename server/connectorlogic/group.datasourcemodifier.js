@@ -51,7 +51,7 @@ module.exports = function groupDatasourceModifier(app) {
         `) / ${timefactor}) as pop ` +
         'FROM ' +
         '  "group" g ' +
-        '  JOIN "groupprofile" gp ' +
+        '  LEFT JOIN "groupprofile" gp ' +
         '    ON g.id=gp.groupid ' +
         '  LEFT JOIN post p ' +
         '    ON g.id=p.groupid ' +
