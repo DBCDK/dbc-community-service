@@ -98,7 +98,9 @@ function doImageProcessing(s3ReadStream, job, width, height, extension, logger) 
 
 module.exports = function imageQueueCreator(app, redisHost, redisPort) {
   const logger = app.get('logger');
-  const imageQueue = Queue('image transcoding', redisPort, redisHost);
+  const connectString = `redis://${redisHost}:${redisPort}`;
+
+  const imageQueue = Queue('image transcoding', connectString, {});
   imageQueue.process(function (job, done) {
     logger.info('starting new image transcoding job', job.data);
     const extension = getExtensionFromJob(job.data.fileObj);
