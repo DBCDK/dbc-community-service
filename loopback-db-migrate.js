@@ -219,5 +219,4 @@ Promise.all(require('./server/ds').getDS()).then(res => {
       return cmds[cmdNames[i]]();
     }
   }
-
 });
