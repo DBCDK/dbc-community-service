@@ -5,12 +5,12 @@ module.exports = function groupDatasourceModifier(app) {
   let connector = Group.getDataSource().connector;
 
   // ranking parameters
-  const timefactor = process.env.group_ranking_tf1 || 40000; // eslint-ignore-line no-process-env
-  const group_create_timefactor = process.env.group_ranking_tf2 || 45000; // eslint-ignore-line no-process-env
-  const postfactor = process.env.group_ranking_pf || 2; // eslint-ignore-line no-process-env
-  const followerfactor = process.env.group_ranking_ff || 5; // eslint-ignore-line no-process-env
-  const commentfactor = process.env.group_ranking_cf || 2; // eslint-ignore-line no-process-env
-  const likefactor = process.env.group_ranking_lf || 2; // eslint-ignore-line no-process-env
+  const timefactor = process.env.group_ranking_tf1 || '3 weeks'; // eslint-ignore-line no-process-env
+  const followerTimefactor = process.env.group_ranking_tf2 || '2 months'; // eslint-ignore-line no-process-env
+  const postfactor = process.env.group_ranking_pf || 200; // eslint-ignore-line no-process-env
+  const followerfactor = process.env.group_ranking_ff || 100; // eslint-ignore-line no-process-env
+  const commentfactor = process.env.group_ranking_cf || 100; // eslint-ignore-line no-process-env
+  const likefactor = process.env.group_ranking_lf || 150; // eslint-ignore-line no-process-env
 
   connector.observe('before execute', (ctx, next) => {
     const group_pop_ordering = /ORDER BY "group_pop" (ASC|DESC)/.exec(ctx.req.sql);
@@ -37,26 +37,23 @@ module.exports = function groupDatasourceModifier(app) {
         '  g.colour, ' +
         '  g.timecreated, ' +
         '  g.groupownerid, ' +
-        `(EXTRACT(EPOCH FROM MAX(g.timecreated))/${group_create_timefactor}) *` +
-        `(COUNT(DISTINCT gp.id)*${followerfactor}) +` +
-        '(' +
-        `  COUNT(DISTINCT pl.id) * ${likefactor} +` +
-        `  COUNT(DISTINCT p.id) * ${postfactor} +` +
-        `  COUNT(DISTINCT c.id) * ${commentfactor}` +
-        ') *' +
-        '(GREATEST(' +
-        '  EXTRACT(EPOCH FROM MAX(p.timecreated)),' +
-        '  EXTRACT(EPOCH FROM MAX(c.timecreated)),' +
-        '  1461568281' +
-        `) / ${timefactor}) as pop ` +
+        '  ROUND(' +
+        '  (' +
+        `    COUNT(DISTINCT gp.id) * ${followerfactor} +` +
+        `    COUNT(DISTINCT pl.id) * ${likefactor} +` +
+        `    COUNT(DISTINCT p.id) * ${postfactor} +` +
+        `    COUNT(DISTINCT c.id) * ${commentfactor}` +
+        '  ) / (' +
+        '    log(EXTRACT(EPOCH FROM now()) - EXTRACT(EPOCH FROM g.timecreated))' +
+        '  )) AS pop ' +
         'FROM ' +
         '  "group" g ' +
         '  LEFT JOIN "groupprofile" gp ' +
-        '    ON g.id=gp.groupid ' +
+        `    ON g.id=gp.groupid  AND gp.visited >= date_trunc('day', NOW() - interval '${followerTimefactor}')` +
         '  LEFT JOIN post p ' +
-        '    ON g.id=p.groupid ' +
+        `    ON g.id=p.groupid AND p.timecreated >= date_trunc('day', NOW() - interval '${timefactor}')` +
         '  LEFT JOIN "comment" c ' +
-        '    ON c.postid=p.id ' +
+        `    ON c.postid=p.id AND c.timecreated >= date_trunc('day', NOW() - interval '${timefactor}')` +
         '  LEFT JOIN postlike pl' +
         '    ON pl.postid=p.id' +
         ` ${where} ` +
