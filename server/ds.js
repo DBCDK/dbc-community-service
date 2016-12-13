@@ -26,7 +26,7 @@ module.exports.getDS = function getDS() {
 
   Object.keys(dsCfg).forEach(ds => {
     promises.push(new Promise((resolve, reject) => {
-      const datasource = loopback.createDataSource(dsCfg[ds]);
+      const datasource = loopback.createDataSource(Object.assign({}, dsCfg[ds]));
       datasource.on('connected', () => {
         resolve(datasource);
       });
