@@ -40,7 +40,7 @@
     "loopback-component-storage": "^1.9.1",
     "loopback-connector-postgresql": "^2.6.3",
     "loopback-counts-mixin": "^1.0.1",
-    "loopback-datasource-juggler": "^2.51.0",
+    "loopback-datasource-juggler": "^3.1.1",
     "loopback-db-migrate": "0.0.3",
     "primus": "^6.0.3",
     "proxy-agent": "^2.0.0",
