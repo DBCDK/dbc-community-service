@@ -37,7 +37,7 @@
     "lodash": "^4.16.2",
     "loopback": "^2.34.1",
     "loopback-boot": "^2.22.0",
-    "loopback-component-storage": "^1.9.1",
+    "loopback-component-storage": "^3.0.0",
     "loopback-connector-postgresql": "^2.6.3",
     "loopback-counts-mixin": "^1.0.1",
     "loopback-datasource-juggler": "^2.51.0",
