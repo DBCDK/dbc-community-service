@@ -18,6 +18,7 @@
         "timeCreated"
       ],
       "filter": {
+        "where": {"timeDeleted": null},
         "include": [
           {
             "relation": "owner",
@@ -55,6 +56,15 @@
     "timeCreated": {
       "type": "date",
       "required": true
+    },
+    "timeDeleted": {
+      "type": "date",
+      "required": false
+    }
+  },
+  "scope": {
+    "where": {
+      "timeDeleted": null
     }
   },
   "validations": [],
