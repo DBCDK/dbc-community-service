@@ -108,6 +108,11 @@
       "model": "videoCollection",
       "foreignKey": "postVideoCollection"
     },
+    "pdf": {
+      "type": "hasOne",
+      "model": "file",
+      "foreignKey": "postPdfAttachment"
+    },
     "flags": {
       "type": "hasMany",
       "model": "Flag",
