@@ -1,3 +1,7 @@
+import series from 'async/series';
+
+const CONTAINERS_URL = 'api/fileContainers/';
+
 /**
  * Only query deleted Models if requested explicit
  * @param query
@@ -47,6 +51,14 @@ module.exports = function (Post) {
 
     logger.info('post before save', data);
 
+    if (data && data.pdffile && data.pdfContainer && data.pdfmimetype) {
+      ctx.hookState.pdf = {
+        pdffile: data.pdffile,
+        pdfContainer: data.pdfContainer,
+        pdfmimetype: data.pdfmimetype
+      };
+    }
+
     if (data && data.mimetype && data.videofile && data.container) {
       // We have info on a new video, time to create models and attach it to the new post object.
       Post.app.models.videoCollection.newVideoCollection(data, function newVideoCollectionCallback(err, info) {
@@ -73,31 +85,60 @@ module.exports = function (Post) {
     }
 
     const logger = Post.app.get('logger');
-
     logger.info('a post was created', ctx.instance.__data);
 
-    // grab the id from the hookState
-    if (ctx.hookState.postVideoCollection) {
-      // attach the videoCollection to the newly saved post.
-      Post.app.models.videoCollection.updateAll(
-        {
-          id: ctx.hookState.postVideoCollection
-        },
-        {
-          postVideoCollection: ctx.instance.id
-        }, function (err) {
-          if (err) {
-            logger.error('An error occurred during post after save', {error: err});
-            next(err);
+    // If the user has attached a video or a pdf we want to save that relation.
+    series([
+        function relateVideoToPost(cb) {
+          if (ctx.hookState.postVideoCollection) {
+            // attach the videoCollection to the newly saved post.
+            Post.app.models.videoCollection.updateAll(
+              {
+                id: ctx.hookState.postVideoCollection
+              },
+              {
+                postVideoCollection: ctx.instance.id
+              }, function (err) {
+                if (err) {
+                  logger.error('An error occurred during post after save', {error: err});
+                  cb(err);
+                }
+                else {
+                  cb();
+                }
+              }
+            );
           }
           else {
-            next();
+            cb();
+          }
+        },
+        function relatePdfToPost(cb) {
+          if (ctx.hookState.pdf) {
+            // attach the pdf file to the newly saved post.
+            Post.app.models.file.create({
+              container: ctx.hookState.pdf.pdfContainer,
+              name: ctx.hookState.pdf.pdffile,
+              type: ctx.hookState.pdfmimetype,
+              url: CONTAINERS_URL + encodeURIComponent(ctx.hookState.pdf.pdfContainer) + '/download/' + encodeURIComponent(ctx.hookState.pdf.pdffile),
+              postPdfAttachment: ctx.instance.id
+            }, function (err) {
+              if (err) {
+                logger.error('An error occurred during post after save, pdf', {error: err});
+                cb(err);
+              }
+              else {
+                cb();
+              }
+            });
+          }
+          else {
+            cb();
           }
         }
-      );
-    }
-    else {
-      next();
-    }
+      ],
+      // The series is done, if it has an error throw it back at the user.
+      err => next(err)
+    );
   });
 };
