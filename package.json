@@ -30,7 +30,7 @@
     "compression": "^1.6.0",
     "config": "^1.21.0",
     "cors": "^2.8.1",
-    "dbc-node-logger": "^1.4.9",
+    "dbc-node-logger": "^2.0.2",
     "elasticsearch": "^12.1.0",
     "errorhandler": "^1.4.3",
     "gm": "^1.23.0",
