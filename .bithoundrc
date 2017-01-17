@@ -68,7 +68,8 @@
     "mute": [
       "dbc-node-logger",
       "loopback-component-storage",
-      "babel"
+      "babel",
+      "loopback-component-explorer"
     ]
   }
 }
