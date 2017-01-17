@@ -119,7 +119,7 @@ module.exports = function (Post) {
           Post.app.models.file.create({
             container: ctx.hookState.pdf.pdfContainer,
             name: ctx.hookState.pdf.pdffile,
-            type: ctx.hookState.pdfmimetype,
+            type: ctx.hookState.pdf.pdfmimetype,
             url: CONTAINERS_URL + encodeURIComponent(ctx.hookState.pdf.pdfContainer) + '/download/' + encodeURIComponent(ctx.hookState.pdf.pdffile),
             postPdfAttachment: ctx.instance.id
           }, function (err) {
