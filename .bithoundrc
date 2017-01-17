@@ -63,5 +63,12 @@
     "wc": {
       "limit": 50000
     }
+  },
+  "dependencies": {
+    "mute": [
+      "dbc-node-logger",
+      "loopback-component-storage",
+      "babel"
+    ]
   }
 }
