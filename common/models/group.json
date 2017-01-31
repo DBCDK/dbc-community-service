@@ -28,8 +28,12 @@
         ],
         "where": {
           "or": [
-            {"markedAsDeleted": false},
-            {"markedAsDeleted": null}
+            {
+              "markedAsDeleted": false
+            },
+            {
+              "markedAsDeleted": null
+            }
           ]
         }
       },

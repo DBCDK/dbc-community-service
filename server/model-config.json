@@ -97,5 +97,9 @@
   "GroupProfile": {
     "dataSource": "psqlDs",
     "public": true
+  },
+  "ScanResult": {
+    "dataSource": "psqlDs",
+    "public": true
   }
 }

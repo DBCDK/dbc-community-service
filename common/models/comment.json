@@ -18,7 +18,9 @@
         "timeCreated"
       ],
       "filter": {
-        "where": {"timeDeleted": null},
+        "where": {
+          "timeDeleted": null
+        },
         "include": [
           {
             "relation": "owner",
@@ -48,6 +50,11 @@
       }
     }
   },
+  "scope": {
+    "where": {
+      "timeDeleted": null
+    }
+  },
   "properties": {
     "content": {
       "type": "string",
@@ -60,11 +67,6 @@
     "timeDeleted": {
       "type": "date",
       "required": false
-    }
-  },
-  "scope": {
-    "where": {
-      "timeDeleted": null
     }
   },
   "validations": [],

@@ -2,12 +2,17 @@
 require('events').EventEmitter.prototype._maxListeners = 20;
 
 let config;
+let generateSignedCloudfrontCookie;
 try {
-  config = require('@dbcdk/biblo-config').config;
+  config = require('@dbcdk/biblo-config');
+  generateSignedCloudfrontCookie = config.generateSignedCloudfrontCookie;
+  config = config.config;
 }
 catch (err) {
   console.error('Cannot find config module, falling back to default config.'); // eslint-disable-line no-console
+  console.error('Cloudfront is unavailable! Cannot use virus scanner!'); // eslint-disable-line no-console
   config = require('config');
+  generateSignedCloudfrontCookie = () => '';
 }
 
 import loopback from 'loopback';
@@ -20,6 +25,7 @@ import {amazonSNSConfirmMiddleware, amazonSNSNotificationMiddleware} from './mid
 import groupDatasourceModifier from './connectorlogic/group.datasourcemodifier';
 import Primus from 'primus';
 import {getDSDefs} from './ds';
+import {setupMailbox} from './email-client';
 
 const app = loopback();
 const logger = new Logger({app_name: config.get('CommunityService.applicationTitle')});
@@ -68,15 +74,29 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(amazonSNSConfirmMiddleware.bind(null, amazonConfig));
 app.use(amazonSNSNotificationMiddleware.bind(null, amazonConfig));
 
-if (!process.env.DISABLE_IMAGE_SCALING_QUEUE) {
-  // Using require to make the dependencies optional.
-  app.set('imageQueue', require('./image.queue')(app, redisConfig.host, redisConfig.port));
-}
-else {
-  app.set('imageQueue', {
-    add: () => {} // if the imageQueue is disabled, we simply supress created jobs.
-  });
-}
+app.startQueues = () => {
+  if (!process.env.DISABLE_IMAGE_SCALING_QUEUE) {
+    // Using require to make the dependencies optional.
+    app.set('imageQueue', require('./image.queue')(app, redisConfig.host, redisConfig.port));
+    app.set('virusQueue', require('./virus.queue')(app, redisConfig.host, redisConfig.port, config, generateSignedCloudfrontCookie));
+    app.set('scannedItemQueue', require('./scannedItem.queue')(app, redisConfig.host, redisConfig.port, config));
+  }
+  else {
+    app.set('imageQueue', {
+      add: () => {} // if the imageQueue is disabled, we simply supress created jobs.
+    });
+
+    app.set('virusQueue', {
+      add: () => {}
+    });
+
+    app.set('scannedItemQueue', {
+      add: () => {}
+    });
+  }
+
+  setupMailbox(app, config);
+};
 
 app.start = () => {
   // start the web server
@@ -146,5 +166,6 @@ boot(app, {
   if (!process.env.TESTING && !process.env.MIGRATING) {
     const webserver = app.start();
     app.startPrimus(webserver);
+    app.startQueues();
   }
 });
