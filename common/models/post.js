@@ -122,12 +122,20 @@ module.exports = function (Post) {
             type: ctx.hookState.pdf.pdfmimetype,
             url: CONTAINERS_URL + encodeURIComponent(ctx.hookState.pdf.pdfContainer) + '/download/' + encodeURIComponent(ctx.hookState.pdf.pdffile),
             postPdfAttachment: ctx.instance.id
-          }, function (err) {
+          }, function (err, fileObj) {
             if (err) {
               logger.error('An error occurred during post after save, pdf', {error: err});
               cb(err);
             }
             else {
+              const virusQueue = Post.app.get('virusQueue');
+              virusQueue.add({
+                fileObj
+              }, {
+                attempts: 5,
+                timeout: 300000 // 5 minutes.
+              });
+
               cb();
             }
           });

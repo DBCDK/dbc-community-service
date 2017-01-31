@@ -20,6 +20,9 @@
       "required": true
     }
   },
+  "scope": {
+    "include": "scans"
+  },
   "validations": [],
   "relations": {
     "resolutions": {
@@ -35,6 +38,11 @@
       "foreignKey": "videoFileResolutionId",
       "through": "resolution",
       "keyThrough": "resolutionVideoFileId"
+    },
+    "scans": {
+      "type": "hasMany",
+      "model": "ScanResult",
+      "foreignKey": "FileScan"
     }
   },
   "acls": [
