@@ -2,17 +2,12 @@
 require('events').EventEmitter.prototype._maxListeners = 20;
 
 let config;
-let generateSignedCloudfrontCookie;
 try {
-  config = require('@dbcdk/biblo-config');
-  generateSignedCloudfrontCookie = config.generateSignedCloudfrontCookie;
-  config = config.config;
+  config = require('@dbcdk/biblo-config').config;
 }
 catch (err) {
   console.error('Cannot find config module, falling back to default config.'); // eslint-disable-line no-console
-  console.error('Cloudfront is unavailable! Cannot use virus scanner!'); // eslint-disable-line no-console
   config = require('config');
-  generateSignedCloudfrontCookie = () => '';
 }
 
 import loopback from 'loopback';
@@ -78,7 +73,7 @@ app.startQueues = () => {
   if (!process.env.DISABLE_IMAGE_SCALING_QUEUE) {
     // Using require to make the dependencies optional.
     app.set('imageQueue', require('./image.queue')(app, redisConfig.host, redisConfig.port));
-    app.set('virusQueue', require('./virus.queue')(app, redisConfig.host, redisConfig.port, config, generateSignedCloudfrontCookie));
+    app.set('virusQueue', require('./virus.queue')(app, redisConfig.host, redisConfig.port, config));
     app.set('scannedItemQueue', require('./scannedItem.queue')(app, redisConfig.host, redisConfig.port, config));
   }
   else {
