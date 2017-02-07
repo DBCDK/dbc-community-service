@@ -2,17 +2,12 @@
 require('events').EventEmitter.prototype._maxListeners = 20;
 
 let config;
-let generateSignedCloudfrontCookie;
 try {
-  config = require('@dbcdk/biblo-config');
-  generateSignedCloudfrontCookie = config.generateSignedCloudfrontCookie;
-  config = config.config;
+  config = require('@dbcdk/biblo-config').config;
 }
 catch (err) {
   console.error('Cannot find config module, falling back to default config.'); // eslint-disable-line no-console
-  console.error('Cloudfront is unavailable! Cannot use virus scanner!'); // eslint-disable-line no-console
   config = require('config');
-  generateSignedCloudfrontCookie = () => '';
 }
 
 import loopback from 'loopback';
