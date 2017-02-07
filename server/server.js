@@ -78,7 +78,7 @@ app.startQueues = () => {
   if (!process.env.DISABLE_IMAGE_SCALING_QUEUE) {
     // Using require to make the dependencies optional.
     app.set('imageQueue', require('./image.queue')(app, redisConfig.host, redisConfig.port));
-    app.set('virusQueue', require('./virus.queue')(app, redisConfig.host, redisConfig.port, config, generateSignedCloudfrontCookie));
+    app.set('virusQueue', require('./virus.queue')(app, redisConfig.host, redisConfig.port, config));
     app.set('scannedItemQueue', require('./scannedItem.queue')(app, redisConfig.host, redisConfig.port, config));
   }
   else {

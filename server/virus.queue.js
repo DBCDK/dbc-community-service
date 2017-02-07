@@ -1,7 +1,7 @@
 const Queue = require('bull');
 const nodemailer = require('nodemailer');
 
-module.exports = function createVirusScanningQueue(app, redisHost, redisPort, config, generateSignedCloudfrontUrl) {
+module.exports = function createVirusScanningQueue(app, redisHost, redisPort, config) {
   const logger = app.get('logger');
   const connectString = `redis://${redisHost}:${redisPort}`;
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; // The internal IMAP server for this setup runs self signed tls.
@@ -10,10 +10,8 @@ module.exports = function createVirusScanningQueue(app, redisHost, redisPort, co
   const virusQueue = Queue('virus_scanning', connectString, {});
   virusQueue.process(function (job, done) {
     logger.info('Starting virus scan');
-    const pdfUrl = generateSignedCloudfrontUrl(
-      `https://${config.get(`ServiceProvider.aws.cloudfrontUrls.${job.data.fileObj.container}`)}/${job.data.fileObj.name}`
-    );
 
+    const pdfUrl = `http://localhost:${config.get('CommunityService.port')}/api/fileContainers/${job.data.fileObj.container}/download/${job.data.fileObj.name}`;
     const mailOptions = {
       from: `"BibloCS" <${config.get('Email.email')}>`,
       to: config.get('Email.virusTotal'),
