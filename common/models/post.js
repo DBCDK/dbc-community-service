@@ -33,20 +33,18 @@ module.exports = function (Post) {
 
   Post.observe('before save', function videoUpload(ctx, next) {
     const logger = Post.app.get('logger');
-
-    // Abort if save is not done on an instance
-    if (!ctx.instance) {
-      next();
-      return;
-    }
-
     let data; // this is for accessing properties of the new object and, if they exist, video details.
 
     if (ctx.isNewInstance) {
       data = Object.assign({}, ctx.instance.__data);
     }
-    else {
+    else if (ctx.currentInstance) {
       data = Object.assign({}, ctx.currentInstance.__data, ctx.data);
+    }
+    else {
+      // Abort if no instance is found
+      next();
+      return;
     }
 
     logger.info('post before save', data);
