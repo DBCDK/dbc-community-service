@@ -38,8 +38,13 @@ module.exports = function (Post) {
     if (ctx.isNewInstance) {
       data = Object.assign({}, ctx.instance.__data);
     }
-    else {
+    else if (ctx.currentInstance) {
       data = Object.assign({}, ctx.currentInstance.__data, ctx.data);
+    }
+    else {
+      // Abort if no instance is found
+      next();
+      return;
     }
 
     logger.info('post before save', data);
