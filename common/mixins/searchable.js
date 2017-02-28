@@ -345,6 +345,14 @@ module.exports = function (Model, options) {
     })).then(() => {
       // Now we're sure we have a mapping, we want to check the data we have against the data in the elastic.
       elasticClient.count({index}, (err, response) => {
+        if (err) {
+          return Promise.reject(err);
+        }
+
+        if (!response) {
+          return Promise.reject('No response from elastic!');
+        }
+
         const elasticCount = response.count;
 
         Model.count((error, modelCount) => {
@@ -379,6 +387,9 @@ module.exports = function (Model, options) {
           }
         });
       });
+    }).catch(err => {
+      let error = err.message ? err.message : err;
+      logger.error('An error occurred while checking elastic indexes!', {error: JSON.stringify(error)});
     });
 
     // Observe any insert/update event on Model
