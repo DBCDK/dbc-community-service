@@ -68,32 +68,49 @@ function getS3ReadStream(job, logger) {
 }
 
 function doImageProcessing(s3ReadStream, job, width, height, extension, logger) {
-  let imageObject;
+  return new Promise((resolve, reject) => {
+    let imageObject;
+    try {
+      imageObject = gm(s3ReadStream)
+        .autoOrient()
+        .noProfile();
 
-  try {
-    imageObject = gm(s3ReadStream)
-      .autoOrient()
-      .noProfile();
+      job.progress(40);
 
-    job.progress(40);
-
-    if (extension !== 'GIF') {
       if (width && height) {
-        imageObject = imageObject.resizeExact(width, height);
+        // We need to resize to a square image.
+        // So we need to the smallest dimension first, then crop to a square image.
+        imageObject.size({bufferStream: true}, (err, size) => {
+          job.progress(45);
+
+          let rWidth = null;
+          let rHeight = null;
+
+          if (size.width > size.height) {
+            rHeight = height;
+          }
+          else {
+            rWidth = width;
+          }
+
+          imageObject.gravity('Center').resize(rWidth, rHeight).crop(width, height);
+          job.progress(60);
+          resolve(imageObject);
+        });
       }
       else {
-        imageObject = imageObject.resize(width);
+        // We only want to size by the width
+        imageObject.resize(width);
+        job.progress(60);
+        resolve(imageObject);
       }
     }
-
-    job.progress(60);
-  }
-  catch (e) {
-    logger.error('Error in image processing', {error: e});
-    imageObject = null;
-  }
-
-  return imageObject;
+    catch (e) {
+      const errStr = 'Error in image processing';
+      logger.error(errStr, {error: e});
+      return reject(errStr);
+    }
+  });
 }
 
 module.exports = function imageQueueCreator(app, redisHost, redisPort) {
@@ -114,38 +131,40 @@ module.exports = function imageQueueCreator(app, redisHost, redisPort) {
     }
 
     job.progress(20);
-    const imageObject = doImageProcessing(s3ReadStream, job, width, height, extension, logger);
-    if (!imageObject) {
-      return done('Could not do image processing!');
-    }
-
-    return imageObject.toBuffer(extension, function (err, buffer) {
-      if (err) {
-        logger.error('Error in transcoding', {error: err});
-        return done(err);
+    const imagePromise = doImageProcessing(s3ReadStream, job, width, height, extension, logger);
+    return imagePromise.then(imageObject => {
+      if (!imageObject) {
+        return done('Could not do image processing!');
       }
 
-      job.progress(80);
-
-      return app.models.ImageCollection.createResolution(
-        buffer,
-        job.data.bucket,
-        job.data.fileObj,
-        job.data.size,
-        job.data.imageCollection,
-        () => {
-          job.progress(100);
-
-          done(null, {
-            size: width && height ? `${width}x${height}` : `${width}x${width}`
-          });
-
-          logger.info('finished image transcoding job', {
-            size: width && height ? `${width}x${height}` : `${width}x${width}`,
-            data: job.data
-          });
+      imageObject.toBuffer(extension, function (err, buffer) {
+        if (err) {
+          logger.error('Error in transcoding', {error: err});
+          return done(err);
         }
-      );
+
+        job.progress(80);
+
+        return app.models.ImageCollection.createResolution(
+          buffer,
+          job.data.bucket,
+          job.data.fileObj,
+          job.data.size,
+          job.data.imageCollection,
+          () => {
+            job.progress(100);
+
+            done(null, {
+              size: width && height ? `${width}x${height}` : `${width}x${width}`
+            });
+
+            logger.info('finished image transcoding job', {
+              size: width && height ? `${width}x${height}` : `${width}x${width}`,
+              data: job.data
+            });
+          }
+        );
+      });
     });
   });
 
