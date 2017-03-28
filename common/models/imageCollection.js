@@ -116,6 +116,11 @@ module.exports = function(ImageCollection) {
                         // We send the object to the consumer, and setup async jobs to add more resolutions to the collection.
                         cb(null, imageCollectionInstance);
 
+                        // For the tests...
+                        if (!imageQueue) {
+                          imageQueue = ImageCollection.app.get('imageQueue');
+                        }
+
                         buckets.forEach((metadata) => {
                           imageQueue.add({
                             fileObj: fileObj,
@@ -251,7 +256,7 @@ module.exports = function(ImageCollection) {
         return cb(null, imageCollection);
       });
     }
-  }
+  };
 
   ImageCollection.remoteMethod(
     'resize',
