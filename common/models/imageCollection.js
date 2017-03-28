@@ -6,17 +6,39 @@
  */
 
 module.exports = function(ImageCollection) {
+  let fileModel;
+  let resolutionModel;
+  let amazonBuckets;
+  let buckets;
+  let imageQueue;
+
+  const imageQueueConfig = {
+    attempts: 5,
+    timeout: 300000 // 5 minutes.
+  };
+
+  // Wait till the app is initialized.
+  setTimeout(() => {
+    fileModel = ImageCollection.app.models.file;
+    resolutionModel = ImageCollection.app.models.resolution;
+    imageQueue = ImageCollection.app.get('imageQueue');
+    amazonBuckets = ImageCollection.app.get('amazonConfig').buckets.imageBuckets;
+    buckets = Object.keys(amazonBuckets).map((bucketSize) => {
+      return {bucket: amazonBuckets[bucketSize], size: bucketSize};
+    });
+  });
+
   ImageCollection.createResolution = (fileBuffer, container, fileObj, size, imageCollectionObject, cb) => {
     let fileName = fileObj.name.split('.');
     const extension = fileName[fileName.length - 1];
     fileName.pop();
     fileName = fileName.join('.') + '_' + size + '.' + extension;
-    ImageCollection.app.models.file.uploadFromBuffer(container, fileName, fileBuffer, fileObj.type, (err1, fileObject) => {
+    fileModel.uploadFromBuffer(container, fileName, fileBuffer, fileObj.type, (err1, fileObject) => {
       if (err1) {
         cb(err1);
       }
       else {
-        ImageCollection.app.models.resolution.create({
+        resolutionModel.create({
           size: size,
           resolutionImageFileId: fileObject.id,
           imageCollectionResolutionId: imageCollectionObject.id
@@ -25,7 +47,7 @@ module.exports = function(ImageCollection) {
             cb(err2);
           }
           else {
-            ImageCollection.app.models.file.updateAll({id: fileObject.id}, {resolutionImageFileId: resolutionObject.id}, function(err3) {
+            fileModel.updateAll({id: fileObject.id}, {resolutionImageFileId: resolutionObject.id}, function(err3) {
               if (err3) {
                 cb(err3);
               }
@@ -50,7 +72,7 @@ module.exports = function(ImageCollection) {
     const logger = ImageCollection.app.get('logger');
 
     // First we upload the file to amazon and save the metadata via the file model.
-    ImageCollection.app.models.file.upload(ctx, options, container, (err1, fileObj) => {
+    fileModel.upload(ctx, options, container, (err1, fileObj) => {
       if (err1) {
         logger.error('An error occurred during upload of imagecollection', {error: err1});
         cb(err1);
@@ -65,7 +87,7 @@ module.exports = function(ImageCollection) {
           else {
             // we now create a resolution object to hold the size of the image (for future queries).
             // this is linked to the imageCollection and the file we created earlier
-            ImageCollection.app.models.resolution.create({
+            resolutionModel.create({
               size: 'original',
               imageCollectionResolutionId: imageCollectionObject.id
             }, function (err3, resolutionObject) {
@@ -74,7 +96,7 @@ module.exports = function(ImageCollection) {
                 cb(err3);
               }
               else {
-                ImageCollection.app.models.file.updateAll({id: fileObj.id}, {resolutionImageFileId: resolutionObject.id}, function(err4) {
+                fileModel.updateAll({id: fileObj.id}, {resolutionImageFileId: resolutionObject.id}, function(err4) {
                   if (err4) {
                     logger.error('An error occurred during update of file', {error: err4});
                     cb(err4);
@@ -94,23 +116,13 @@ module.exports = function(ImageCollection) {
                         // We send the object to the consumer, and setup async jobs to add more resolutions to the collection.
                         cb(null, imageCollectionInstance);
 
-                        let amazonBuckets = ImageCollection.app.get('amazonConfig').buckets.imageBuckets;
-                        const buckets = Object.keys(amazonBuckets).map((bucketSize) => {
-                          return {bucket: amazonBuckets[bucketSize], size: bucketSize};
-                        });
-
-                        const imageQueue = ImageCollection.app.get('imageQueue');
-
                         buckets.forEach((metadata) => {
                           imageQueue.add({
                             fileObj: fileObj,
                             bucket: metadata.bucket,
                             size: metadata.size,
                             imageCollection: imageCollectionInstance
-                          }, {
-                            attempts: 5,
-                            timeout: 300000 // 5 minutes.
-                          });
+                          }, imageQueueConfig);
                         });
                       }
                     });
@@ -192,6 +204,68 @@ module.exports = function(ImageCollection) {
         arg: 'image', type: 'object', root: true
       },
       http: {path: '/:id/download/:size', verb: 'get'}
+    }
+  );
+
+  /**
+   * Deletes a resolution and creates a job in the queue to recreate that resolution.
+   * @param ctx - Context object
+   * @param id - id of imageCollection
+   * @param size - Which resolution to delete
+   * @param cb - a callback for when were ready to return the api call.
+   */
+  ImageCollection.resize = function resizeImageFromImageCollectionId(ctx, id, size, cb) {
+    if (
+      size !== 'original' && size !== 'large' && size !== 'medium' && size !== 'small' && size !== 'large-square'
+      && size !== 'medium-square' && size !== 'small-square' && size !== 'thumbnail'
+    ) {
+      cb('Cannot recognize the requested size!');
+    }
+    else {
+      const whereClause = {include: [{relation: 'resolutions', scope: {include: ['image']}}]};
+      ImageCollection.findById(id, whereClause, function findImageToResize(err, imageCollection) {
+        if (err) {
+          return cb(err);
+        }
+
+        imageCollection.resolutions().forEach(resolution => {
+          // Find the requested size.
+          if (resolution.size === size) {
+            // Delete it.
+            resolution.delete();
+          }
+
+          // Find the original
+          if (resolution.size === 'original') {
+            // Add job to queue.
+            const bucket = amazonBuckets[size];
+            imageQueue.add({
+              fileObj: resolution.image(),
+              bucket: bucket,
+              size: size,
+              imageCollection: imageCollection
+            }, imageQueueConfig);
+          }
+        });
+
+        return cb(null, imageCollection);
+      });
+    }
+  }
+
+  ImageCollection.remoteMethod(
+    'resize',
+    {
+      description: '',
+      accepts: [
+        {arg: 'ctx', type: 'object', http: {source: 'context'}},
+        {arg: 'id', type: 'number', required: true, description: 'Id of the Image Collection.'},
+        {arg: 'size', type: 'string', required: true, description: 'Size of the image.'}
+      ],
+      returns: {
+        arg: 'imageCollection', type: 'object', root: true
+      },
+      http: {verb: 'post'}
     }
   );
 
