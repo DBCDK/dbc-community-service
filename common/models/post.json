@@ -124,6 +124,12 @@
       "foreignKey": "attachedReviewId"
     }
   },
+  "indexes": {
+    "post_timecreated_idx": {"timecreated": -1},
+    "post_postownerid_idx": "postownerid",
+    "post_groupdeleted_idx": "groupdeleted",
+    "post_groupid_idx": "groupid"
+  },
   "acls": [],
   "methods": {}
 }

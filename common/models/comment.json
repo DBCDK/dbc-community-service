@@ -69,6 +69,12 @@
       "required": false
     }
   },
+  "indexes": {
+    "comment_postid_idx": "postid_idx",
+    "comment_commentownerid_idx": "commentownerid",
+    "comment_timeCreated_idx": {"timeCreated": -1},
+    "comment_timeDeleted_idx": "timeDeleted"
+  },
   "validations": [],
   "relations": {
     "image": {

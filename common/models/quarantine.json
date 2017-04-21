@@ -31,6 +31,11 @@
       "foreignKey": "quarantineCreatorProfileId"
     }
   },
+  "indexes": {
+    "quarantine_quarantinedProfileId_idx": "quarantinedProfileId",
+    "quarantine_start_idx": {"start": -1},
+    "quarantine_end_idx": {"end": -1}
+  },
   "acls": [],
   "methods": {}
 }

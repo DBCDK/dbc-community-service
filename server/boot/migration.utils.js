@@ -310,12 +310,12 @@ function generateSQLForDownIndexes(aiNames, ai, indexNames, propNameRegEx, propN
       return;
     }
 
-    if (indexName in indexNames) {
+    if (indexName in indexNames || indexNames.join(' ').toLowerCase().indexOf(indexName.toLowerCase()) >= 0) {
       return;
     }
 
     let propName = propNameRegEx.exec(indexName) || propNameRegExAlt.exec(indexName);
-    propName = propName && postgres.propertyName(model, propName[1]) || null;
+    propName = (propName && postgres.propertyName(model, propName[1]) || '').toLowerCase();
     const iName = [postgres.table(model), postgres.column(model, propName), 'idx'].join('_');
 
     if (ai[iName]) {

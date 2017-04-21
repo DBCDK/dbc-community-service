@@ -28,7 +28,8 @@
     },
     "type": {
       "type": "string",
-      "required": true
+      "required": true,
+      "index": true
     }
   },
   "validations": [],

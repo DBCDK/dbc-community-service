@@ -19,6 +19,11 @@
       "foreignKey": "videoCollectionResolutionId"
     }
   },
+  "indexes": {
+    "videocollection_commentvideocollection_idx": "commentvideocollection",
+    "videocollection_postvideocollection_idx": "postvideocollection",
+    "videocollection_reviewvideocollection_idx": "reviewvideocollection"
+  },
   "acls": [],
   "methods": {}
 }
