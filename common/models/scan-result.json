@@ -23,6 +23,9 @@
       "required": true
     }
   },
+  "indexes": {
+    "scanresult_filescan_idx": "filescan"
+  },
   "validations": [],
   "relations": {},
   "acls": [],

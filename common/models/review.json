@@ -138,6 +138,10 @@
       "foreignKey": "reviewFlagsId"
     }
   },
+  "indexes": {
+    "review_reviewownerid_idx": "reviewownerid",
+    "review_markedAsDeleted_idx": "markedAsDeleted"
+  },
   "acls": [],
   "methods": {}
 }

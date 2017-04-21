@@ -76,6 +76,12 @@
       "required": false
     }
   },
+  "indexes": {
+    "group_timeClosed_idx": "timeClosed",
+    "group_markedAsDeleted_idx": "markedAsDeleted",
+    "group_timeCreated_idx": {"timeCreated": -1},
+    "group_campaignGroupFK_idx": "campaignGroupFK"
+  },
   "validations": [],
   "relations": {
     "posts": {

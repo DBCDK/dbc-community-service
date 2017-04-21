@@ -19,6 +19,13 @@
       "foreignKey": "imageCollectionResolutionId"
     }
   },
+  "indexes": {
+    "imagecollection_commentimagecollection_idx": "commentimagecollection",
+    "imagecollection_groupcoverimagecollectionid_idx": "groupcoverimagecollectionid",
+    "imagecollection_postimagecollection_idx": "postimagecollection",
+    "imagecollection_profileimagecollection_idx": "profileimagecollection",
+    "imagecollection_reviewimagecollection_idx": "reviewimagecollection"
+  },
   "acls": [
     {
       "principalType": "ROLE",

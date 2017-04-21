@@ -41,6 +41,10 @@
       "foreignKey": "likeid"
     }
   },
+  "indexes": {
+    "like_likeid_idx": "likeid",
+    "like_reviewlikeid_idx": "reviewlikeid"
+  },
   "acls": [],
   "methods": {}
 }

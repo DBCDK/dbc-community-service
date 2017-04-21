@@ -21,12 +21,14 @@
     "group": {
       "type": "belongsTo",
       "model": "Group",
-      "foreignKey": "groupid"
+      "foreignKey": "groupid",
+      "index": true
     },
     "profile": {
       "type": "belongsTo",
       "model": "Profile",
-      "foreignKey": "profileid"
+      "foreignKey": "profileid",
+      "index": true
     }
   },
   "acls": [],
