@@ -58,7 +58,7 @@
   "optionalDependencies": {
     "@dbcdk/biblo-config": "^2.3.5",
     "bull": "^2.0.0",
-    "loopback-component-explorer": "^2.6.0"
+    "loopback-component-explorer": "^4.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
