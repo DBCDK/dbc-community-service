@@ -41,7 +41,7 @@
     "loopback-component-storage": "^1.9.1",
     "loopback-connector-postgresql": "^2.6.3",
     "loopback-counts-mixin": "^1.0.1",
-    "loopback-datasource-juggler": "^2.51.0",
+    "loopback-datasource-juggler": "^3.1.1",
     "loopback-db-migrate": "0.0.3",
     "mailparser": "^0.6.1",
     "nodemailer": "^2.7.0",
