@@ -57,9 +57,10 @@ function loopbackToElasticDatatype(type) {
   switch (type) {
     case 'string': {
       return {
-        index: 'analyzed',
+        index: true,
         omit_norms: true,
-        type: 'string',
+        store: true,
+        type: 'text',
         fields: {
           raw: {
             ignore_above: 256,
@@ -86,7 +87,7 @@ function loopbackToElasticDatatype(type) {
     }
 
     default: {
-      return {type: 'string'};
+      return {type: 'text'};
     }
   }
 }
@@ -181,7 +182,7 @@ module.exports = function (Model, options) {
     // Create a connection to elastic search.
     let elasticConfig = {
       log: 'error',
-      apiVersion: '2.2',
+      apiVersion: '5.0',
       suggestCompression: true,
       host: ELASTIC_HOST
     };
@@ -322,7 +323,7 @@ module.exports = function (Model, options) {
               properties: elasticModel
             };
 
-            // Create the indice
+            // Create the indices
             elasticClient.indices.create({
               index,
               body: elasticIndiceCreateBody
@@ -523,10 +524,7 @@ module.exports = function (Model, options) {
             suggestions: {
               text: q,
               completion: {
-                field: suggestionField,
-                fuzzy: {
-                  edit_distance: 0
-                }
+                field: suggestionField
               }
             }
           }
