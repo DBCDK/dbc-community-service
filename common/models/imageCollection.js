@@ -180,13 +180,15 @@ module.exports = function(ImageCollection) {
           const resolutions = imageCollection.resolutions();
           if (resolutions.length > 0) {
             let resolution = resolutions[0];
+            let correctSize = false;
             resolutions.forEach((resolutionObject) => {
               if (resolutionObject.size === size) {
                 resolution = resolutionObject;
+                correctSize = true;
               }
             });
 
-            cb(null, resolution.image());
+            cb(null, Object.assign({correctSize}, resolution.image().toJSON()));
           }
           else {
             cb('Could not find any resolutions');
