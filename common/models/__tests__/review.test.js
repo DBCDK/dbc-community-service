@@ -5,7 +5,6 @@ process.env.TESTING = true;
 import expect from 'expect';
 import superagent from 'superagent';
 import app from '../../../server/server';
-import * as testutils from './testutils';
 
 describe('Test review endpoints and functionality', () => {
   let server;
@@ -35,14 +34,14 @@ describe('Test review endpoints and functionality', () => {
     const createReviewResponse = await superagent
       .post(`${app.get('url')}api/Reviews`)
       .send({pid: '870970-basis:51342860',
-             libraryid: '775100',
-             worktype: 'literature',
-             content: 'some content',
-             created: '2017-07-07T09:13:08.191Z',
-             modified: '2017-07-07T09:13:08.191Z',
-             rating: 5,
-             markedAsDeleted: false,
-             reviewownerid: 0})
+        libraryid: '775100',
+        worktype: 'literature',
+        content: 'some content',
+        created: '2017-07-07T09:13:08.191Z',
+        modified: '2017-07-07T09:13:08.191Z',
+        rating: 5,
+        markedAsDeleted: false,
+        reviewownerid: 0})
       .set('Accept', 'application/json');
 
     // count subjects before add
@@ -51,15 +50,15 @@ describe('Test review endpoints and functionality', () => {
       .set('Accept', 'application/json');
 
     // add subject
-    const addSubjectResponse = await superagent
-        .post(`${app.get('url')}api/Reviews/addSubject`)
-        .query({reviewId: createReviewResponse.body.id, subject: 'a' + Date.now()})
-        .set('Accept', 'application/json')
+    await superagent
+      .post(`${app.get('url')}api/Reviews/addSubject`)
+      .query({reviewId: createReviewResponse.body.id, subject: 'a' + Date.now()})
+      .set('Accept', 'application/json');
 
     // count subjects after add
     const afterSubjectsCountResponse = await superagent
       .get(`${app.get('url')}api/BibliographicSubjects/count`)
-      .set('Accept', 'application/json')
+      .set('Accept', 'application/json');
 
     expect(subjectsCountResponse.body.count + 1).toEqual(afterSubjectsCountResponse.body.count);
   });
@@ -71,21 +70,21 @@ describe('Test review endpoints and functionality', () => {
     const createReviewResponse = await superagent
       .post(`${app.get('url')}api/Reviews`)
       .send({pid: '870970-basis:51342860',
-             libraryid: '775100',
-             worktype: 'literature',
-             content: 'some content',
-             created: '2017-07-07T09:13:08.191Z',
-             modified: '2017-07-07T09:13:08.191Z',
-             rating: 5,
-             markedAsDeleted: false,
-             reviewownerid: 1})
+        libraryid: '775100',
+        worktype: 'literature',
+        content: 'some content',
+        created: '2017-07-07T09:13:08.191Z',
+        modified: '2017-07-07T09:13:08.191Z',
+        rating: 5,
+        markedAsDeleted: false,
+        reviewownerid: 1})
       .set('Accept', 'application/json');
 
     // add subjects
     await superagent
     .post(`${app.get('url')}api/BibliographicSubjects`)
     .send({title})
-    .set('Accept', 'application/json')
+    .set('Accept', 'application/json');
 
     // count subjects
     const subjectsCountResponse = await superagent
@@ -96,12 +95,12 @@ describe('Test review endpoints and functionality', () => {
     await superagent
       .post(`${app.get('url')}api/Reviews/addSubject`)
       .query({reviewId: createReviewResponse.body.id, subject: title})
-      .set('Accept', 'application/json')
+      .set('Accept', 'application/json');
 
     // count subjects after add
     const afterSubjectsCountResponse = await superagent
       .get(`${app.get('url')}api/BibliographicSubjects/count`)
-      .set('Accept', 'application/json')
+      .set('Accept', 'application/json');
 
     expect(subjectsCountResponse.body.count).toEqual(afterSubjectsCountResponse.body.count);
 

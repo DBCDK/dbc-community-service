@@ -45,16 +45,16 @@ module.exports = function(Review) {
 
   Review.addSubject = function addSubject(ctx, subject, reviewId, next) {
     const logger = Review.app.get('logger');
-    if(typeof subject !== 'string' || subject.length === 0) {
+    if (typeof subject !== 'string' || subject.length === 0) {
       return next('subject is not a string');
     }
 
-    if(typeof reviewId !== 'number' || reviewId <= 0) {
+    if (typeof reviewId !== 'number' || reviewId <= 0) {
       return next('reviewId is not a valid number');
     }
 
-    Review.find({where: {id:reviewId}}, (err, res) => {
-      if(err || res.length < 1) {
+    Review.find({where: {id: reviewId}}, (err, res) => {
+      if (err || res.length < 1) {
         const couldNotFindError = new Error('Could not find review');
         couldNotFindError.status = 404;
         logger.error('Could not find review', err);
@@ -63,25 +63,25 @@ module.exports = function(Review) {
 
       const review = res[0];
       const bibliographicSubject = Review.app.models.BibliographicSubject;
-      bibliographicSubject.find({where:{title:subject}}, (subjectErr, subjectRes) => {
-        if(subjectRes.length > 0) {
+      bibliographicSubject.find({where: {title: subject}}, (subjectErr, subjectRes) => {
+        if (subjectRes.length > 0) {
           review.subjects.add(subjectRes[0]);
           return next(null, 'OK');
         }
-        else {
-          bibliographicSubject.create({title: subject}, (subjectCreateErr, subjectCreateRes) => {
-            if(subjectCreateErr) {
-              return next(subjectCreateErr);
-            }
 
-            review.subjects.add(subjectCreateRes);
-            return next(null, 'OK');
-          });
-        }
+        bibliographicSubject.create({title: subject}, (subjectCreateErr, subjectCreateRes) => {
+          if (subjectCreateErr) {
+            return next(subjectCreateErr);
+          }
+
+          review.subjects.add(subjectCreateRes);
+          return next(null, 'OK');
+        });
+
       });
     });
 
-  }
+  };
 
   Review.observe('before save', function videoUpload(ctx, next) {
     const logger = Review.app.get('logger');
@@ -143,17 +143,17 @@ module.exports = function(Review) {
   });
 
   Review.remoteMethod('addSubject',
-  {
-    description: 'Relates a subject to a review',
-    accepts: [
-      {arg: 'ctx', type: 'object', http: {source: 'context'}},
-      {arg: 'subject', type: 'string', http: {source: 'query'}},
-      {arg: 'reviewId', type: 'integer', http: {source: 'query'}}
-    ],
-    returns: {
-      arg: 'fileObject', type: 'object', root: true
-    },
-    http: {verb: 'post'}
-  });
+    {
+      description: 'Relates a subject to a review',
+      accepts: [
+        {arg: 'ctx', type: 'object', http: {source: 'context'}},
+        {arg: 'subject', type: 'string', http: {source: 'query'}},
+        {arg: 'reviewId', type: 'integer', http: {source: 'query'}}
+      ],
+      returns: {
+        arg: 'fileObject', type: 'object', root: true
+      },
+      http: {verb: 'post'}
+    });
 
 };

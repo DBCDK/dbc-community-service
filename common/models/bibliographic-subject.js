@@ -1,5 +1,2 @@
-'use strict';
 
-module.exports = function(Bibliographicsubject) {
-
-};
+module.exports = function(Bibliographicsubject) {}; // eslint-disable-line no-unused-vars
