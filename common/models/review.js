@@ -43,8 +43,6 @@ module.exports = function(Review) {
     }
   }
 
-  function getReview()
-
   Review.addSubject = function addSubject(ctx, subject, reviewId, next) {
     const logger = Review.app.get('logger');
     if(typeof subject !== 'string' || subject.length === 0) {
