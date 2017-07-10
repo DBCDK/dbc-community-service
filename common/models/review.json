@@ -2,6 +2,10 @@
   "name": "review",
   "base": "PersistedModel",
   "idInjection": true,
+  "indexes": {
+    "review_reviewownerid_idx": "reviewownerid",
+    "review_markedAsDeleted_idx": "markedAsDeleted"
+  },
   "options": {
     "validateUpsert": true
   },
@@ -136,11 +140,17 @@
       "type": "hasMany",
       "model": "Flag",
       "foreignKey": "reviewFlagsId"
+    },
+    "genres": {
+      "type": "hasAndBelongsToMany",
+      "model": "BibliographicGenre",
+      "foreignKey": ""
+    },
+    "subjects": {
+      "type": "hasAndBelongsToMany",
+      "model": "BibliographicSubject",
+      "foreignKey": ""
     }
-  },
-  "indexes": {
-    "review_reviewownerid_idx": "reviewownerid",
-    "review_markedAsDeleted_idx": "markedAsDeleted"
   },
   "acls": [],
   "methods": {}
