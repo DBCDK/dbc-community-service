@@ -43,6 +43,49 @@ module.exports = function(Review) {
     }
   }
 
+  function addBibliographicTitle(model, titles, reviewId, next) {
+    const logger = Review.app.get('logger');
+    // if (typeof title !== 'string' || title.length === 0) {
+    //   return next('title is not a string');
+    // }
+    if (typeof reviewId !== 'number' || reviewId <= 0) {
+      return next('reviewId is not a valid number');
+    }
+
+    Review.find({where: {id: reviewId}}, (err, res) => {
+      if (err || res.length < 1) {
+        const couldNotFindError = new Error('Could not find review');
+        couldNotFindError.status = 404;
+        logger.error('Could not find review', err);
+        return next(couldNotFindError);
+      }
+
+      const review = res[0];
+      model.find({where: {or: titles.map(t =>({title: t}))}}, (findErr, findRes) => {
+        findRes.forEach(r =>{
+          titles.splice(titles.indexOf(r.title), 1);
+          r.reviews.add(review);
+        });
+
+        titles.forEach(t => {
+          model.create({title: t}, (createErr, createRes) => {
+            if (!createErr) {
+              createRes.reviews.add(review);
+            }
+          });
+        });
+
+        next(null, 'OK');
+      });
+    });
+  }
+
+  Review.addSubject = function addSubject(ctx, subject, reviewId, next) {
+    addBibliographicTitle(Review.app.models.BibliographicSubject, subject.split(','), reviewId, next);
+  };
+  Review.addGenre = function addGenre(ctx, genre, reviewId, next) {
+    addBibliographicTitle(Review.app.models.BibliographicGenre, genre.split(','), reviewId, next);
+  };
   Review.observe('before save', function videoUpload(ctx, next) {
     const logger = Review.app.get('logger');
     let data; // this is for accessing properties of the new object and, if they exist, video details.
@@ -102,4 +145,31 @@ module.exports = function(Review) {
     }
   });
 
+  Review.remoteMethod('addSubject',
+    {
+      description: 'Relates a subject to a review',
+      accepts: [
+        {arg: 'ctx', type: 'object', http: {source: 'context'}},
+        {arg: 'subject', type: 'string', http: {source: 'query'}},
+        {arg: 'reviewId', type: 'integer', http: {source: 'query'}}
+      ],
+      returns: {
+        arg: 'fileObject', type: 'object', root: true
+      },
+      http: {verb: 'post'}
+    });
+
+  Review.remoteMethod('addGenre',
+    {
+      description: 'Relates a genre to a review',
+      accepts: [
+        {arg: 'ctx', type: 'object', http: {source: 'context'}},
+        {arg: 'genre', type: 'string', http: {source: 'query'}},
+        {arg: 'reviewId', type: 'integer', http: {source: 'query'}}
+      ],
+      returns: {
+        arg: 'fileObject', type: 'object', root: true
+      },
+      http: {verb: 'post'}
+    });
 };

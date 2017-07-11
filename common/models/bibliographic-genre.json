@@ -1,0 +1,27 @@
+{
+  "name": "BibliographicGenre",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "indexes": {
+    "bibliographic_genre_title_idx": "title"
+  },
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "title": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "reviews": {
+      "type": "hasAndBelongsToMany",
+      "model": "review",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

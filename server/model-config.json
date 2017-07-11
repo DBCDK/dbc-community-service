@@ -101,5 +101,13 @@
   "ScanResult": {
     "dataSource": "psqlDs",
     "public": true
+  },
+  "BibliographicGenre": {
+    "dataSource": "psqlDs",
+    "public": true
+  },
+  "BibliographicSubject": {
+    "dataSource": "psqlDs",
+    "public": true
   }
 }
