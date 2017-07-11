@@ -2,6 +2,9 @@
   "name": "BibliographicGenre",
   "base": "PersistedModel",
   "idInjection": true,
+  "indexes": {
+    "bibliographic_genre_title_idx": "title"
+  },
   "options": {
     "validateUpsert": true
   },

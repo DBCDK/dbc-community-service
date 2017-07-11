@@ -2,6 +2,9 @@
   "name": "BibliographicSubject",
   "base": "PersistedModel",
   "idInjection": true,
+  "indexes": {
+    "bibliographic_subject_title_idx": "title"
+  },
   "options": {
     "validateUpsert": true
   },
