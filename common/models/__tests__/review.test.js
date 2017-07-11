@@ -106,4 +106,39 @@ describe('Test review endpoints and functionality', () => {
 
   });
 
+  it('genre created and added to review', async () => {
+
+    // create review
+    const createReviewResponse = await superagent
+      .post(`${app.get('url')}api/Reviews`)
+      .send({pid: '870970-basis:51342860',
+        libraryid: '775100',
+        worktype: 'literature',
+        content: 'some content',
+        created: '2017-07-07T09:13:08.191Z',
+        modified: '2017-07-07T09:13:08.191Z',
+        rating: 5,
+        markedAsDeleted: false,
+        reviewownerid: 0})
+      .set('Accept', 'application/json');
+
+    // count reviews before add
+    const genresCountResponse = await superagent
+      .get(`${app.get('url')}api/BibliographicGenres/count`)
+      .set('Accept', 'application/json');
+
+    // add subject
+    await superagent
+      .post(`${app.get('url')}api/Reviews/addGenre`)
+      .query({reviewId: createReviewResponse.body.id, genre: 'a' + Date.now()})
+      .set('Accept', 'application/json');
+
+    // count subjects after add
+    const afterGenresCountResponse = await superagent
+      .get(`${app.get('url')}api/BibliographicGenres/count`)
+      .set('Accept', 'application/json');
+
+    expect(genresCountResponse.body.count + 1).toEqual(afterGenresCountResponse.body.count);
+  });
+
 });

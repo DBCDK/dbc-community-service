@@ -43,12 +43,11 @@ module.exports = function(Review) {
     }
   }
 
-  Review.addSubject = function addSubject(ctx, subject, reviewId, next) {
+  function addBibliographicTitle(model, title, reviewId, next) {
     const logger = Review.app.get('logger');
-    if (typeof subject !== 'string' || subject.length === 0) {
-      return next('subject is not a string');
+    if (typeof title !== 'string' || title.length === 0) {
+      return next('title is not a string');
     }
-
     if (typeof reviewId !== 'number' || reviewId <= 0) {
       return next('reviewId is not a valid number');
     }
@@ -62,27 +61,30 @@ module.exports = function(Review) {
       }
 
       const review = res[0];
-      const bibliographicSubject = Review.app.models.BibliographicSubject;
-      bibliographicSubject.find({where: {title: subject}}, (subjectErr, subjectRes) => {
-        if (subjectRes.length > 0) {
-          review.subjects.add(subjectRes[0]);
+      model.find({where: {title}}, (findErr, findRes) => {
+        if (findRes.length > 0) {
+          findRes[0].reviews.add(review);
           return next(null, 'OK');
         }
 
-        bibliographicSubject.create({title: subject}, (subjectCreateErr, subjectCreateRes) => {
-          if (subjectCreateErr) {
-            return next(subjectCreateErr);
+        model.create({title}, (createErr, createRes) => {
+          if (createErr) {
+            return next(createErr);
           }
-
-          review.subjects.add(subjectCreateRes);
+          createRes.reviews.add(review);
           return next(null, 'OK');
         });
 
       });
     });
+  }
 
+  Review.addSubject = function addSubject(ctx, subject, reviewId, next) {
+    addBibliographicTitle(Review.app.models.BibliographicSubject, subject, reviewId, next);
   };
-
+  Review.addGenre = function addGenre(ctx, genre, reviewId, next) {
+    addBibliographicTitle(Review.app.models.BibliographicGenre, genre, reviewId, next);
+  };
   Review.observe('before save', function videoUpload(ctx, next) {
     const logger = Review.app.get('logger');
     let data; // this is for accessing properties of the new object and, if they exist, video details.
@@ -156,4 +158,17 @@ module.exports = function(Review) {
       http: {verb: 'post'}
     });
 
+  Review.remoteMethod('addGenre',
+    {
+      description: 'Relates a genre to a review',
+      accepts: [
+        {arg: 'ctx', type: 'object', http: {source: 'context'}},
+        {arg: 'genre', type: 'string', http: {source: 'query'}},
+        {arg: 'reviewId', type: 'integer', http: {source: 'query'}}
+      ],
+      returns: {
+        arg: 'fileObject', type: 'object', root: true
+      },
+      http: {verb: 'post'}
+    });
 };
