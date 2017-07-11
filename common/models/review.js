@@ -43,11 +43,11 @@ module.exports = function(Review) {
     }
   }
 
-  function addBibliographicTitle(model, title, reviewId, next) {
+  function addBibliographicTitle(model, titles, reviewId, next) {
     const logger = Review.app.get('logger');
-    if (typeof title !== 'string' || title.length === 0) {
-      return next('title is not a string');
-    }
+    // if (typeof title !== 'string' || title.length === 0) {
+    //   return next('title is not a string');
+    // }
     if (typeof reviewId !== 'number' || reviewId <= 0) {
       return next('reviewId is not a valid number');
     }
@@ -61,29 +61,30 @@ module.exports = function(Review) {
       }
 
       const review = res[0];
-      model.find({where: {title}}, (findErr, findRes) => {
-        if (findRes.length > 0) {
-          findRes[0].reviews.add(review);
-          return next(null, 'OK');
-        }
-
-        model.create({title}, (createErr, createRes) => {
-          if (createErr) {
-            return next(createErr);
-          }
-          createRes.reviews.add(review);
-          return next(null, 'OK');
+      model.find({where: {or: titles.map(t =>({title: t}))}}, (findErr, findRes) => {
+        findRes.forEach(r =>{
+          titles.splice(titles.indexOf(r.title), 1);
+          r.reviews.add(review);
         });
 
+        titles.forEach(t => {
+          model.create({title: t}, (createErr, createRes) => {
+            if (!createErr) {
+              createRes.reviews.add(review);
+            }
+          });
+        });
+
+        next(null, 'OK');
       });
     });
   }
 
   Review.addSubject = function addSubject(ctx, subject, reviewId, next) {
-    addBibliographicTitle(Review.app.models.BibliographicSubject, subject, reviewId, next);
+    addBibliographicTitle(Review.app.models.BibliographicSubject, subject.split(','), reviewId, next);
   };
   Review.addGenre = function addGenre(ctx, genre, reviewId, next) {
-    addBibliographicTitle(Review.app.models.BibliographicGenre, genre, reviewId, next);
+    addBibliographicTitle(Review.app.models.BibliographicGenre, genre.split(','), reviewId, next);
   };
   Review.observe('before save', function videoUpload(ctx, next) {
     const logger = Review.app.get('logger');
