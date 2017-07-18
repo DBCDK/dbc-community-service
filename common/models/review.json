@@ -54,7 +54,9 @@
               "resolutions": "video"
             }
           },
-          "likes"
+          "likes",
+          "subjects",
+          "genres"
         ],
         "where": {
           "markedAsDeleted": null
