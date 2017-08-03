@@ -62,17 +62,42 @@ module.exports = function(Review) {
 
       const review = res[0];
       model.find({where: {or: titles.map(t =>({title: t}))}}, (findErr, findRes) => {
-        findRes.forEach(r =>{
+        const promises = [];
+
+        // Relate titles which already exist, to review
+        findRes.forEach(r => {
+          // Remove the found title from titles array
           titles.splice(titles.indexOf(r.title), 1);
-          r.reviews.add(review);
+
+          const promise = new Promise((resolve, reject) => {
+            r.reviews.add(review, () => {
+              resolve();
+            });
+          });
+          promises.push(promise);
         });
 
+        // Rest of titles need to be first created then related to review
         titles.forEach(t => {
-          model.create({title: t}, (createErr, createRes) => {
-            if (!createErr) {
-              createRes.reviews.add(review);
-            }
+          const promise = new Promise((resolve, reject) => {
+            model.create({title: t}, (createErr, createRes) => {
+              if (!createErr) {
+                createRes.reviews.add(review, () => {
+                  resolve();
+                });
+              }
+            });
           });
+          promises.push(promise);
+        });
+
+        Promise.all(promises).then(() => {
+          // Saving the review will notify observers
+          // i.e. the review will be indexed.
+          // Did not find a way to get triggers to work with
+          // 'hasAndBelongsToMany' relations, since the subject/genre models
+          // do not have foreign key to review-id.
+          review.save();
         });
 
         next(null, 'OK');
@@ -109,7 +134,8 @@ module.exports = function(Review) {
       });
     }
     else {
-      data = Object.assign({}, ctx.currentInstance.__data, ctx.data);
+      const instance = ctx.instance || ctx.currentInstance;
+      data = Object.assign({}, instance.__data, ctx.data);
 
       logger.info('review before save', data);
       // we are updating a existing review. Skip unique checks on pid + reviewownerid (to support altering old reviews)

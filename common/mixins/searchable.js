@@ -95,7 +95,7 @@ function loopbackToElasticDatatype(type) {
 module.exports = function (Model, options) {
   // Give the user an error if elastic is not enabled
   // Better to keep the API consistent across configurations.
-  Model.search = function (q, fields, limit, from, next) {
+  Model.search = function (q, fields, limit, from, sort, next) {
     next('Elastic search is not enabled! Please configure it!');
   };
 
@@ -472,13 +472,15 @@ module.exports = function (Model, options) {
      * @param {Array} fields - An array of fields we want to query on, in case we don't want to search the entire document.
      * @param {Number} limit - Limit is mostly used for pagination, to avoid excessive return sizes
      * @param {Number} from - From is an offset in items, also used for pagination.
+     * @param {Number} sort - field to sort on. ex: 'rating:asc'.
      * @param {function} next - callback from loopback.
      */
-    Model.search = function queryElastic(q, fields, limit, from, next) {
+    Model.search = function queryElastic(q, fields, limit, from, sort, next) {
       let params = {
         index,
         size: limit || 15,
-        from: from || 0
+        from: from || 0,
+        sort: sort
       };
 
       // If we have fields, we want to use a different query type
@@ -547,7 +549,8 @@ module.exports = function (Model, options) {
           description: 'Array of string containing fields to match on. Defaults to all fields.'
         },
         {arg: 'limit', type: 'number', required: false, description: 'How many items to retrieve. Default: 15'},
-        {arg: 'from', type: 'number', required: false, description: 'The starting index of hits to return. Default: 0'}
+        {arg: 'from', type: 'number', required: false, description: 'The starting index of hits to return. Default: 0'},
+        {arg: 'sort', type: 'string', required: false, description: 'Field to sort on. Ex: "rating:asc".'}
       ],
       returns: {
         arg: 'results', type: 'object', root: true
