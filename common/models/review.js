@@ -7,7 +7,7 @@ module.exports = function(Review) {
     const NUM_LIKES_KEY = 'numLikes';
 
     // index number of likes, to be used for sorting
-    if(typeof instance.likes === 'function') {
+    if (typeof instance.likes === 'function') {
 
       // instance.likes is a loopback function, which
       // has to be invoked to collect actual values
@@ -18,10 +18,11 @@ module.exports = function(Review) {
 
       doc[NUM_LIKES_KEY] = numLikes;
 
-    } else {
+    }
+    else {
       doc[NUM_LIKES_KEY] = 0;
     }
-  }
+  };
 
   Review.afterSearch = function reviewAfterSearch (params, result) {
     if (
@@ -90,7 +91,7 @@ module.exports = function(Review) {
           // Remove the found title from titles array
           titles.splice(titles.indexOf(r.title), 1);
 
-          const promise = new Promise((resolve, reject) => {
+          const promise = new Promise(resolve => {
             r.reviews.add(review, () => {
               resolve();
             });
@@ -100,7 +101,7 @@ module.exports = function(Review) {
 
         // Rest of titles need to be first created then related to review
         titles.forEach(t => {
-          const promise = new Promise((resolve, reject) => {
+          const promise = new Promise(resolve => {
             model.create({title: t}, (createErr, createRes) => {
               if (!createErr) {
                 createRes.reviews.add(review, () => {
