@@ -1,6 +1,27 @@
 
+import {_} from 'lodash';
 
 module.exports = function(Review) {
+
+  Review.beforeIndex = function(instance, doc) {
+    const NUM_LIKES_KEY = 'numLikes';
+
+    // index number of likes, to be used for sorting
+    if(typeof instance.likes === 'function') {
+
+      // instance.likes is a loopback function, which
+      // has to be invoked to collect actual values
+      const likes = instance.likes();
+
+      // count unique profileId's across the list of likes
+      const numLikes = _.uniq(likes.map(like => like.profileId)).length;
+
+      doc[NUM_LIKES_KEY] = numLikes;
+
+    } else {
+      doc[NUM_LIKES_KEY] = 0;
+    }
+  }
 
   Review.afterSearch = function reviewAfterSearch (params, result) {
     if (
