@@ -257,6 +257,10 @@ module.exports = function (Model, options) {
           }
         });
 
+        if (typeof Model.beforeIndex === 'function') {
+          Model.beforeIndex(instance, doc);
+        }
+
         return doc;
       }
 
