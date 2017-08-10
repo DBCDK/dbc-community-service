@@ -47,6 +47,14 @@ superagent.get(`${csEndPoint}/api/reviews`).end(async (error, reviews) => {
         await superagent.post(`${csEndPoint}/api/reviews/addGenre`)
           .query({genre: genres.join(','), reviewId: review.id});
       }
+
+      // just touch that review to make sure its reindexed
+      // will not actually add genre
+      await superagent.post(`${csEndPoint}/api/reviews/addGenre`)
+        .query({genre: ',', reviewId: review.id});
+
+      const msg = `Processed review.id=${review.id}, review.pid=${review.pid}, review.genres=${genres} review.subjects=${subjects}\n`;
+      fs.appendFileSync(LOG_FILE, msg);
     }
   }
 });
