@@ -142,6 +142,35 @@ module.exports = function (Model, options) {
             // Check that the model exists
             if (typeof app.models[modelName] !== 'undefined') {
 
+              // If an instance of a model is deleted, check its foreign key
+              // and reindex the element(s) it points to
+              app.models[modelName].observe('after delete', (ctx, next) => {
+                next();
+                if (ctx.where && ctx.where[modelFkField]) {
+                  // Create a filter to get the relevant object.
+                  let currentFilter = Object.assign({}, filter);
+                  currentFilter.where = Object.assign(currentFilter.where || {}, {id: ctx.where[modelFkField]});
+                  Model.find(currentFilter, (err2, found) => {
+
+                    if (err2) {
+                      return;
+                    }
+
+                    // Index all relevant items.
+                    found.forEach(instance => {
+                      // extract indexable properties from model instance
+                      const params = createDocument(instance);
+
+                      elasticClient.index(params, (err3) => {
+                        if (err3) {
+                          logger.error('Could index object!', {error: err3});
+                        }
+                      });
+                    });
+                  });
+                }
+              });
+
               // Set an observer on that model.
               app.models[modelName].observe('after save', (ctx, next) => {
                 // No need to block other actions, we're not mutating.

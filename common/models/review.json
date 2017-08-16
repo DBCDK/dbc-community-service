@@ -59,10 +59,7 @@
           "likes",
           "subjects",
           "genres"
-        ],
-        "where": {
-          "markedAsDeleted": null
-        }
+        ]
       },
       "triggers": [
         {
@@ -76,7 +73,7 @@
         {
           "modelName": "Like",
           "modelFkField": "reviewlikeid"
-        }
+        }        
       ]
     }
   },
