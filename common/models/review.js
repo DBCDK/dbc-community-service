@@ -165,6 +165,39 @@ module.exports = function(Review) {
     }
   });
 
+  Review.unlike = function unlike(ctx, profileId, reviewId, next) {
+    const logger = Review.app.get('logger');
+
+    Review.findOne({where: {id: reviewId}, include: 'likes'}, (err, review) => {
+      if (err || !review) {
+        const couldNotFindError = new Error('Could not find review');
+        couldNotFindError.status = 404;
+        logger.error('Could not find review', err);
+        return next(couldNotFindError);
+      }
+
+      const promises = [];
+      const likes = review.likes();
+      if (likes && likes.length) {
+        likes.forEach(l => {
+          if (l.profileId === profileId) {
+            const promise = new Promise(resolve => {
+              l.delete(() => resolve());
+            });
+            promises.push(promise);
+          }
+        });
+      }
+
+      Promise.all(promises).then(() => {
+        // Saving the review will notify observers
+        // i.e. the review will be indexed.
+        review.save();
+        next();
+      });
+    });
+  };
+
   Review.observe('after save', function afterReviewSave(ctx, next) {
     const logger = Review.app.get('logger');
 
@@ -219,5 +252,19 @@ module.exports = function(Review) {
         arg: 'fileObject', type: 'object', root: true
       },
       http: {verb: 'post'}
+    });
+
+  Review.remoteMethod('unlike',
+    {
+      description: 'Unlikes a review for given profile',
+      accepts: [
+        {arg: 'ctx', type: 'object', http: {source: 'context'}},
+        {arg: 'profileId', type: 'integer', http: {source: 'query'}},
+        {arg: 'reviewId', type: 'integer', http: {source: 'query'}}
+      ],
+      returns: {
+        arg: 'fileObject', type: 'object', root: true
+      },
+      http: {verb: 'del'}
     });
 };

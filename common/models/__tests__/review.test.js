@@ -211,4 +211,58 @@ describe('Test review endpoints and functionality', () => {
     expect(genresCountResponse.body.count + 2).toEqual(afterGenresCountResponse.body.count);
   });
 
+  it('liking and unliking review', async () => {
+
+    async function countLikes() {
+      return (await superagent
+        .get(`${app.get('url')}api/Likes/count`)
+        .set('Accept', 'application/json')).body.count;
+    }
+
+    // create review
+    const createReviewResponse = await superagent
+      .post(`${app.get('url')}api/Reviews`)
+      .send({pid: '870970-basis:51342860',
+        libraryid: '775100',
+        worktype: 'literature',
+        content: 'some content',
+        created: '2017-07-07T09:13:08.191Z',
+        modified: '2017-07-07T09:13:08.191Z',
+        rating: 5,
+        markedAsDeleted: false,
+        reviewownerid: 0})
+      .set('Accept', 'application/json');
+
+    // count likes before liking
+    const countBeforeAdd = await countLikes();
+
+    // like review with profile=1
+    await superagent
+      .post(`${app.get('url')}api/Reviews/${createReviewResponse.body.id}/likes`)
+      .send({value: 1, profileId: 1})
+      .set('Accept', 'application/json');
+
+    // like review with profile=2
+    await superagent
+      .post(`${app.get('url')}api/Reviews/${createReviewResponse.body.id}/likes`)
+      .send({value: 1, profileId: 2})
+      .set('Accept', 'application/json');
+
+    // count likes after liking
+    const countAfterAdd = await countLikes();
+
+    expect(countBeforeAdd + 2).toEqual(countAfterAdd);
+
+    // unlike review with profile=2
+    await superagent
+      .del(`${app.get('url')}api/Reviews/unlike`)
+      .query({reviewId: createReviewResponse.body.id, profileId: 2})
+      .set('Accept', 'application/json');
+
+    // count likes after liking
+    const countAfterUnlike = await countLikes();
+
+    expect(countAfterAdd - 1).toEqual(countAfterUnlike);
+  });
+
 });
