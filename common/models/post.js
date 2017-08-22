@@ -146,4 +146,51 @@ module.exports = function (Post) {
       err => next(err)
     );
   });
+
+  Post.unlike = function unlike(ctx, profileId, postId, next) {
+    const logger = Post.app.get('logger');
+
+    Post.findOne({where: {id: postId}, include: 'likes'}, (err, post) => {
+      if (err || !post) {
+        const couldNotFindError = new Error('Could not find post');
+        couldNotFindError.status = 404;
+        logger.error(couldNotFindError.message, err);
+        return next(couldNotFindError);
+      }
+
+      const promises = [];
+      const likes = post.likes();
+      if (likes && likes.length) {
+        likes.forEach(l => {
+          if (l.profileId === profileId) {
+            const promise = new Promise(resolve => {
+              l.delete(() => resolve());
+            });
+            promises.push(promise);
+          }
+        });
+      }
+
+      Promise.all(promises).then(() => {
+        // Saving the post will notify observers
+        // i.e. the post will be indexed.
+        post.save();
+        next();
+      });
+    });
+  };
+
+  Post.remoteMethod('unlike',
+    {
+      description: 'Unlikes a post for given profile',
+      accepts: [
+        {arg: 'ctx', type: 'object', http: {source: 'context'}},
+        {arg: 'profileId', type: 'integer', http: {source: 'query'}},
+        {arg: 'postId', type: 'integer', http: {source: 'query'}}
+      ],
+      returns: {
+        arg: 'fileObject', type: 'object', root: true
+      },
+      http: {verb: 'del'}
+    });
 };
