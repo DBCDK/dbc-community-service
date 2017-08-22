@@ -154,7 +154,7 @@ module.exports = function (Post) {
       if (err || !post) {
         const couldNotFindError = new Error('Could not find post');
         couldNotFindError.status = 404;
-        logger.error('Could not find post', err);
+        logger.error(couldNotFindError.message, err);
         return next(couldNotFindError);
       }
 

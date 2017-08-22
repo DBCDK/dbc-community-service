@@ -172,7 +172,7 @@ module.exports = function(Review) {
       if (err || !review) {
         const couldNotFindError = new Error('Could not find review');
         couldNotFindError.status = 404;
-        logger.error('Could not find review', err);
+        logger.error(couldNotFindError.message, err);
         return next(couldNotFindError);
       }
 
