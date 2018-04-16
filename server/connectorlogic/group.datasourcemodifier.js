@@ -1,5 +1,3 @@
-
-
 module.exports = function groupDatasourceModifier(app) {
   let Group = app.models.Group;
   let connector = Group.getDataSource().connector;
@@ -13,7 +11,9 @@ module.exports = function groupDatasourceModifier(app) {
   const likefactor = process.env.group_ranking_lf || 150; // eslint-ignore-line no-process-env
 
   connector.observe('before execute', (ctx, next) => {
-    const group_pop_ordering = /ORDER BY "group_pop" (ASC|DESC)/.exec(ctx.req.sql);
+    const group_pop_ordering = /ORDER BY "group_pop" (ASC|DESC)/.exec(
+      ctx.req.sql
+    );
 
     // Ranking behavior starts here
     if (group_pop_ordering && group_pop_ordering[1]) {
@@ -22,14 +22,20 @@ module.exports = function groupDatasourceModifier(app) {
       const where_parameter = /WHERE (.*) ORDER BY/.exec(ctx.req.sql);
       let where = '';
       if (where_parameter && where_parameter[1]) {
-        where = 'WHERE ' + where_parameter[1].split(' ').map((where_param) => {
-          where_param = where_param.split('=');
-          where_param[0] = 'g.' + where_param[0];
-          return where_param.join('=');
-        }).join(' ');
+        where =
+          'WHERE ' +
+          where_parameter[1]
+            .split(' ')
+            .map(where_param => {
+              where_param = where_param.split('=');
+              where_param[0] = 'g.' + where_param[0];
+              return where_param.join('=');
+            })
+            .join(' ');
       }
 
-      ctx.req.sql = '' +
+      ctx.req.sql =
+        '' +
         'SELECT ' +
         '  g.id, ' +
         '  g.name, ' +

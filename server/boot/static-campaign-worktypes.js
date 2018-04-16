@@ -1,8 +1,7 @@
-
-
 import app from '../server';
 
-if (!process.env.MIGRATING) { // eslint-disable-line
+if (!process.env.MIGRATING) {
+  // eslint-disable-line
   const CampaignWorktype = app.models.CampaignWorktype;
 
   CampaignWorktype.upsert({
