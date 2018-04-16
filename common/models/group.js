@@ -82,4 +82,13 @@ module.exports = function(Group) {
       return _findOrCreate.call(Group, queryDeleted(query), ...rest);
     };
   });
+  Group.observe('before delete', (ctx, next) => {
+    Group.app.models.imageCollection.destroyAll({
+      groupcoverimagecollectionid: ctx.where.id
+    });
+    Group.app.models.videoCollection.destroyAll({
+      groupcoverimagecollectionid: ctx.where.id
+    });
+    next();
+  });
 };

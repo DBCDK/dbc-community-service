@@ -253,33 +253,6 @@ module.exports = function(Profile) {
     Profile.app.models.Group.destroyAll({groupownerid: profileId});
     Profile.app.models.review.destroyAll({reviewownerid: profileId});
     Profile.app.models.Flag.destroyAll({ownerid: profileId});
-
-    Profile.findOne({where: ctx.where}, (err, instance) => {
-      if (err) {
-        return next(err);
-      }
-      if (instance) {
-        ctx.hookState.deletedModelInstance = instance;
-      }
-      next();
-    });
-  });
-  Profile.observe('after delete', (ctx, next) => {
-    console.log(ctx.hookState.deletedModelInstance);
-    if (!ctx.hookState.deletedModelInstance) {
-      return next();
-    }
-    Profile.replaceOrCreate(
-      ctx.hookState.deletedModelInstance,
-      (err, instance) => {
-        if (err) {
-          console.log(
-            'An error occured while restoring data ' +
-              'from hookState after delete operation'
-          );
-        }
-        next();
-      }
-    );
+    next();
   });
 };
