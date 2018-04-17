@@ -31,8 +31,8 @@ describe('Test Amazon middlewares work as expected', () => {
       })
       .reply(
         200,
-        '<ConfirmSubscriptionResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/"> <ConfirmSubscriptionResult> <SubscriptionArn>Subscription ARN HERE</SubscriptionArn> </ConfirmSubscriptionResult> <ResponseMetadata> <RequestId>REQUEST ID HERE</RequestId> </ResponseMetadata> </ConfirmSubscriptionResponse>'
-      ); // eslint-disable-line
+        '<ConfirmSubscriptionResponse xmlns="http://sns.amazonaws.com/doc/2010-03-31/"> <ConfirmSubscriptionResult> <SubscriptionArn>Subscription ARN HERE</SubscriptionArn> </ConfirmSubscriptionResult> <ResponseMetadata> <RequestId>REQUEST ID HERE</RequestId> </ResponseMetadata> </ConfirmSubscriptionResponse>' // eslint-disable-line
+      );
 
     // Send a confirm request to the community service
     superagent
