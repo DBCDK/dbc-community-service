@@ -6,6 +6,7 @@
     "validateUpsert": true
   },
   "mixins": {
+    "LogOnDelete": true,
     "CountsNotDeleted": true,
     "Searchable": {
       "targetIndex": "group",

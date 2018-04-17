@@ -6,6 +6,7 @@
     "validateUpsert": true
   },
   "mixins": {
+    "LogOnDelete": true,
     "Counts": true
   },
   "properties": {

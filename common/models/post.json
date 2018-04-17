@@ -6,6 +6,7 @@
     "validateUpsert": true
   },
   "mixins": {
+    "LogOnDelete": true,
     "Counts": true,
     "Searchable": {
       "targetIndex": "post",
@@ -25,10 +26,7 @@
           {
             "relation": "owner",
             "scope": {
-              "fields": [
-                "displayName",
-                "id"
-              ],
+              "fields": ["displayName", "id"],
               "include": {
                 "image": {
                   "resolutions": "image"
