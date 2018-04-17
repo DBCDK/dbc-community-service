@@ -206,4 +206,13 @@ module.exports = function(Post) {
     },
     http: {verb: 'del'}
   });
+
+  Post.observe('before delete', (ctx, next) => {
+    Post.app.models.imageCollection.destroyAll({
+      postimagecollection: ctx.where.id
+    });
+    Post.app.models.videoCollection.destroyAll({
+      postimagecollection: ctx.where.id
+    });
+  });
 };
