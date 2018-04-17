@@ -1,5 +1,3 @@
-
-
 process.env.TESTING = true;
 
 import expect from 'expect';
@@ -10,15 +8,15 @@ import * as testutils from './testutils';
 describe('Test profile endpoints and functionality', () => {
   let server;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     server = app.listen(done);
   });
 
-  afterEach((done) => {
+  afterEach(done => {
     server.close(done);
   });
 
-  it('should respond with an array', (done) => {
+  it('should respond with an array', done => {
     superagent
       .get(`${app.get('url')}api/Profiles`)
       .set('Accept', 'application/json')
@@ -29,16 +27,51 @@ describe('Test profile endpoints and functionality', () => {
       });
   });
 
-  it('should create a profile, and login via unilogin', (done) => {
-    testutils.createProfile(app.get('url'))
-      .then((createResponse) => {
-        return testutils.loginViaUnilogin(app.get('url'), createResponse.username);
+  it('should create a profile, and login via unilogin', done => {
+    testutils
+      .createProfile(app.get('url'))
+      .then(createResponse => {
+        return testutils.loginViaUnilogin(
+          app.get('url'),
+          createResponse.username
+        );
       })
-      .then((loginResponse) => {
+      .then(loginResponse => {
         expect(typeof loginResponse.id).toEqual('string');
         expect(typeof loginResponse.profileId).toEqual('number');
         expect(typeof loginResponse.profile).toEqual('object');
         done();
       });
+  });
+  it('should delete a profile and related Objects', async () => {
+    // Helpers
+    const getGroupsForProfile = async id =>
+      (await superagent.get(
+        `${app.get('url')}api/Groups/?limit={"where":{"groupownerid": ${id}`
+      )).body;
+
+    const getReviewsForProfile = async id =>
+      (await superagent.get(
+        `${app.get('url')}api/Reviews/?limit={"where":{"reviewownerid": ${id}`
+      )).body;
+
+    // Create profile and relations
+    const profile = await testutils.createProfile(app.get('url'));
+    await testutils.createGroup(app.get('url'), {
+      groupownerid: profile.id
+    });
+    await testutils.createReview(app.get('url'), {
+      reviewownerid: profile.id
+    });
+    // check if relations exists
+    expect((await getGroupsForProfile(profile.id)).length).toEqual(1);
+    expect((await getReviewsForProfile(profile.id)).length).toEqual(1);
+
+    // Delete profile
+    await superagent.delete(`${app.get('url')}api/Profiles/${profile.id}`);
+
+    // check if relations are deleted
+    expect((await getGroupsForProfile(profile.id)).length).toEqual(0);
+    expect((await getReviewsForProfile(profile.id)).length).toEqual(0);
   });
 });
