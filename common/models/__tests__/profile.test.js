@@ -45,15 +45,19 @@ describe('Test profile endpoints and functionality', () => {
   });
   it('should delete a profile and related Objects', async () => {
     // Helpers
-    const getGroupsForProfile = async id =>
-      (await superagent.get(
-        `${app.get('url')}api/Groups/?limit={"where":{"groupownerid": ${id}`
+    const getGroupsForProfile = async id => {
+      const filter = `{"where":{"groupownerid": ${id}}}`;
+      return (await superagent.get(
+        `${app.get('url')}api/Groups?filter=${filter}`
       )).body;
+    };
 
-    const getReviewsForProfile = async id =>
-      (await superagent.get(
-        `${app.get('url')}api/Reviews/?limit={"where":{"reviewownerid": ${id}`
+    const getReviewsForProfile = async id => {
+      const filter = `{"where":{"reviewownerid": ${id}}}`;
+      return (await superagent.get(
+        `${app.get('url')}api/Reviews/?filter=${encodeURIComponent(filter)}`
       )).body;
+    };
 
     // Create profile and relations
     const profile = await testutils.createProfile(app.get('url'));
