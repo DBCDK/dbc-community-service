@@ -9,16 +9,14 @@ function queryDeleted(query) {
   if (!query.deleted && !(query.where && query.where.id)) {
     if (!query.where || Object.keys(query.where).length === 0) {
       query.where = queryNonDeleted;
-    }
-    else {
+    } else {
       query.where = {and: [query.where, queryNonDeleted]};
     }
   }
   return query;
 }
 
-module.exports = function (Group) {
-
+module.exports = function(Group) {
   Group.observe('after save', function afterGroupSave(ctx, next) {
     const logger = Group.app.get('logger');
     Group.app.models.Post.updateAll(
@@ -27,12 +25,15 @@ module.exports = function (Group) {
       },
       {
         groupDeleted: ctx.instance.markedAsDeleted || false
-      }, function (err) {
+      },
+      function(err) {
         if (err) {
-          logger.error('An error occurred during group after save updating posts', {error: err});
+          logger.error(
+            'An error occurred during group after save updating posts',
+            {error: err}
+          );
           next(err);
-        }
-        else {
+        } else {
           next();
         }
       }
@@ -40,22 +41,32 @@ module.exports = function (Group) {
   });
 
   Group.on('dataSourceAttached', function initSoftDestroyOnGroup() {
-
     Group.destroyById = function softDestroyById(id, cb) {
       return Group.upsert({id: id, markedAsDeleted: true})
-        .then(result => (typeof cb === 'function') ? cb(null, result) : result)
-        .catch(error => (typeof cb === 'function') ? cb(error) : Promise.reject(error));
+        .then(result => (typeof cb === 'function' ? cb(null, result) : result))
+        .catch(
+          error =>
+            typeof cb === 'function' ? cb(error) : Promise.reject(error)
+        );
     };
 
     Group.removeById = Group.destroyById;
     Group.deleteById = Group.destroyById;
 
     Group.prototype.destroy = function softDestroy(options, cb) {
-      const callback = (typeof cb === 'undefined' && typeof options === 'function') ? options : cb;
+      const callback =
+        typeof cb === 'undefined' && typeof options === 'function'
+          ? options
+          : cb;
 
       return this.updateAttributes({markedAsDeleted: true})
-        .then(result => (typeof cb === 'function') ? callback(null, result) : result)
-        .catch(error => (typeof cb === 'function') ? callback(error) : Promise.reject(error));
+        .then(
+          result => (typeof cb === 'function' ? callback(null, result) : result)
+        )
+        .catch(
+          error =>
+            typeof cb === 'function' ? callback(error) : Promise.reject(error)
+        );
     };
 
     Group.prototype.remove = Group.prototype.destroy;

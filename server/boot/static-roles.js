@@ -1,8 +1,7 @@
-
-
 import app from '../server';
 
-if (!process.env.MIGRATING) { // eslint-disable-line
+if (!process.env.MIGRATING) {
+  // eslint-disable-line
   const CommunityRole = app.models.CommunityRole;
 
   CommunityRole.upsert({

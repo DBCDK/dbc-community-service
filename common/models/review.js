@@ -1,14 +1,11 @@
-
 import {_} from 'lodash';
 
 module.exports = function(Review) {
-
   Review.beforeIndex = function(instance, doc) {
     const NUM_LIKES_KEY = 'numLikes';
 
     // index number of likes, to be used for sorting
     if (typeof instance.likes === 'function') {
-
       // instance.likes is a loopback function, which
       // has to be invoked to collect actual values
       const likes = instance.likes();
@@ -17,14 +14,12 @@ module.exports = function(Review) {
       const numLikes = _.uniq(likes.map(like => like.profileId)).length;
 
       doc[NUM_LIKES_KEY] = numLikes;
-
-    }
-    else {
+    } else {
       doc[NUM_LIKES_KEY] = 0;
     }
   };
 
-  Review.afterSearch = function reviewAfterSearch (params, result) {
+  Review.afterSearch = function reviewAfterSearch(params, result) {
     if (
       params.body &&
       params.body.size &&
@@ -36,7 +31,7 @@ module.exports = function(Review) {
       result.aggregations.range.buckets[0].pids.buckets
     ) {
       return result.aggregations.range.buckets[0].pids.buckets
-        .sort((a, b) => b.pid_score.value-a.pid_score.value)
+        .sort((a, b) => b.pid_score.value - a.pid_score.value)
         .slice(0, params.body.size)
         .map(a => a.key);
     }
@@ -48,19 +43,22 @@ module.exports = function(Review) {
     const logger = Review.app.get('logger');
     if (data && data.mimetype && data.videofile && data.container) {
       // We have info on a new video, time to create models and attach it to the new post object.
-      Review.app.models.videoCollection.newVideoCollection(data, function newVideoCollectionCallback(err, info) {
-        if (err) {
-          logger.error('An error occurred during review before save', {error: err});
-          next(err);
+      Review.app.models.videoCollection.newVideoCollection(
+        data,
+        function newVideoCollectionCallback(err, info) {
+          if (err) {
+            logger.error('An error occurred during review before save', {
+              error: err
+            });
+            next(err);
+          } else {
+            logger.info('Created new video resolution', info);
+            ctx.hookState.reviewVideoCollection = info.id;
+            next();
+          }
         }
-        else {
-          logger.info('Created new video resolution', info);
-          ctx.hookState.reviewVideoCollection = info.id;
-          next();
-        }
-      });
-    }
-    else {
+      );
+    } else {
       next();
     }
   }
@@ -83,55 +81,68 @@ module.exports = function(Review) {
       }
 
       const review = res[0];
-      model.find({where: {or: titles.map(t =>({title: t}))}}, (findErr, findRes) => {
-        const promises = [];
+      model.find(
+        {where: {or: titles.map(t => ({title: t}))}},
+        (findErr, findRes) => {
+          const promises = [];
 
-        // Relate titles which already exist, to review
-        findRes.forEach(r => {
-          // Remove the found title from titles array
-          titles.splice(titles.indexOf(r.title), 1);
+          // Relate titles which already exist, to review
+          findRes.forEach(r => {
+            // Remove the found title from titles array
+            titles.splice(titles.indexOf(r.title), 1);
 
-          const promise = new Promise(resolve => {
-            r.reviews.add(review, () => {
-              resolve();
+            const promise = new Promise(resolve => {
+              r.reviews.add(review, () => {
+                resolve();
+              });
             });
+            promises.push(promise);
           });
-          promises.push(promise);
-        });
 
-        // Rest of titles need to be first created then related to review
-        titles.forEach(t => {
-          const promise = new Promise(resolve => {
-            model.create({title: t}, (createErr, createRes) => {
-              if (!createErr) {
-                createRes.reviews.add(review, () => {
-                  resolve();
-                });
-              }
+          // Rest of titles need to be first created then related to review
+          titles.forEach(t => {
+            const promise = new Promise(resolve => {
+              model.create({title: t}, (createErr, createRes) => {
+                if (!createErr) {
+                  createRes.reviews.add(review, () => {
+                    resolve();
+                  });
+                }
+              });
             });
+            promises.push(promise);
           });
-          promises.push(promise);
-        });
 
-        Promise.all(promises).then(() => {
-          // Saving the review will notify observers
-          // i.e. the review will be indexed.
-          // Did not find a way to get triggers to work with
-          // 'hasAndBelongsToMany' relations, since the subject/genre models
-          // do not have foreign key to review-id.
-          review.save();
-        });
+          Promise.all(promises).then(() => {
+            // Saving the review will notify observers
+            // i.e. the review will be indexed.
+            // Did not find a way to get triggers to work with
+            // 'hasAndBelongsToMany' relations, since the subject/genre models
+            // do not have foreign key to review-id.
+            review.save();
+          });
 
-        next(null, 'OK');
-      });
+          next(null, 'OK');
+        }
+      );
     });
   }
 
   Review.addSubject = function addSubject(ctx, subject, reviewId, next) {
-    addBibliographicTitle(Review.app.models.BibliographicSubject, subject.split(','), reviewId, next);
+    addBibliographicTitle(
+      Review.app.models.BibliographicSubject,
+      subject.split(','),
+      reviewId,
+      next
+    );
   };
   Review.addGenre = function addGenre(ctx, genre, reviewId, next) {
-    addBibliographicTitle(Review.app.models.BibliographicGenre, genre.split(','), reviewId, next);
+    addBibliographicTitle(
+      Review.app.models.BibliographicGenre,
+      genre.split(','),
+      reviewId,
+      next
+    );
   };
   Review.observe('before save', function videoUpload(ctx, next) {
     const logger = Review.app.get('logger');
@@ -142,20 +153,27 @@ module.exports = function(Review) {
       logger.info('review before save', data);
 
       // check that we do not have an existing review that is not deleted for the chosen pid
-      Review.app.models.review.findOne({where: {markedAsDeleted: null, pid: data.pid, reviewownerid: data.reviewownerid}}, (error, review) => {
-        if (!error && review) {
-          logger.info('existing review', review);
-          const err = new Error();
-          err.status = 500;
-          err.message = 'Eksisterende anmeldelse'; // note: we currently have a hook in the biblo.dk depending on this exact string
-          next(err);
+      Review.app.models.review.findOne(
+        {
+          where: {
+            markedAsDeleted: null,
+            pid: data.pid,
+            reviewownerid: data.reviewownerid
+          }
+        },
+        (error, review) => {
+          if (!error && review) {
+            logger.info('existing review', review);
+            const err = new Error();
+            err.status = 500;
+            err.message = 'Eksisterende anmeldelse'; // note: we currently have a hook in the biblo.dk depending on this exact string
+            next(err);
+          } else {
+            updateVideo(ctx, data, next);
+          }
         }
-        else {
-          updateVideo(ctx, data, next);
-        }
-      });
-    }
-    else {
+      );
+    } else {
       const instance = ctx.instance || ctx.currentInstance;
       data = Object.assign({}, instance.__data, ctx.data);
 
@@ -210,61 +228,65 @@ module.exports = function(Review) {
         },
         {
           reviewVideoCollection: ctx.instance.id
-        }, function (err) {
+        },
+        function(err) {
           if (err) {
-            logger.error('An error occurred during review after save', {error: err});
+            logger.error('An error occurred during review after save', {
+              error: err
+            });
             next(err);
-          }
-          else {
+          } else {
             next();
           }
         }
       );
-    }
-    else {
+    } else {
       next();
     }
   });
 
-  Review.remoteMethod('addSubject',
-    {
-      description: 'Relates a subject to a review',
-      accepts: [
-        {arg: 'ctx', type: 'object', http: {source: 'context'}},
-        {arg: 'subject', type: 'string', http: {source: 'query'}},
-        {arg: 'reviewId', type: 'integer', http: {source: 'query'}}
-      ],
-      returns: {
-        arg: 'fileObject', type: 'object', root: true
-      },
-      http: {verb: 'post'}
-    });
+  Review.remoteMethod('addSubject', {
+    description: 'Relates a subject to a review',
+    accepts: [
+      {arg: 'ctx', type: 'object', http: {source: 'context'}},
+      {arg: 'subject', type: 'string', http: {source: 'query'}},
+      {arg: 'reviewId', type: 'integer', http: {source: 'query'}}
+    ],
+    returns: {
+      arg: 'fileObject',
+      type: 'object',
+      root: true
+    },
+    http: {verb: 'post'}
+  });
 
-  Review.remoteMethod('addGenre',
-    {
-      description: 'Relates a genre to a review',
-      accepts: [
-        {arg: 'ctx', type: 'object', http: {source: 'context'}},
-        {arg: 'genre', type: 'string', http: {source: 'query'}},
-        {arg: 'reviewId', type: 'integer', http: {source: 'query'}}
-      ],
-      returns: {
-        arg: 'fileObject', type: 'object', root: true
-      },
-      http: {verb: 'post'}
-    });
+  Review.remoteMethod('addGenre', {
+    description: 'Relates a genre to a review',
+    accepts: [
+      {arg: 'ctx', type: 'object', http: {source: 'context'}},
+      {arg: 'genre', type: 'string', http: {source: 'query'}},
+      {arg: 'reviewId', type: 'integer', http: {source: 'query'}}
+    ],
+    returns: {
+      arg: 'fileObject',
+      type: 'object',
+      root: true
+    },
+    http: {verb: 'post'}
+  });
 
-  Review.remoteMethod('unlike',
-    {
-      description: 'Unlikes a review for given profile',
-      accepts: [
-        {arg: 'ctx', type: 'object', http: {source: 'context'}},
-        {arg: 'profileId', type: 'integer', http: {source: 'query'}},
-        {arg: 'reviewId', type: 'integer', http: {source: 'query'}}
-      ],
-      returns: {
-        arg: 'fileObject', type: 'object', root: true
-      },
-      http: {verb: 'del'}
-    });
+  Review.remoteMethod('unlike', {
+    description: 'Unlikes a review for given profile',
+    accepts: [
+      {arg: 'ctx', type: 'object', http: {source: 'context'}},
+      {arg: 'profileId', type: 'integer', http: {source: 'query'}},
+      {arg: 'reviewId', type: 'integer', http: {source: 'query'}}
+    ],
+    returns: {
+      arg: 'fileObject',
+      type: 'object',
+      root: true
+    },
+    http: {verb: 'del'}
+  });
 };

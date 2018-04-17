@@ -1,15 +1,15 @@
-
-
 module.exports = function mountLoopBackExplorer(server) {
   var explorer;
   try {
     explorer = require('loopback-component-explorer');
-  }
-  catch (err) {
+  } catch (err) {
     // Print the message only when the app was started via `server.listen()`.
     // Do not print any message when the project is used as a component.
-    server.once('started', function(baseUrl) { // eslint-disable-line no-unused-vars
-      console.log('Run `npm install loopback-component-explorer` to enable the LoopBack component explorer'); // eslint-disable-line no-console
+    server.once('started', function() {
+      // eslint-disable-next-line no-console
+      console.log(
+        'Run `npm install loopback-component-explorer` to enable the LoopBack component explorer'
+      );
     });
     return;
   }

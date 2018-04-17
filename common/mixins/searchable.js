@@ -1,5 +1,3 @@
-
-
 import {eachSeries} from 'async';
 import {Client} from 'elasticsearch';
 import ProxyAgent from 'proxy-agent';
@@ -7,8 +5,7 @@ import ProxyAgent from 'proxy-agent';
 let config;
 try {
   config = require('@dbcdk/biblo-config').config;
-}
-catch (err) {
+} catch (err) {
   config = require('config');
 }
 
@@ -43,7 +40,9 @@ const ELASTIC_ENABLED = config.get('CommunityService.elasticSearch.enabled');
 const ELASTIC_HOST = config.get('CommunityService.elasticSearch.host');
 
 // Check the index name (this is the middle part of the index), we want. Use this to avoid document collisions.
-const ELASTIC_INDEXNAME = config.get('CommunityService.elasticSearch.indexName');
+const ELASTIC_INDEXNAME = config.get(
+  'CommunityService.elasticSearch.indexName'
+);
 
 // Set to 1 to check for missing documents.
 const FORCE_INITIAL_INDEX = !!process.env.ELASTIC_FORCE_INDEX_ON_INIT; // eslint-disable-line no-process-env
@@ -92,15 +91,15 @@ function loopbackToElasticDatatype(type) {
   }
 }
 
-module.exports = function (Model, options) {
+module.exports = function(Model, options) {
   // Give the user an error if elastic is not enabled
   // Better to keep the API consistent across configurations.
-  Model.search = function (q, fields, limit, from, sort, next) {
+  Model.search = function(q, fields, limit, from, sort, next) {
     next('Elastic search is not enabled! Please configure it!');
   };
 
   // Give error if elastic is not enabled.
-  Model.suggest = function (q, next) {
+  Model.suggest = function(q, next) {
     next('Elastic search is not enabled! Please configure it!');
   };
 
@@ -135,13 +134,12 @@ module.exports = function (Model, options) {
       if (triggers && triggers.length > 0) {
         // Wait for the app to initialize...
         setTimeout(() => {
-          triggers.forEach((trigger) => {
+          triggers.forEach(trigger => {
             const modelName = trigger.modelName;
             const modelFkField = trigger.modelFkField;
 
             // Check that the model exists
             if (typeof app.models[modelName] !== 'undefined') {
-
               // If an instance of a model is deleted, check its foreign key
               // and reindex the element(s) it points to
               app.models[modelName].observe('after delete', (ctx, next) => {
@@ -149,9 +147,11 @@ module.exports = function (Model, options) {
                 if (ctx.where && ctx.where[modelFkField]) {
                   // Create a filter to get the relevant object.
                   let currentFilter = Object.assign({}, filter);
-                  currentFilter.where = Object.assign(currentFilter.where || {}, {id: ctx.where[modelFkField]});
+                  currentFilter.where = Object.assign(
+                    currentFilter.where || {},
+                    {id: ctx.where[modelFkField]}
+                  );
                   Model.find(currentFilter, (err2, found) => {
-
                     if (err2) {
                       return;
                     }
@@ -161,7 +161,7 @@ module.exports = function (Model, options) {
                       // extract indexable properties from model instance
                       const params = createDocument(instance);
 
-                      elasticClient.index(params, (err3) => {
+                      elasticClient.index(params, err3 => {
                         if (err3) {
                           logger.error('Could index object!', {error: err3});
                         }
@@ -178,10 +178,12 @@ module.exports = function (Model, options) {
 
                 // Check that we have an instance, and that instance has our foreign key defined.
                 if (ctx.instance && ctx.instance[modelFkField]) {
-
                   // Create a filter to get the relevant object.
                   let currentFilter = Object.assign({}, filter);
-                  currentFilter.where = Object.assign(currentFilter.where || {}, {id: ctx.instance[modelFkField]});
+                  currentFilter.where = Object.assign(
+                    currentFilter.where || {},
+                    {id: ctx.instance[modelFkField]}
+                  );
                   Model.find(currentFilter, (err2, found) => {
                     if (err2) {
                       return;
@@ -192,7 +194,7 @@ module.exports = function (Model, options) {
                       // extract indexable properties from model instance
                       const params = createDocument(instance);
 
-                      elasticClient.index(params, (err3) => {
+                      elasticClient.index(params, err3 => {
                         if (err3) {
                           logger.error('Could index object!', {error: err3});
                         }
@@ -200,7 +202,6 @@ module.exports = function (Model, options) {
                     });
                   });
                 }
-
               });
             }
           });
@@ -216,7 +217,8 @@ module.exports = function (Model, options) {
       host: ELASTIC_HOST
     };
 
-    if (process.env.http_proxy) { // eslint-disable-line no-process-env
+    if (process.env.http_proxy) {
+      // eslint-disable-line no-process-env
       elasticConfig.createNodeAgent = () => {
         return ProxyAgent(process.env.http_proxy); // eslint-disable-line no-process-env
       };
@@ -230,7 +232,8 @@ module.exports = function (Model, options) {
      * @param {Object} instance - an instance of the current Model.
      * @returns {{index: string, type: string, id: number, body: PlainObject}}
      */
-    function createDocument(instance) { // eslint-disable-line no-inner-declarations
+    function createDocument(instance) {
+      // eslint-disable-line no-inner-declarations
       /**
        * This function check the properties of an instance against the props we want, and creates a plain object from it.
        * Please note its a recursive function, so it might run wild given very deep objects.
@@ -240,7 +243,7 @@ module.exports = function (Model, options) {
        */
       function checkProps(obj, props) {
         let doc = {};
-        props.forEach((propName) => {
+        props.forEach(propName => {
           if (typeof obj[propName] !== 'undefined') {
             switch (typeof obj[propName]) {
               // If it's a function, it's typically an internal method by loopback for lazy loading
@@ -266,14 +269,19 @@ module.exports = function (Model, options) {
                 // If so, iterate over it checking the props.
                 if (Array.isArray(obj[propName])) {
                   doc[propName] = obj[propName].map(
-                    itm => (!!itm) && (itm.constructor === Object) ? checkProps(itm, Object.keys(itm)) : itm
+                    itm =>
+                      !!itm && itm.constructor === Object
+                        ? checkProps(itm, Object.keys(itm))
+                        : itm
                   );
                   break;
                 }
 
                 // Is it null or a plain object?
                 // Check the props.
-                doc[propName] = obj[propName] && checkProps(obj[propName], Object.keys(obj[propName]));
+                doc[propName] =
+                  obj[propName] &&
+                  checkProps(obj[propName], Object.keys(obj[propName]));
                 break;
               }
 
@@ -297,7 +305,10 @@ module.exports = function (Model, options) {
       let document = checkProps(instance, propNames);
 
       // Attach a suggester if it's configured.
-      if (suggestionProperty && typeof instance[suggestionProperty] !== 'undefined') {
+      if (
+        suggestionProperty &&
+        typeof instance[suggestionProperty] !== 'undefined'
+      ) {
         document[suggestionField] = instance[suggestionProperty];
       }
 
@@ -310,7 +321,7 @@ module.exports = function (Model, options) {
     }
 
     // This promise creates the initial mapping of datatypes.
-    (new Promise((resolve) => {
+    new Promise(resolve => {
       if (propNames && Array.isArray(propNames)) {
         // We want to ensure we always have the id of a model.
         if (propNames.indexOf('id') < 0) {
@@ -329,11 +340,14 @@ module.exports = function (Model, options) {
             // Check if the property is defined (its not if its a relation for example),
             // then check what type it is.
             const mProps = Model.definition.rawProperties;
-            propNames.forEach((pName) => {
+            propNames.forEach(pName => {
               if (mProps.hasOwnProperty(pName)) {
                 let dataType = mProps[pName].type;
 
-                if (typeof dataType !== 'string' && mProps[pName].hasOwnProperty(pName)) {
+                if (
+                  typeof dataType !== 'string' &&
+                  mProps[pName].hasOwnProperty(pName)
+                ) {
                   dataType = typeof mProps[pName][pName];
                 }
 
@@ -342,7 +356,10 @@ module.exports = function (Model, options) {
             });
 
             // If the suggester is enabled, we want that in the mapping as well.
-            if (suggestionProperty && mProps.hasOwnProperty(suggestionProperty)) {
+            if (
+              suggestionProperty &&
+              mProps.hasOwnProperty(suggestionProperty)
+            ) {
               elasticModel[suggestionField] = {
                 type: 'completion',
                 analyzer: 'standard'
@@ -357,80 +374,89 @@ module.exports = function (Model, options) {
             };
 
             // Create the indices
-            elasticClient.indices.create({
-              index,
-              body: elasticIndiceCreateBody
-            }, (err2) => {
-              if (err2) {
-                logger.error('Could not create elastic search indice!');
-              }
+            elasticClient.indices.create(
+              {
+                index,
+                body: elasticIndiceCreateBody
+              },
+              err2 => {
+                if (err2) {
+                  logger.error('Could not create elastic search indice!');
+                }
 
-              resolve();
-            });
-          }
-          else {
+                resolve();
+              }
+            );
+          } else {
             resolve();
           }
         });
-      }
-      else {
+      } else {
         resolve();
       }
-    })).then(() => {
-      // Now we're sure we have a mapping, we want to check the data we have against the data in the elastic.
-      elasticClient.count({index}, (err, response) => {
-        if (err) {
-          return Promise.reject(err);
-        }
-
-        if (!response) {
-          return Promise.reject('No response from elastic!');
-        }
-
-        const elasticCount = response.count;
-
-        Model.count((error, modelCount) => {
-          if (elasticCount < modelCount || FORCE_INITIAL_INDEX) {
-            // Turns out we really want to index, or there's a difference between what's in elastic, and what we have.
-            Model.find(filter || {}, (err2, objects) => {
-              if (elasticCount < objects.length || FORCE_INITIAL_INDEX) {
-                // We use async here to ensure we only insert one document at a time without putting too much strain on the server.
-                eachSeries(objects, (item, done) => {
-                  // Check if the current doc is found in elastic, if not, index it!
-                  elasticClient.exists({
-                    index,
-                    type: doctype,
-                    id: item.id
-                  }, (error2, documentExists) => {
-                    if (!documentExists) {
-                      elasticClient.index(createDocument(item), (err3) => {
-                        if (err3) {
-                          logger.error('Could index object!', {error: err3});
-                        }
-
-                        done();
-                      });
-                    }
-                    else {
-                      done();
-                    }
-                  });
-                });
-              }
-            });
+    })
+      .then(() => {
+        // Now we're sure we have a mapping, we want to check the data we have against the data in the elastic.
+        elasticClient.count({index}, (err, response) => {
+          if (err) {
+            return Promise.reject(err);
           }
+
+          if (!response) {
+            return Promise.reject('No response from elastic!');
+          }
+
+          const elasticCount = response.count;
+
+          Model.count((error, modelCount) => {
+            if (elasticCount < modelCount || FORCE_INITIAL_INDEX) {
+              // Turns out we really want to index, or there's a difference between what's in elastic, and what we have.
+              Model.find(filter || {}, (err2, objects) => {
+                if (elasticCount < objects.length || FORCE_INITIAL_INDEX) {
+                  // We use async here to ensure we only insert one document at a time without putting too much strain on the server.
+                  eachSeries(objects, (item, done) => {
+                    // Check if the current doc is found in elastic, if not, index it!
+                    elasticClient.exists(
+                      {
+                        index,
+                        type: doctype,
+                        id: item.id
+                      },
+                      (error2, documentExists) => {
+                        if (!documentExists) {
+                          elasticClient.index(createDocument(item), err3 => {
+                            if (err3) {
+                              logger.error('Could index object!', {
+                                error: err3
+                              });
+                            }
+
+                            done();
+                          });
+                        } else {
+                          done();
+                        }
+                      }
+                    );
+                  });
+                }
+              });
+            }
+          });
+        });
+      })
+      .catch(err => {
+        let error = err.message ? err.message : err;
+        logger.error('An error occurred while checking elastic indexes!', {
+          error: JSON.stringify(error)
         });
       });
-    }).catch(err => {
-      let error = err.message ? err.message : err;
-      logger.error('An error occurred while checking elastic indexes!', {error: JSON.stringify(error)});
-    });
 
     // Observe any insert/update event on Model
     // Index or reindex anything saved.
     Model.observe('after save', function event(ctx, next) {
       // First we need an array of instances to manipulate.
-      (new Promise((resolve, reject) => {
+      new Promise((resolve, reject) => {
         // If we have only modified on instance, and havn't defined a filter, we just use that object.
         if (ctx.instance && !filter) {
           resolve([ctx.instance]);
@@ -438,12 +464,13 @@ module.exports = function (Model, options) {
         // If we have a single instance, and a filter, we need to get it again to apply the filter and see if we still want to use it.
         else if (ctx.instance) {
           let currentFilter = Object.assign({}, filter);
-          currentFilter.where = Object.assign(currentFilter.where || {}, {id: ctx.instance.id});
+          currentFilter.where = Object.assign(currentFilter.where || {}, {
+            id: ctx.instance.id
+          });
           Model.find(currentFilter, (err, foundInstances) => {
             if (err) {
               reject(err);
-            }
-            else {
+            } else {
               resolve(foundInstances);
             }
           });
@@ -451,17 +478,20 @@ module.exports = function (Model, options) {
         // Finally we must have modified a bunch of items, in which case we need to get them with the filter.
         else {
           let currentFilter = Object.assign({}, filter);
-          currentFilter.where = Object.assign(currentFilter.where || {}, ctx.where, ctx.data);
+          currentFilter.where = Object.assign(
+            currentFilter.where || {},
+            ctx.where,
+            ctx.data
+          );
           Model.find(currentFilter, (err, foundInstances) => {
             if (err) {
               reject(err);
-            }
-            else {
+            } else {
               resolve(foundInstances);
             }
           });
         }
-      })).then(instances => {
+      }).then(instances => {
         // We can now upsert the updated instance.
         // Ensure we always have an array, even if no data is present.
         instances = instances || [];
@@ -470,7 +500,7 @@ module.exports = function (Model, options) {
           // extract indexable properties from model instance
           const params = createDocument(instance);
 
-          elasticClient.index(params, (err) => {
+          elasticClient.index(params, err => {
             if (err) {
               logger.error('Could index object!', {error: err});
             }
@@ -482,18 +512,21 @@ module.exports = function (Model, options) {
     });
 
     // If something is removed from loopback, we want to remove it from elastic.
-    Model.observe('after delete', function (ctx, next) {
+    Model.observe('after delete', function(ctx, next) {
       if (ctx && ctx.where && ctx.where.id) {
         // remove entry from elastic.
-        elasticClient.delete({
-          index,
-          type: doctype,
-          id: ctx.where.id
-        }, (err) => {
-          if (err) {
-            logger.error('Could delete document!', err);
+        elasticClient.delete(
+          {
+            index,
+            type: doctype,
+            id: ctx.where.id
+          },
+          err => {
+            if (err) {
+              logger.error('Could delete document!', err);
+            }
           }
-        });
+        );
       }
 
       next();
@@ -519,14 +552,14 @@ module.exports = function (Model, options) {
       // If we have fields, we want to use a different query type
       if (fields && fields.length > 0) {
         params.body = {query: {multi_match: {query: q, fields: []}}};
-        fields.forEach((field) => params.body.query.multi_match.fields.push(field));
-      }
-      else {
+        fields.forEach(field =>
+          params.body.query.multi_match.fields.push(field)
+        );
+      } else {
         try {
           const query = JSON.parse(q);
           params.body = query;
-        }
-        catch (e) {
+        } catch (e) {
           params.q = q;
         }
       }
@@ -553,57 +586,88 @@ module.exports = function (Model, options) {
     if (suggestionProperty) {
       // The suggest (completion) endpoint, only works if the properties are set.
       Model.suggest = function elasticSuggest(q, next) {
-        elasticClient.suggest({
-          index,
-          body: {
-            suggestions: {
-              text: q,
-              completion: {
-                field: suggestionField
+        elasticClient.suggest(
+          {
+            index,
+            body: {
+              suggestions: {
+                text: q,
+                completion: {
+                  field: suggestionField
+                }
               }
             }
-          }
-        }, (error, results) => next(error || null, results && results.suggestions && results.suggestions[0]));
+          },
+          (error, results) =>
+            next(
+              error || null,
+              results && results.suggestions && results.suggestions[0]
+            )
+        );
       };
     }
   }
 
   // Hook the search into the loopback model as a remote method.
-  Model.remoteMethod(
-    'search',
-    {
-      description: 'Searches via elastic search',
-      accepts: [
-        {arg: 'q', type: 'string', required: true, description: 'URI search string'},
-        {
-          arg: 'fields',
-          type: 'array',
-          required: false,
-          description: 'Array of string containing fields to match on. Defaults to all fields.'
-        },
-        {arg: 'limit', type: 'number', required: false, description: 'How many items to retrieve. Default: 15'},
-        {arg: 'from', type: 'number', required: false, description: 'The starting index of hits to return. Default: 0'},
-        {arg: 'sort', type: 'string', required: false, description: 'Field to sort on. Ex: "rating:asc".'}
-      ],
-      returns: {
-        arg: 'results', type: 'object', root: true
+  Model.remoteMethod('search', {
+    description: 'Searches via elastic search',
+    accepts: [
+      {
+        arg: 'q',
+        type: 'string',
+        required: true,
+        description: 'URI search string'
       },
-      http: {path: '/search', verb: 'get'}
-    }
-  );
+      {
+        arg: 'fields',
+        type: 'array',
+        required: false,
+        description:
+          'Array of string containing fields to match on. Defaults to all fields.'
+      },
+      {
+        arg: 'limit',
+        type: 'number',
+        required: false,
+        description: 'How many items to retrieve. Default: 15'
+      },
+      {
+        arg: 'from',
+        type: 'number',
+        required: false,
+        description: 'The starting index of hits to return. Default: 0'
+      },
+      {
+        arg: 'sort',
+        type: 'string',
+        required: false,
+        description: 'Field to sort on. Ex: "rating:asc".'
+      }
+    ],
+    returns: {
+      arg: 'results',
+      type: 'object',
+      root: true
+    },
+    http: {path: '/search', verb: 'get'}
+  });
 
   // Hook the suggest into the loopback model as a remote method.
-  Model.remoteMethod(
-    'suggest',
-    {
-      description: 'Suggestions via elastic search',
-      accepts: [
-        {arg: 'q', type: 'string', required: true, description: 'String to suggest upon'}
-      ],
-      returns: {
-        arg: 'results', type: 'object', root: true
-      },
-      http: {path: '/suggest', verb: 'get'}
-    }
-  );
+  Model.remoteMethod('suggest', {
+    description: 'Suggestions via elastic search',
+    accepts: [
+      {
+        arg: 'q',
+        type: 'string',
+        required: true,
+        description: 'String to suggest upon'
+      }
+    ],
+    returns: {
+      arg: 'results',
+      type: 'object',
+      root: true
+    },
+    http: {path: '/suggest', verb: 'get'}
+  });
 };

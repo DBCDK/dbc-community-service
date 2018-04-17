@@ -6,7 +6,8 @@ import {parseScanResult} from '../virusScan.parser';
 
 describe('Test the virusScan parser', () => {
   it('should return an error when parsing invalid results', done => {
-    const mockXml = '<?xml version="1.0" encoding="iso-8859-1"?><_root_></_root_>';
+    const mockXml =
+      '<?xml version="1.0" encoding="iso-8859-1"?><_root_></_root_>';
     parseScanResult(mockXml)
       .then(response => {
         // It should've thrown an error!
@@ -20,7 +21,9 @@ describe('Test the virusScan parser', () => {
   });
 
   it('should parse an infected scan', () => {
-    const mockXml = fs.readFileSync(`${__dirname}/../__mocks__/infected_scan_result`);
+    const mockXml = fs.readFileSync(
+      `${__dirname}/../__mocks__/infected_scan_result`
+    );
     return parseScanResult(mockXml).then(scanResult => {
       expect(typeof scanResult).toEqual(typeof {});
       expect(scanResult).toIncludeKeys(['detects', 'filename', 'detectTypes']);
@@ -34,7 +37,9 @@ describe('Test the virusScan parser', () => {
   });
 
   it('should parse a clean scan', () => {
-    const mockXml = fs.readFileSync(`${__dirname}/../__mocks__/clean_scan_result`);
+    const mockXml = fs.readFileSync(
+      `${__dirname}/../__mocks__/clean_scan_result`
+    );
     return parseScanResult(mockXml).then(scanResult => {
       expect(typeof scanResult).toEqual(typeof {});
       expect(scanResult).toIncludeKeys(['detects', 'filename', 'detectTypes']);
@@ -75,4 +80,3 @@ describe('Test the virusScan parser', () => {
     });
   });
 });
-
