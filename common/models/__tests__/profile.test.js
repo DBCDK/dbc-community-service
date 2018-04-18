@@ -58,7 +58,6 @@ describe('Test profile endpoints and functionality', () => {
         `${app.get('url')}api/Reviews/?filter=${encodeURIComponent(filter)}`
       )).body;
     };
-
     // Create profile and relations
     const profile = await testutils.createProfile(app.get('url'));
     await testutils.createGroup(app.get('url'), {
