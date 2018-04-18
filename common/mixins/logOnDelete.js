@@ -6,7 +6,9 @@ module.exports = function LogOnDelete(Model) {
       }
       if (instance) {
         const logger = Model.app.get('logger');
-        logger.info('Deleted object', {instance: instance});
+        logger.info(`Deleted ${ctx.Model.modelName}`, {
+          instance: instance
+        });
       }
       next();
     });
