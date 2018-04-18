@@ -230,7 +230,8 @@ module.exports = function(ImageCollection) {
           if (err) {
             cb(err);
           } else {
-            const resolutions = imageCollection.resolutions();
+            const resolutions =
+              (imageCollection && imageCollection.resolutions()) || [];
             if (resolutions.length > 0) {
               let resolution = resolutions[0];
               let correctSize = false;
