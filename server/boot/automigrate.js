@@ -1,4 +1,4 @@
-import * as logger from 'dbc-node-logger';
+import {log as logger} from 'dbc-node-logger';
 import app from '../server';
 import {
   generateDownIndexes,

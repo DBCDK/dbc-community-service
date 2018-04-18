@@ -6,6 +6,10 @@
     "validateUpsert": true
   },
   "mixins": {
+    "DeleteRelatedMedia": {
+      "include": ["image", "video"]
+    },
+    "LogOnDelete": true,
     "Counts": true,
     "Searchable": {
       "targetIndex": "comment",
@@ -25,10 +29,7 @@
           {
             "relation": "owner",
             "scope": {
-              "fields": [
-                "displayName",
-                "id"
-              ],
+              "fields": ["displayName", "id"],
               "include": {
                 "image": {
                   "resolutions": "image"

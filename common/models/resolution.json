@@ -2,6 +2,11 @@
   "name": "resolution",
   "base": "PersistedModel",
   "idInjection": true,
+  "mixins": {
+    "DeleteRelatedMedia": {
+      "include": ["image", "video"]
+    }
+  },
   "options": {
     "validateUpsert": true
   },

@@ -5,6 +5,9 @@
   "options": {
     "validateUpsert": true
   },
+  "mixins": {
+    "LogOnDelete": true
+  },
   "properties": {
     "reason": {
       "type": "string"

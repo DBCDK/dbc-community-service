@@ -4,33 +4,34 @@ require('events').EventEmitter.prototype._maxListeners = 20;
 let config;
 try {
   config = require('@dbcdk/biblo-config').config;
-}
-catch (err) {
+} catch (err) {
   console.error('Cannot find config module, falling back to default config.'); // eslint-disable-line no-console
   config = require('config');
 }
 
 import loopback from 'loopback';
 import boot from 'loopback-boot';
-import Logger from 'dbc-node-logger';
+import {log} from 'dbc-node-logger';
 import countMixin from 'loopback-counts-mixin';
 import AWS from 'aws-sdk';
 import ProxyAgent from 'proxy-agent';
-import {amazonSNSConfirmMiddleware, amazonSNSNotificationMiddleware} from './middlewares/amazonSNS.middleware';
+import {
+  amazonSNSConfirmMiddleware,
+  amazonSNSNotificationMiddleware
+} from './middlewares/amazonSNS.middleware';
 import groupDatasourceModifier from './connectorlogic/group.datasourcemodifier';
 import Primus from 'primus';
 import {getDSDefs} from './ds';
 import {setupMailbox} from './email-client';
 
 const app = loopback();
-const logger = new Logger({app_name: config.get('CommunityService.applicationTitle')});
 export default app;
 
 import bodyParser from 'body-parser';
 
 const amazonConfig = config.get('ServiceProvider.aws');
 app.set('amazonConfig', amazonConfig);
-app.set('logger', logger);
+app.set('logger', log);
 
 // Configure AWS globally.
 AWS.config.update({
@@ -53,13 +54,17 @@ const redisConfig = {
 };
 
 // Create fileContainer model, and point it to amazon.
-app.model(loopback.createDataSource({
-  connector: require('loopback-component-storage'),
-  provider: 'amazon',
-  key: amazonConfig.key,
-  keyId: amazonConfig.keyId,
-  maxFileSize: '52428800' // 50 mb limit on images.
-}).createModel('fileContainer'));
+app.model(
+  loopback
+    .createDataSource({
+      connector: require('loopback-component-storage'),
+      provider: 'amazon',
+      key: amazonConfig.key,
+      keyId: amazonConfig.keyId,
+      maxFileSize: '52428800' // 50 mb limit on images.
+    })
+    .createModel('fileContainer')
+);
 
 // Add Counts Mixin to loopback
 countMixin(app);
@@ -72,11 +77,24 @@ app.use(amazonSNSNotificationMiddleware.bind(null, amazonConfig));
 app.startQueues = () => {
   if (!process.env.DISABLE_IMAGE_SCALING_QUEUE) {
     // Using require to make the dependencies optional.
-    app.set('imageQueue', require('./image.queue')(app, redisConfig.host, redisConfig.port));
-    app.set('virusQueue', require('./virus.queue')(app, redisConfig.host, redisConfig.port, config));
-    app.set('scannedItemQueue', require('./scannedItem.queue')(app, redisConfig.host, redisConfig.port, config));
-  }
-  else {
+    app.set(
+      'imageQueue',
+      require('./image.queue')(app, redisConfig.host, redisConfig.port)
+    );
+    app.set(
+      'virusQueue',
+      require('./virus.queue')(app, redisConfig.host, redisConfig.port, config)
+    );
+    app.set(
+      'scannedItemQueue',
+      require('./scannedItem.queue')(
+        app,
+        redisConfig.host,
+        redisConfig.port,
+        config
+      )
+    );
+  } else {
     app.set('imageQueue', {
       add: () => {} // if the imageQueue is disabled, we simply supress created jobs.
     });
@@ -97,8 +115,12 @@ app.start = () => {
   // start the web server
   return app.listen(config.get('CommunityService.port'), () => {
     app.emit('started');
-    logger.debug(`Running: ${config.util.getEnv('NODE_ENV')}-${config.util.getEnv('NODE_APP_INSTANCE')} from ${config.util.getEnv('CONFIG_DIR')}`);
-    logger.debug(`Web server listening at :: ${app.get('url')}`); // eslint-disable-line no-console
+    log.debug(
+      `Running: ${config.util.getEnv('NODE_ENV')}-${config.util.getEnv(
+        'NODE_APP_INSTANCE'
+      )} from ${config.util.getEnv('CONFIG_DIR')}`
+    );
+    log.debug(`Web server listening at :: ${app.get('url')}`); // eslint-disable-line no-console
   });
 };
 
@@ -113,14 +135,23 @@ app.startPrimus = webserver => {
   });
 
   const listeners = {};
-  const defaultModels = ['User', 'AccessToken', 'ACL', 'RoleMapping', 'Role', 'Email'];
-  const modelKeys = Object.keys(app.models).filter(key => defaultModels.indexOf(key) < 0);
+  const defaultModels = [
+    'User',
+    'AccessToken',
+    'ACL',
+    'RoleMapping',
+    'Role',
+    'Email'
+  ];
+  const modelKeys = Object.keys(app.models).filter(
+    key => defaultModels.indexOf(key) < 0
+  );
   modelKeys.forEach(key => {
     const lowKey = key.toLowerCase();
     if (!listeners[lowKey]) {
       const model = app.models[key];
       model.observe('after save', (ctx, next) => {
-        logger.info(`Got change, model: ${key}`);
+        log.info(`Got change, model: ${key}`);
         if (ctx.instance) {
           primus.write({
             event: `${lowKey}Changed`,
@@ -136,8 +167,8 @@ app.startPrimus = webserver => {
     }
   });
 };
-
-app.use('/status-page', (req, res, next) => { // eslint-disable-line no-unused-vars
+// eslint-disable-next-line no-unused-vars
+app.use('/status-page', (req, res, next) => {
   res.send('status');
 });
 
@@ -147,20 +178,26 @@ app.use('/email_confirm', (req, res) => {
 
 // Bootstrap the application, configure models, datasources and middleware.
 // Sub-apps like REST API are mounted via boot scripts.
-boot(app, {
-  appRootDir: __dirname,
-  dataSources: getDSDefs()
-}, (err) => {
-  if (err) {
-    logger.error('An error occured while booting up the Community Service', {error: err});
-    throw err;
-  }
+boot(
+  app,
+  {
+    appRootDir: __dirname,
+    dataSources: getDSDefs()
+  },
+  err => {
+    if (err) {
+      log.error('An error occured while booting up the Community Service', {
+        error: err
+      });
+      throw err;
+    }
 
-  groupDatasourceModifier(app);
+    groupDatasourceModifier(app);
 
-  if (!process.env.TESTING && !process.env.MIGRATING) {
-    const webserver = app.start();
-    app.startPrimus(webserver);
-    app.startQueues();
+    if (!process.env.TESTING && !process.env.MIGRATING) {
+      const webserver = app.start();
+      app.startPrimus(webserver);
+      app.startQueues();
+    }
   }
-});
+);

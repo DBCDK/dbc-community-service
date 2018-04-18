@@ -6,6 +6,10 @@
     "validateUpsert": true
   },
   "mixins": {
+    "DeleteRelatedMedia": {
+      "include": ["image"]
+    },
+    "LogOnDelete": true,
     "Counts": true
   },
   "properties": {

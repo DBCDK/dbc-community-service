@@ -6,6 +6,10 @@
     "validateUpsert": true
   },
   "mixins": {
+    "LogOnDelete": true,
+    "DeleteRelatedMedia": {
+      "include": ["coverImage"]
+    },
     "CountsNotDeleted": true,
     "Searchable": {
       "targetIndex": "group",

@@ -289,13 +289,4 @@ module.exports = function(Review) {
     },
     http: {verb: 'del'}
   });
-  Review.observe('before delete', (ctx, next) => {
-    Review.app.models.imageCollection.destroyAll({
-      reviewimagecollection: ctx.where.id
-    });
-    Review.app.models.videoCollection.destroyAll({
-      reviewimagecollection: ctx.where.id
-    });
-    next();
-  });
 };
