@@ -167,9 +167,8 @@ app.startPrimus = webserver => {
     }
   });
 };
-
+// eslint-disable-next-line no-unused-vars
 app.use('/status-page', (req, res, next) => {
-  // eslint-disable-line no-unused-vars
   res.send('status');
 });
 
