@@ -10,6 +10,7 @@
     "validateUpsert": true
   },
   "mixins": {
+    "DeleteRelatedMedia": true,
     "CountsNotDeleted": true,
     "Searchable": {
       "targetIndex": "review",
@@ -35,10 +36,7 @@
           {
             "relation": "owner",
             "scope": {
-              "fields": [
-                "displayName",
-                "id"
-              ],
+              "fields": ["displayName", "id"],
               "include": {
                 "image": {
                   "resolutions": "image"
@@ -73,7 +71,7 @@
         {
           "modelName": "Like",
           "modelFkField": "reviewlikeid"
-        }        
+        }
       ]
     }
   },

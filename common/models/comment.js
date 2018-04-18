@@ -95,13 +95,4 @@ module.exports = function(Comment) {
       next();
     }
   });
-  Comment.observe('before delete', (ctx, next) => {
-    Comment.app.models.imageCollection.destroyAll({
-      commentimagecollection: ctx.where.id
-    });
-    Comment.app.models.videoCollection.destroyAll({
-      commentimagecollection: ctx.where.id
-    });
-    next();
-  });
 };
