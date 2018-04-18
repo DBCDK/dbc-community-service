@@ -14,6 +14,8 @@
     "dev:noconf": "USE_DEFAULT_CONFIG=true nodemon main.js",
     "test":
       "TESTING=true COMMUNITY_POSTGRES_CONNECTOR=\"memory\" mocha --compilers js:babel-core/register --recursive common server -R mocha-jenkins-reporter",
+    "test:watch":
+      "TESTING=true COMMUNITY_POSTGRES_CONNECTOR=\"memory\" mocha --compilers js:babel-core/register --recursive common server -R mocha-jenkins-reporter --watch",
     "migrate-create":
       "ELASTIC_ENABLED=0 MIGRATING=true ./loopback-db-migrate.js --datasource psqlDs create",
     "migrate-up":

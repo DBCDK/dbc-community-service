@@ -240,4 +240,19 @@ module.exports = function(Profile) {
     }
     next();
   });
+  Profile.observe('before delete', (ctx, next) => {
+    const profileId = ctx.where.id;
+    Profile.app.models.Like.destroyAll({profileid: profileId});
+    Profile.app.models.Post.destroyAll({postownerid: profileId});
+    Profile.app.models.Comment.destroyAll({commentownerid: profileId});
+    Profile.app.models.imageCollection.destroyAll({
+      profileimagecollection: profileId
+    });
+    Profile.app.models.CommunityRole.destroyAll({profileid: profileId});
+    Profile.app.models.Quarantine.destroyAll({quarantinedProfileId: profileId});
+    Profile.app.models.Group.destroyAll({groupownerid: profileId});
+    Profile.app.models.review.destroyAll({reviewownerid: profileId});
+    Profile.app.models.Flag.destroyAll({ownerid: profileId});
+    next();
+  });
 };
