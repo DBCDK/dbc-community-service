@@ -8,6 +8,13 @@ try {
   config = require('config');
 }
 
+function hashUsername(username) {
+  return crypto
+    .createHmac('sha256', config.get('UNILogin.secret'))
+    .update(username)
+    .digest('hex');
+}
+
 module.exports = function(Profile) {
   Profile.prototype.createAccessToken = function(ttl, cb) {
     this.accessTokens.create(
@@ -58,9 +65,10 @@ module.exports = function(Profile) {
       return cb(err);
     }
 
+    const hashedUsername = hashUsername(username);
     // user is now authenticated
     Profile.findOne(
-      {where: {username: {regexp: '/^' + username + '$/i'}}},
+      {where: {username: {regexp: '/^' + hashedUsername + '$/i'}}},
       function(err1, profile) {
         let defaultError = new Error('login failed');
         defaultError.statusCode = 401;
@@ -103,7 +111,7 @@ module.exports = function(Profile) {
 
   Profile.checkIfUserExists = (username, cb) => {
     Profile.count(
-      {username: {regexp: '^' + username + '$/i'}},
+      {username: {regexp: '^' + hashUsername(username) + '$/i'}},
       (err, items) => {
         if (err) {
           cb(err);
@@ -220,6 +228,9 @@ module.exports = function(Profile) {
       } else {
         next();
       }
+    } else if (ctx.isNewInstance) {
+      ctx.instance.username = hashUsername(ctx.instance.username);
+      next();
     } else {
       next();
     }
