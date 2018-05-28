@@ -1,19 +1,7 @@
 import {log as logger} from 'dbc-node-logger';
 import crypto from 'crypto';
-
-let config;
-try {
-  config = require('@dbcdk/biblo-config').config;
-} catch (err) {
-  config = require('config');
-}
-
-function hashUsername(username) {
-  return crypto
-    .createHmac('sha256', config.get('UNILogin.secret'))
-    .update(username)
-    .digest('hex');
-}
+import config from '../utils/config.utils';
+import {hashUsername} from '../utils/hash.utils';
 
 module.exports = function(Profile) {
   Profile.prototype.createAccessToken = function(ttl, cb) {
@@ -111,7 +99,7 @@ module.exports = function(Profile) {
 
   Profile.checkIfUserExists = (username, cb) => {
     Profile.count(
-      {username: {regexp: '^' + hashUsername(username) + '$/i'}},
+      {username: {regexp: '/^' + hashUsername(username) + '$/i'}},
       (err, items) => {
         if (err) {
           cb(err);
