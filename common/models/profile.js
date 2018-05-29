@@ -1,7 +1,7 @@
 import {log as logger} from 'dbc-node-logger';
 import crypto from 'crypto';
 import config from '../utils/config.utils';
-import {hashUsername} from '../utils/hash.utils';
+import {hashUsername} from '../utils/crypto.utils';
 
 module.exports = function(Profile) {
   Profile.prototype.createAccessToken = function(ttl, cb) {

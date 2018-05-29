@@ -11,3 +11,12 @@ export function hashUsername(username) {
     .update(username)
     .digest('hex');
 }
+
+/**
+ * Encrypt object
+ * @param {Object} data
+ */
+export function encryptData(data) {
+  const cipher = crypto.createCipher('aes-128-cbc', config.get('Biblo.secret'));
+  return cipher.update(data, 'utf8', 'hex') + cipher.final('hex');
+}
