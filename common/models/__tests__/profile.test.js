@@ -30,11 +30,8 @@ describe('Test profile endpoints and functionality', () => {
   it('should create a profile, and login via unilogin', done => {
     testutils
       .createProfile(app.get('url'))
-      .then(createResponse => {
-        return testutils.loginViaUnilogin(
-          app.get('url'),
-          createResponse.username
-        );
+      .then(() => {
+        return testutils.loginViaUnilogin(app.get('url'), 'bobby');
       })
       .then(loginResponse => {
         expect(typeof loginResponse.id).toEqual('string');

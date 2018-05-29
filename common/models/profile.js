@@ -1,12 +1,7 @@
 import {log as logger} from 'dbc-node-logger';
 import crypto from 'crypto';
-
-let config;
-try {
-  config = require('@dbcdk/biblo-config').config;
-} catch (err) {
-  config = require('config');
-}
+import config from '../utils/config.utils';
+import {hashUsername} from '../utils/hash.utils';
 
 module.exports = function(Profile) {
   Profile.prototype.createAccessToken = function(ttl, cb) {
@@ -58,9 +53,10 @@ module.exports = function(Profile) {
       return cb(err);
     }
 
+    const hashedUsername = hashUsername(username);
     // user is now authenticated
     Profile.findOne(
-      {where: {username: {regexp: '/^' + username + '$/i'}}},
+      {where: {username: {regexp: '/^' + hashedUsername + '$/i'}}},
       function(err1, profile) {
         let defaultError = new Error('login failed');
         defaultError.statusCode = 401;
@@ -103,7 +99,7 @@ module.exports = function(Profile) {
 
   Profile.checkIfUserExists = (username, cb) => {
     Profile.count(
-      {username: {regexp: '^' + username + '$/i'}},
+      {username: {regexp: '/^' + hashUsername(username) + '$/i'}},
       (err, items) => {
         if (err) {
           cb(err);
@@ -220,6 +216,9 @@ module.exports = function(Profile) {
       } else {
         next();
       }
+    } else if (ctx.isNewInstance) {
+      ctx.instance.username = hashUsername(ctx.instance.username);
+      next();
     } else {
       next();
     }
