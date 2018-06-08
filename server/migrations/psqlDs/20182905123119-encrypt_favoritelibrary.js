@@ -1,10 +1,10 @@
-import {hashUsername} from '../../../common/utils/crypto.utils';
+import {encryptData} from '../../../common/utils/crypto.utils';
 
-function updateUsernameToHashValue(username, dataSource) {
-  const hashedUsername = hashUsername(username);
+function encryptFavoriteLibrary({username, favoritelibrary}, dataSource) {
+  const encryptedFavoriteLibrary = encryptData(favoritelibrary);
   return new Promise((resolve, reject) => {
     dataSource.connector.query(
-      `UPDATE profile SET username = '${hashedUsername}' WHERE username = '${username}'`,
+      `UPDATE profile SET favoritelibrary = '${encryptedFavoriteLibrary}' WHERE username = '${username}'`,
       err => {
         if (err) {
           reject(err);
@@ -18,13 +18,13 @@ function updateUsernameToHashValue(username, dataSource) {
 module.exports = {
   up: async function(dataSource, next) {
     dataSource.connector.query(
-      `SELECT username from profile`,
+      `SELECT username, favoritelibrary from profile`,
       (err, result) => {
         if (err) {
           throw new Error(err);
         }
-        const changePromises = result.map(({username}) =>
-          updateUsernameToHashValue(username, dataSource)
+        const changePromises = result.map(({username, favoritelibrary}) =>
+          encryptFavoriteLibrary({username, favoritelibrary}, dataSource)
         );
         Promise.all(changePromises)
           .then(() => {
