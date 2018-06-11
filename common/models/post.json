@@ -7,7 +7,7 @@
   },
   "mixins": {
     "DeleteRelatedMedia": {
-      "include": ["image", "video", "pdf"]
+      "include": ["comments", "image", "video", "pdf"]
     },
     "LogOnDelete": true,
     "Counts": true,

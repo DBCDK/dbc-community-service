@@ -41,37 +41,6 @@ module.exports = function(Group) {
   });
 
   Group.on('dataSourceAttached', function initSoftDestroyOnGroup() {
-    Group.destroyById = function softDestroyById(id, cb) {
-      return Group.upsert({id: id, markedAsDeleted: true})
-        .then(result => (typeof cb === 'function' ? cb(null, result) : result))
-        .catch(
-          error =>
-            typeof cb === 'function' ? cb(error) : Promise.reject(error)
-        );
-    };
-
-    Group.removeById = Group.destroyById;
-    Group.deleteById = Group.destroyById;
-
-    Group.prototype.destroy = function softDestroy(options, cb) {
-      const callback =
-        typeof cb === 'undefined' && typeof options === 'function'
-          ? options
-          : cb;
-
-      return this.updateAttributes({markedAsDeleted: true})
-        .then(
-          result => (typeof cb === 'function' ? callback(null, result) : result)
-        )
-        .catch(
-          error =>
-            typeof cb === 'function' ? callback(error) : Promise.reject(error)
-        );
-    };
-
-    Group.prototype.remove = Group.prototype.destroy;
-    Group.prototype.delete = Group.prototype.destroy;
-
     const _find = Group.find;
     Group.find = function findDeleted(query = {}, ...rest) {
       return _find.call(Group, queryDeleted(query), ...rest);
