@@ -14,9 +14,9 @@ export function hashUsername(username) {
 
 /**
  * Encrypt object
- * @param {String} data
+ * @param {Object} data
  */
 export function encryptData(data) {
   const cipher = crypto.createCipher('aes-128-cbc', config.get('Biblo.secret'));
-  return cipher.update(data, 'utf8', 'hex') + cipher.final('hex');
+  return cipher.update(JSON.stringify(data), 'utf8', 'hex') + cipher.final('hex');
 }
