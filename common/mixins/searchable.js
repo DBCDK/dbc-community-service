@@ -1,16 +1,3 @@
-import {eachSeries} from 'async';
-import {Client} from 'elasticsearch';
-import ProxyAgent from 'proxy-agent';
-
-let config;
-try {
-  config = require('@dbcdk/biblo-config').config;
-} catch (err) {
-  config = require('config');
-}
-
-/* eslint-disable no-use-before-define */
-
 /**
  * @file Use this mixin to index model properties and related items in elasticsearch
  *
@@ -32,6 +19,20 @@ try {
  *},
  *
  */
+
+import {eachSeries} from 'async';
+import {Client} from 'elasticsearch';
+import ProxyAgent from 'proxy-agent';
+
+let config;
+try {
+  config = require('@dbcdk/biblo-config').config;
+} catch (err) {
+  config = require('config');
+}
+
+/* eslint-disable no-use-before-define */
+
 
 // Check if we even want elastic enabled
 const ELASTIC_ENABLED = config.get('CommunityService.elasticSearch.enabled');
@@ -511,25 +512,30 @@ module.exports = function(Model, options) {
       next();
     });
 
-    // If something is removed from loopback, we want to remove it from elastic.
-    Model.observe('after delete', function(ctx, next) {
-      if (ctx && ctx.where && ctx.where.id) {
-        // remove entry from elastic.
-        elasticClient.delete(
-          {
-            index,
-            type: doctype,
-            id: ctx.where.id
-          },
-          err => {
-            if (err) {
-              logger.error('Could delete document!', err);
-            }
-          }
-        );
+    function deleteDocument(instance) {
+      if (!instance) {
+        return;
       }
-
-      next();
+      elasticClient.delete(
+        {
+          index,
+          type: doctype,
+          id: instance.id
+        },
+        err => {
+          if (err) {
+            logger.error('Could not delete document!', err);
+          }
+        }
+      );
+    }
+    // If something is removed from loopback, we want to remove it from elastic.
+    Model.observe('before delete', function (ctx, next) {
+      Model.find({where: ctx.where}, (err, instances) => {
+        instances = Array.isArray(instances) ? instances : [instances];
+        instances.forEach(deleteDocument);
+        next();
+      });
     });
 
     /**
