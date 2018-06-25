@@ -8,7 +8,7 @@
   "mixins": {
     "LogOnDelete": true,
     "DeleteRelatedMedia": {
-      "include": ["coverImage"]
+      "include": ["coverImage", "members"]
     },
     "CountsNotDeleted": true,
     "Searchable": {
