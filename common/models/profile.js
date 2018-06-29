@@ -244,7 +244,6 @@ module.exports = function(Profile) {
     Profile.app.models.Like.destroyAll({profileid: profileId});
     Profile.app.models.Post.destroyAll({postownerid: profileId});
     Profile.app.models.Comment.destroyAll({commentownerid: profileId});
-    Profile.app.models.CommunityRole.destroyAll({profileid: profileId});
     Profile.app.models.Quarantine.destroyAll({quarantinedProfileId: profileId});
     Profile.app.models.Group.destroyAll({groupownerid: profileId});
     Profile.app.models.review.destroyAll({reviewownerid: profileId});
