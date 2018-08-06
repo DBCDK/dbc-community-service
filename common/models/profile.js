@@ -241,7 +241,7 @@ module.exports = function(Profile) {
   });
   Profile.observe('before delete', (ctx, next) => {
     const profileId = ctx.where.id;
-    Profile.app.models.Like.destroyAll({profileid: profileId});
+    Profile.app.models.Like.destroyAll({profileId: profileId});
     Profile.app.models.Post.destroyAll({postownerid: profileId});
     Profile.app.models.Comment.destroyAll({commentownerid: profileId});
     Profile.app.models.Quarantine.destroyAll({quarantinedProfileId: profileId});
