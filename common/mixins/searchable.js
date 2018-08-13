@@ -411,8 +411,10 @@ module.exports = function(Model, options) {
 
           Model.count((error, modelCount) => {
             if (elasticCount < modelCount || FORCE_INITIAL_INDEX) {
-              // Turns out we really want to index, or there's a difference between what's in elastic, and what we have.
-              Model.find(filter || {}, (err2, objects) => {
+              const getAllWhereClause = filter && filter.where ? {where: filter.where} : {};
+              const include = filter && filter.include || {};
+               // Turns out we really want to index, or there's a difference between what's in elastic, and what we have.
+              Model.find(getAllWhereClause, (err2, objects) => {
                 if (elasticCount < objects.length || FORCE_INITIAL_INDEX) {
                   // We use async here to ensure we only insert one document at a time without putting too much strain on the server.
                   eachSeries(objects, (item, done) => {
@@ -425,14 +427,20 @@ module.exports = function(Model, options) {
                       },
                       (error2, documentExists) => {
                         if (!documentExists) {
-                          elasticClient.index(createDocument(item), err3 => {
-                            if (err3) {
-                              logger.error('Could index object!', {
-                                error: err3
+                          Model.findOne({where: {id: item.id}, include}, (itemWithRelationsError, itemWithRelations) => {
+                            if (itemWithRelationsError) {
+                              return logger.error('Could not get object with relations', {
+                                error: itemWithRelationsError
                               });
                             }
-
-                            done();
+                            elasticClient.index(createDocument(itemWithRelations), err3 => {
+                              if (err3) {
+                                logger.error('Could index object!', {
+                                  error: err3
+                                });
+                              }
+                              done();
+                            });
                           });
                         } else {
                           done();
