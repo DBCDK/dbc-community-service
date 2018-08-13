@@ -10,9 +10,9 @@ export default function tracker() {
     var start = process.hrtime();
     res.once('finish', function() {
       var diff = process.hrtime(start);
-      var timings = diff[0] * 1e3 + diff[1] * 1e-6;
+      var timing = diff[0] * 1e3 + diff[1] * 1e-6;
       log.info(`Request done`, {
-        timings,
+        timing,
         params: req.params,
         query: req.query,
         url: req.url
