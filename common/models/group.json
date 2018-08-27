@@ -25,10 +25,7 @@
       ],
       "filter": {
         "include": [
-          "coverImage",
-          {
-            "posts": "comments"
-          }
+          "coverImage"
         ],
         "where": {
           "or": [
