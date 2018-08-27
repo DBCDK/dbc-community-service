@@ -164,7 +164,7 @@ module.exports = function(Model, options) {
 
                       elasticClient.index(params, err3 => {
                         if (err3) {
-                          logger.error('Could index object!', {error: err3});
+                          logger.error('Could not index related objects after delete!', {error: err3});
                         }
                       });
                     });
@@ -181,25 +181,18 @@ module.exports = function(Model, options) {
                 if (ctx.instance && ctx.instance[modelFkField]) {
                   // Create a filter to get the relevant object.
                   let currentFilter = Object.assign({}, filter);
-                  currentFilter.where = Object.assign(
-                    currentFilter.where || {},
-                    {id: ctx.instance[modelFkField]}
-                  );
-                  Model.find(currentFilter, (err2, found) => {
+                  currentFilter.where = {id: ctx.instance[modelFkField]};
+                  Model.findOne({where: {id: ctx.instance[modelFkField]}}, (err2, instance) => {
                     if (err2) {
                       return;
                     }
+                    // extract indexable properties from model instance
+                    const params = createDocument(instance);
 
-                    // Index all relevant items.
-                    found.forEach(instance => {
-                      // extract indexable properties from model instance
-                      const params = createDocument(instance);
-
-                      elasticClient.index(params, err3 => {
-                        if (err3) {
-                          logger.error('Could index object!', {error: err3});
-                        }
-                      });
+                    elasticClient.index(params, err3 => {
+                      if (err3) {
+                        logger.error('Could not index related objects after save!', {error: err3});
+                      }
                     });
                   });
                 }
@@ -435,7 +428,7 @@ module.exports = function(Model, options) {
                             }
                             elasticClient.index(createDocument(itemWithRelations), err3 => {
                               if (err3) {
-                                logger.error('Could index object!', {
+                                logger.error('Could not index object at startup!', {
                                   error: err3
                                 });
                               }
@@ -476,7 +469,7 @@ module.exports = function(Model, options) {
           currentFilter.where = Object.assign(currentFilter.where || {}, {
             id: ctx.instance.id
           });
-          Model.find(currentFilter, (err, foundInstances) => {
+          Model.findOne(currentFilter, (err, foundInstances) => {
             if (err) {
               reject(err);
             } else {
@@ -511,7 +504,7 @@ module.exports = function(Model, options) {
 
           elasticClient.index(params, err => {
             if (err) {
-              logger.error('Could index object!', {error: err});
+              logger.error('Could not index object after save!', {error: err});
             }
           });
         });
