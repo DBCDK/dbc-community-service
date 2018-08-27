@@ -182,7 +182,7 @@ module.exports = function(Model, options) {
                   // Create a filter to get the relevant object.
                   let currentFilter = Object.assign({}, filter);
                   currentFilter.where = {id: ctx.instance[modelFkField]};
-                  Model.findOne({where: {id: ctx.instance[modelFkField]}}, (err2, instance) => {
+                  Model.findOne(currentFilter, (err2, instance) => {
                     if (err2) {
                       return;
                     }
