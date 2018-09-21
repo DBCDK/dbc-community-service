@@ -247,7 +247,6 @@ module.exports = function(Profile) {
     Profile.app.models.Quarantine.destroyAll({quarantinedProfileId: profileId});
     Profile.app.models.Group.destroyAll({groupownerid: profileId});
     Profile.app.models.review.destroyAll({reviewownerid: profileId});
-    Profile.app.models.Flag.destroyAll({ownerid: profileId});
     next();
   });
 };
