@@ -109,5 +109,9 @@
   "BibliographicSubject": {
     "dataSource": "psqlDs",
     "public": true
+  },
+  "QuizResult": {
+    "dataSource": "psqlDs",
+    "public": true
   }
 }
