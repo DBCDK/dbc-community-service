@@ -1,0 +1,36 @@
+{
+  "name": "QuizResult",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "indexes": {
+    "quiz_id_idx": "quizId"
+  },
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "quizId": {
+      "type": "string",
+      "required": true
+    },
+    "result": {
+      "type": "Object",
+      "required": true
+    },
+    "created": {
+      "type": "date",
+      "required": true,
+      "default": "$now"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "profiles": {
+      "type": "belongsTo",
+      "model": "Profile",
+      "foreignKey": "ownerId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}
