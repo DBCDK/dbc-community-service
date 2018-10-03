@@ -61,6 +61,11 @@
   "relations": {
     "likes": {
       "type": "hasMany",
+      "model": "QuizResult",
+      "foreignKey": ""
+    },
+    "likes": {
+      "type": "hasMany",
       "model": "Like",
       "foreignKey": ""
     },

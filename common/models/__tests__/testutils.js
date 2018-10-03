@@ -109,3 +109,15 @@ export function createReview(endpoint, reviewObject) {
 
   return superAgentPostPromise(`${endpoint}api/Reviews`, obj);
 }
+
+export function createQuizResult(endpoint, quizResultObject) {
+  const obj = Object.assign(
+    {
+      ownerId: 0,
+      result: {some: 'result'}
+    },
+    quizResultObject || {}
+  );
+
+  return superAgentPostPromise(`${endpoint}api/QuizResults`, obj);
+}

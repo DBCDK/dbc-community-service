@@ -56,6 +56,10 @@ describe('Test profile endpoints and functionality', () => {
       )).body;
     };
 
+    const getQuizResultsForAll = async () => {
+      return (await superagent.get(`${app.get('url')}api/QuizResults`)).body;
+    };
+
     // Create profile and relations
     const profile = await testutils.createProfile(app.get('url'));
     await testutils.createGroup(app.get('url'), {
@@ -64,9 +68,19 @@ describe('Test profile endpoints and functionality', () => {
     await testutils.createReview(app.get('url'), {
       reviewownerid: profile.id
     });
+    await testutils.createQuizResult(app.get('url'), {
+      quizId: 'some-quiz',
+      ownerId: profile.id
+    });
+    await testutils.createQuizResult(app.get('url'), {
+      quizId: 'some-quiz',
+      ownerId: 12
+    });
+
     // check if relations exists
     expect((await getGroupsForProfile(profile.id)).length).toEqual(1);
     expect((await getReviewsForProfile(profile.id)).length).toEqual(1);
+    expect((await getQuizResultsForAll()).length).toEqual(2);
 
     // Delete profile
     await superagent.delete(`${app.get('url')}api/Profiles/${profile.id}`);
@@ -74,5 +88,7 @@ describe('Test profile endpoints and functionality', () => {
     // check if relations are deleted
     expect((await getGroupsForProfile(profile.id)).length).toEqual(0);
     expect((await getReviewsForProfile(profile.id)).length).toEqual(0);
+    // Should only delete quiz results for deleted profile
+    expect((await getQuizResultsForAll()).length).toEqual(1);
   });
 });
