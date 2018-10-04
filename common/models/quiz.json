@@ -21,6 +21,10 @@
       "type": "date",
       "required": true,
       "default": "$now"
+    },
+    "libraryId": {
+      "type": "string",
+      "required": false
     }
   },
   "validations": [],
