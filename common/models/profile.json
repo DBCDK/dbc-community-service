@@ -59,10 +59,10 @@
   },
   "validations": [],
   "relations": {
-    "likes": {
+    "quizresults": {
       "type": "hasMany",
       "model": "QuizResult",
-      "foreignKey": ""
+      "foreignKey": "ownerId"
     },
     "likes": {
       "type": "hasMany",
