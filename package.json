@@ -4,26 +4,18 @@
   "main": "main.js",
   "scripts": {
     "lint": "eslint ./common ./client ./server config.js",
-    "lint:checkstyle":
-      "eslint ./common ./client ./server ./test -o report.xml -f checkstyle",
+    "lint:checkstyle": "eslint ./common ./client ./server ./test -o report.xml -f checkstyle",
     "start": "node .",
     "dev": "nodemon main.js",
     "dev:search": "ELASTIC_ENABLED=1 nodemon main.js",
-    "dev:proxy":
-      "NODE_TLS_REJECT_UNAUTHORIZED=0 http_proxy=http://localhost:8888 nodemon main.js",
+    "dev:proxy": "NODE_TLS_REJECT_UNAUTHORIZED=0 http_proxy=http://localhost:8888 nodemon main.js",
     "dev:noconf": "USE_DEFAULT_CONFIG=true nodemon main.js",
-    "test":
-      "TESTING=true COMMUNITY_POSTGRES_CONNECTOR=\"memory\" mocha --compilers js:babel-core/register --recursive common server -R mocha-jenkins-reporter",
-    "test:watch":
-      "TESTING=true COMMUNITY_POSTGRES_CONNECTOR=\"memory\" mocha --compilers js:babel-core/register --recursive common server -R mocha-jenkins-reporter --watch",
-    "migrate-create":
-      "ELASTIC_ENABLED=0 MIGRATING=true ./loopback-db-migrate.js --datasource psqlDs create",
-    "migrate-up":
-      "ELASTIC_ENABLED=0 MIGRATING=true ./loopback-db-migrate.js up --datasource psqlDs",
-    "migrate-down":
-      "ELASTIC_ENABLED=0 MIGRATING=true ./loopback-db-migrate.js down --datasource psqlDs",
-    "prettier":
-      "prettier --no-bracket-spacing --single-quote --write common/**/*.js server/**/*.js "
+    "test": "TESTING=true COMMUNITY_POSTGRES_CONNECTOR=\"memory\" mocha --compilers js:babel-core/register --recursive common server -R mocha-jenkins-reporter",
+    "test:watch": "TESTING=true COMMUNITY_POSTGRES_CONNECTOR=\"memory\" mocha --compilers js:babel-core/register --recursive common server -R mocha-jenkins-reporter --watch",
+    "migrate-create": "ELASTIC_ENABLED=0 MIGRATING=true ./loopback-db-migrate.js --datasource psqlDs create",
+    "migrate-up": "ELASTIC_ENABLED=0 MIGRATING=true ./loopback-db-migrate.js up --datasource psqlDs",
+    "migrate-down": "ELASTIC_ENABLED=0 MIGRATING=true ./loopback-db-migrate.js down --datasource psqlDs",
+    "prettier": "prettier --no-bracket-spacing --single-quote --write common/**/*.js server/**/*.js "
   },
   "dependencies": {
     "async": "^2.0.1",

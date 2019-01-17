@@ -31,6 +31,12 @@
       "required": true,
       "index": true
     }
+    ,
+    "requiredContactInfo":{
+    "type": "string",
+    "required":true,
+    "default":"none"
+    }
   },
   "validations": [],
   "relations": {

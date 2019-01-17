@@ -29,4 +29,10 @@ module.exports = function(Campaign) {
     in: ['group', 'review'],
     message: 'We only support the following types: group, review'
   });
+
+  Campaign.validatesInclusionOf('requiredContactInfo', {
+    in: ['none', 'phone', 'mail', 'phoneAndMail', 'phoneOrMail'],
+    message:
+      'We only support the following types: phone, mail, phoneAndMail, phoneOrMail'
+  });
 };
