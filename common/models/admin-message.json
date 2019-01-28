@@ -1,0 +1,35 @@
+{
+    "name": "AdminMessage",
+    "base": "PersistedModel",
+    "idInjection": true,
+    "options": {
+      "validateUpsert": true
+    },
+    "mixins": {
+      "LogOnDelete": true
+    },
+    "properties": {
+      "message": {
+        "type": "string"
+      },
+      "timeStamp": {
+        "type": "date",
+        "required": true
+      }
+    },
+    "relations": {
+      "receiver": {
+        "type": "belongsTo",
+        "model": "Profile",
+        "foreignKey": "receiverProfileId"
+      },
+      "sender": {
+        "type": "belongsTo",
+        "model": "Profile",
+        "foreignKey": "senderProfileId"
+      }
+    },
+    "acls": [],
+    "methods": {}
+  }
+  
