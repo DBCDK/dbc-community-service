@@ -201,3 +201,4 @@ boot(
     }
   }
 );
+process.on('uncaughtException', (err)=>log.error('uncaughtException', err));
