@@ -12,9 +12,10 @@
       "message": {
         "type": "string"
       },
-      "timeStamp": {
+      "timeCreated": {
         "type": "date",
-        "required": true
+        "required": true,
+        "default": "$now"
       }
     },
     "relations": {

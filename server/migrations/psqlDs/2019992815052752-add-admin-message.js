@@ -4,7 +4,7 @@ module.exports = {
       'CREATE TABLE "public"."adminmessage" (' +
       '  "id" SERIAL,' +
       '  "message" VARCHAR(1024),' +
-      '  "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL,' +
+      '  "timecreated" TIMESTAMP WITH TIME ZONE NOT NULL,' +
       '  "receiverprofileid" INTEGER,' +
       '  "senderprofileid" INTEGER,' +
       '  PRIMARY KEY("id")' +
