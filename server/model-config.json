@@ -113,5 +113,9 @@
   "QuizResult": {
     "dataSource": "psqlDs",
     "public": true
+  },
+  "AdminMessage": {
+    "dataSource": "psqlDs",
+    "public": true
   }
 }

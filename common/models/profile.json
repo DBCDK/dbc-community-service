@@ -107,6 +107,16 @@
       "model": "Quarantine",
       "foreignKey": "quarantinedProfileId"
     },
+    "receivedMessages": {
+      "type": "hasMany",
+      "model": "AdminMessage",
+      "foreignKey": "receiverProfileId"
+    },
+    "sentMessages": {
+      "type": "hasMany",
+      "model": "AdminMessage",
+      "foreignKey": "senderProfileId"
+    },
     "reviews": {
       "type": "hasMany",
       "model": "review",
