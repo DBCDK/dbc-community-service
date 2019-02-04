@@ -201,3 +201,8 @@ boot(
     }
   }
 );
+
+// Prevent production application from crashing from uncaught exception.
+if (process.env.NODE_ENV==='production') {
+  process.on('uncaughtException', (err)=>log.error('uncaughtException', err));
+}
