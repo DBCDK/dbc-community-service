@@ -6,6 +6,8 @@
 
 DBC community web service
 
+Archived since product no longer exists.
+
 ## Logging
 The dbc-community-service implements the [dbc-node-logger](https://github.com/DBCDK/dbc-node-logger) which makes it possible to log to Kafka among others.
 To enure your logs will be transported to Kafka the following environment variables should be set:
@@ -70,7 +72,7 @@ Your unilogin secret, this must match whatever you use to authenticate.
 This environment variable loads as much configuration from environment variables as possible. The following variables are required.
 
 - __DATABASE_HOST__
-The host running the Postgres database. 
+The host running the Postgres database.
 
 - __DATABASE_PORT__
 The port to use when connecting to the Postgres database.
